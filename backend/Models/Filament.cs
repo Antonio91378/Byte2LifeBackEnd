@@ -13,5 +13,7 @@ namespace Byte2Life.API.Models
         public double RemainingMassGrams { get; set; }
         public string Color { get; set; } = string.Empty;
         public string? ColorHex { get; set; }
+
+        public string Type { get; set; } = string.Empty; // PLA, PETG, ABS, etc.
     }
 }
