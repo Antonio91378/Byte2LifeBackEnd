@@ -1,0 +1,3 @@
+Descrição;LinkFilamento;PrecoFilamento;DescricaoFilamento;LinkProduto;Qualidade;Massa;Custo;ValorVenda;Lucro;PorcentagemLucro;SexoCliente;Categoria;NumeroCliente;Impresso;Entregue;Pago;Tempo
+Venda Importada 1;http://filamento.com;120.00;PLA Vermelho;http://stl.com/1;Standard;50;6.00;30.00;24.00;400%;M;Recorrente;11988887777;S;S;S;2h
+Venda Importada 2;http://filamento.com;120.00;PLA Vermelho;http://stl.com/2;High;100;12.00;60.00;48.00;400%;F;Novo;11977776666;N;N;N;4h
