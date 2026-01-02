@@ -15,6 +15,7 @@ builder.Services.AddSingleton<ISaleService, SaleService>();
 builder.Services.AddSingleton<IBudgetService, BudgetService>();
 builder.Services.AddSingleton<IInvestmentService, InvestmentService>();
 builder.Services.AddSingleton<IPaintService, PaintService>();
+builder.Services.AddSingleton<IReminderService, ReminderService>();
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
