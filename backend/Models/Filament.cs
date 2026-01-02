@@ -1,4 +1,5 @@
 using LiteDB;
+using System.Text.Json.Serialization;
 
 namespace Byte2Life.API.Models
 {
@@ -15,5 +16,10 @@ namespace Byte2Life.API.Models
         public string? ColorHex { get; set; }
 
         public string Type { get; set; } = string.Empty; // PLA, PETG, ABS, etc.
+        [JsonPropertyName("warningComment")]
+        public string WarningComment { get; set; } = string.Empty;
+
+        [JsonPropertyName("slicingProfile3mfPath")]
+        public string SlicingProfile3mfPath { get; set; } = string.Empty;
     }
 }

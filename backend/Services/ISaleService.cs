@@ -11,6 +11,7 @@ namespace Byte2Life.API.Services
         Task<List<Sale>> GetQueueAsync();
         Task CreateAsync(Sale newSale);
         Task UpdateAsync(string id, Sale updatedSale);
+        Task UpdateScheduleAsync(string id, DateTime? printStartConfirmedAt);
         Task RemoveAsync(string id);
     }
 }

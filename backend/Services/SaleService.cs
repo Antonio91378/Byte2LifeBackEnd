@@ -1,5 +1,6 @@
 using Byte2Life.API.Models;
 using LiteDB;
+using System.Text.RegularExpressions;
 
 namespace Byte2Life.API.Services
 {
@@ -8,6 +9,9 @@ namespace Byte2Life.API.Services
         private readonly LiteDatabase _database;
         private readonly ILiteCollection<Sale> _salesCollection;
         private readonly IFilamentService _filamentService;
+        private static readonly TimeSpan PrintStartWindow = new(8, 0, 0);
+        private static readonly TimeSpan LastPrintStartWindow = new(23, 0, 0);
+        private static readonly TimeSpan PrintGap = TimeSpan.FromMinutes(20);
 
         public SaleService(LiteDatabase database, IFilamentService filamentService)
         {
@@ -55,9 +59,9 @@ namespace Byte2Life.API.Services
             Task.FromResult<Sale?>(_salesCollection.FindOne(s => s.PrintStatus == "InProgress" || s.PrintStatus == "Staged"));
 
         public Task<List<Sale>> GetQueueAsync() =>
-            Task.FromResult(_salesCollection.Find(s => s.PrintStatus == "InQueue")
+            Task.FromResult(UpdateQueueSchedule(_salesCollection.Find(s => s.PrintStatus == "InQueue")
                 .OrderBy(s => s.Priority)
-                .ToList());
+                .ToList()));
 
         public async Task CreateAsync(Sale newSale)
         {
@@ -102,8 +106,14 @@ namespace Byte2Life.API.Services
             _salesCollection.Insert(newSale);
         }
 
-        public Task UpdateAsync(string id, Sale updatedSale)
+        public async Task UpdateAsync(string id, Sale updatedSale)
         {
+            var existingSale = _salesCollection.FindById(new ObjectId(id));
+            if (existingSale is null)
+            {
+                throw new InvalidOperationException("Sale not found");
+            }
+
             // Recalculate Priority on Update
             if (updatedSale.DeliveryDate.HasValue)
             {
@@ -128,14 +138,91 @@ namespace Byte2Life.API.Services
                 }
                 
                 // If transitioning to InProgress, set start time if not set
-                var existingSale = _salesCollection.FindById(new ObjectId(id));
                 if (existingSale != null && updatedSale.PrintStatus == "InProgress" && existingSale.PrintStatus != "InProgress")
                 {
                     updatedSale.PrintStartedAt = DateTime.Now;
                 }
             }
 
+            await AdjustFilamentStockAsync(existingSale, updatedSale);
             _salesCollection.Update(updatedSale);
+        }
+
+        private async Task AdjustFilamentStockAsync(Sale existingSale, Sale updatedSale)
+        {
+            var oldFilamentId = existingSale.FilamentId?.ToString();
+            var newFilamentId = updatedSale.FilamentId?.ToString();
+            var oldMass = existingSale.MassGrams;
+            var newMass = updatedSale.MassGrams;
+
+            if (string.IsNullOrWhiteSpace(oldFilamentId) && string.IsNullOrWhiteSpace(newFilamentId))
+            {
+                return;
+            }
+
+            if (!string.IsNullOrWhiteSpace(oldFilamentId) && string.IsNullOrWhiteSpace(newFilamentId))
+            {
+                var oldFilament = await _filamentService.GetAsync(oldFilamentId);
+                if (oldFilament != null)
+                {
+                    oldFilament.RemainingMassGrams += oldMass;
+                    await _filamentService.UpdateAsync(oldFilament.Id!.ToString(), oldFilament);
+                }
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(oldFilamentId) && !string.IsNullOrWhiteSpace(newFilamentId))
+            {
+                var newFilament = await _filamentService.GetAsync(newFilamentId);
+                if (newFilament != null)
+                {
+                    newFilament.RemainingMassGrams -= newMass;
+                    await _filamentService.UpdateAsync(newFilament.Id!.ToString(), newFilament);
+                }
+                return;
+            }
+
+            if (oldFilamentId == newFilamentId)
+            {
+                var delta = newMass - oldMass;
+                if (Math.Abs(delta) < 0.0001d)
+                {
+                    return;
+                }
+                var filament = await _filamentService.GetAsync(oldFilamentId!);
+                if (filament != null)
+                {
+                    filament.RemainingMassGrams -= delta;
+                    await _filamentService.UpdateAsync(filament.Id!.ToString(), filament);
+                }
+                return;
+            }
+
+            var oldFilamentSwap = await _filamentService.GetAsync(oldFilamentId!);
+            if (oldFilamentSwap != null)
+            {
+                oldFilamentSwap.RemainingMassGrams += oldMass;
+                await _filamentService.UpdateAsync(oldFilamentSwap.Id!.ToString(), oldFilamentSwap);
+            }
+
+            var newFilamentSwap = await _filamentService.GetAsync(newFilamentId!);
+            if (newFilamentSwap != null)
+            {
+                newFilamentSwap.RemainingMassGrams -= newMass;
+                await _filamentService.UpdateAsync(newFilamentSwap.Id!.ToString(), newFilamentSwap);
+            }
+        }
+
+        public Task UpdateScheduleAsync(string id, DateTime? printStartConfirmedAt)
+        {
+            var sale = _salesCollection.FindById(new ObjectId(id));
+            if (sale is null)
+            {
+                throw new InvalidOperationException("Sale not found");
+            }
+
+            sale.PrintStartConfirmedAt = printStartConfirmedAt;
+            _salesCollection.Update(sale);
             return Task.CompletedTask;
         }
 
@@ -152,6 +239,179 @@ namespace Byte2Life.API.Services
                 }
             }
             _salesCollection.Delete(new ObjectId(id));
+        }
+
+        private static DateTime AlignStart(DateTime candidate, bool applyGapIfShifted)
+        {
+            var dayStart = candidate.Date.Add(PrintStartWindow);
+            var dayEndStart = candidate.Date.Add(LastPrintStartWindow);
+
+            if (candidate < dayStart)
+            {
+                return applyGapIfShifted ? dayStart.Add(PrintGap) : dayStart;
+            }
+
+            if (candidate > dayEndStart)
+            {
+                var nextDayStart = dayStart.AddDays(1);
+                return applyGapIfShifted ? nextDayStart.Add(PrintGap) : nextDayStart;
+            }
+
+            return candidate;
+        }
+
+        private static DateTime CalculateNextStart(DateTime? previousEnd, DateTime baseTime)
+        {
+            if (!previousEnd.HasValue)
+            {
+                return AlignStart(baseTime, false);
+            }
+
+            var candidate = previousEnd.Value.Add(PrintGap);
+            return AlignStart(candidate, true);
+        }
+
+        private static DateTime FindNextAvailableStart(DateTime baseTime, List<(DateTime Start, DateTime End)> occupied, double durationHours)
+        {
+            var candidate = AlignStart(baseTime, false);
+            if (durationHours <= 0)
+            {
+                return candidate;
+            }
+
+            var sorted = occupied.OrderBy(slot => slot.Start).ToList();
+            foreach (var slot in sorted)
+            {
+                var latestStart = slot.Start.Subtract(PrintGap);
+                var candidateEnd = candidate.AddHours(durationHours);
+                if (candidateEnd <= latestStart)
+                {
+                    return candidate;
+                }
+
+                var blockedEnd = slot.End.Add(PrintGap);
+                if (candidate < blockedEnd)
+                {
+                    candidate = AlignStart(blockedEnd, true);
+                }
+            }
+
+            return candidate;
+        }
+
+        private static double GetSaleDurationHours(Sale sale)
+        {
+            if (sale.PrintTimeHours > 0)
+            {
+                return sale.PrintTimeHours;
+            }
+
+            if (string.IsNullOrWhiteSpace(sale.DesignPrintTime))
+            {
+                return 0;
+            }
+
+            var text = sale.DesignPrintTime.Trim().ToLowerInvariant();
+
+            if (TimeSpan.TryParse(text, out var parsed))
+            {
+                return parsed.TotalHours;
+            }
+
+            double hours = 0;
+            double minutes = 0;
+
+            var hoursMatch = Regex.Match(text, @"(\d+(?:[.,]\d+)?)\s*h", RegexOptions.IgnoreCase);
+            if (hoursMatch.Success)
+            {
+                var value = hoursMatch.Groups[1].Value.Replace(',', '.');
+                if (double.TryParse(value, out var parsedHours))
+                {
+                    hours = parsedHours;
+                }
+            }
+
+            var minutesMatch = Regex.Match(text, @"(\d+(?:[.,]\d+)?)\s*m", RegexOptions.IgnoreCase);
+            if (minutesMatch.Success)
+            {
+                var value = minutesMatch.Groups[1].Value.Replace(',', '.');
+                if (double.TryParse(value, out var parsedMinutes))
+                {
+                    minutes = parsedMinutes;
+                }
+            }
+
+            if (hours > 0 || minutes > 0)
+            {
+                return hours + (minutes / 60d);
+            }
+
+            var cleaned = text.Replace(',', '.');
+            if (double.TryParse(cleaned, out var fallback))
+            {
+                return fallback;
+            }
+
+            return 0;
+        }
+
+        private List<Sale> UpdateQueueSchedule(List<Sale> queue)
+        {
+            if (queue.Count == 0)
+            {
+                return queue;
+            }
+
+            var baseTime = DateTime.Now;
+            var occupied = new List<(DateTime Start, DateTime End)>();
+            var currentPrint = _salesCollection.FindOne(s => s.PrintStatus == "InProgress" || s.PrintStatus == "Staged");
+            if (currentPrint?.PrintStartedAt != null)
+            {
+                var currentDuration = Math.Max(GetSaleDurationHours(currentPrint), 0);
+                if (currentDuration > 0)
+                {
+                    var start = currentPrint.PrintStartedAt.Value;
+                    var end = start.AddHours(currentDuration);
+                    occupied.Add((start, end));
+                }
+            }
+
+            foreach (var sale in queue.Where(sale => sale.PrintStartConfirmedAt.HasValue))
+            {
+                var duration = Math.Max(GetSaleDurationHours(sale), 0);
+                if (duration <= 0)
+                {
+                    continue;
+                }
+                var start = sale.PrintStartConfirmedAt!.Value;
+                var end = start.AddHours(duration);
+                occupied.Add((start, end));
+            }
+
+            foreach (var sale in queue.Where(sale => !sale.PrintStartConfirmedAt.HasValue))
+            {
+                var duration = Math.Max(GetSaleDurationHours(sale), 0);
+                if (duration <= 0)
+                {
+                    if (sale.PrintStartScheduledAt != null)
+                    {
+                        sale.PrintStartScheduledAt = null;
+                        _salesCollection.Update(sale);
+                    }
+                    continue;
+                }
+
+                var start = FindNextAvailableStart(baseTime, occupied, duration);
+                if (sale.PrintStartScheduledAt != start)
+                {
+                    sale.PrintStartScheduledAt = start;
+                    _salesCollection.Update(sale);
+                }
+                var end = start.AddHours(duration);
+                occupied.Add((start, end));
+            }
+
+            return queue;
         }
     }
 }

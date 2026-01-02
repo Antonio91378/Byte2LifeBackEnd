@@ -18,6 +18,8 @@ namespace Byte2Life.API.Models
         public double PrintTimeHours { get; set; } // Total estimated time in hours
         public DateTime SaleDate { get; set; } = DateTime.Now;
         public DateTime? DeliveryDate { get; set; }
+        public DateTime? PrintStartScheduledAt { get; set; }
+        public DateTime? PrintStartConfirmedAt { get; set; }
 
         public string PrintStatus { get; set; } = "Pending"; // Pending, InQueue, Staged, InProgress, Concluded
         public int Priority { get; set; } = 0;
