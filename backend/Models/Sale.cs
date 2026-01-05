@@ -20,6 +20,7 @@ namespace Byte2Life.API.Models
         public DateTime? DeliveryDate { get; set; }
         public DateTime? PrintStartScheduledAt { get; set; }
         public DateTime? PrintStartConfirmedAt { get; set; }
+        public DateTime? PaintStartConfirmedAt { get; set; }
 
         public string PrintStatus { get; set; } = "Pending"; // Pending, InQueue, Staged, InProgress, Concluded
         public int Priority { get; set; } = 0;
@@ -43,6 +44,8 @@ namespace Byte2Life.API.Models
         public bool HasCustomArt { get; set; }
         public bool HasPainting { get; set; }
         public bool HasVarnish { get; set; }
+        public double PaintTimeHours { get; set; }
+        public string? PaintResponsible { get; set; }
 
         public string? NozzleDiameter { get; set; }
         public string? LayerHeight { get; set; }

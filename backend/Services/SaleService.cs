@@ -63,6 +63,71 @@ namespace Byte2Life.API.Services
                 .OrderBy(s => s.Priority)
                 .ToList()));
 
+        public Task<List<Sale>> GetPaintingScheduleAsync() =>
+            Task.FromResult(_salesCollection.Find(s =>
+                s.HasPainting ||
+                s.PaintStartConfirmedAt != null ||
+                s.PaintTimeHours > 0 ||
+                !string.IsNullOrWhiteSpace(s.PaintResponsible)).ToList());
+
+        private static void NormalizePaintingFields(Sale sale)
+        {
+            if (sale.HasPainting)
+            {
+                return;
+            }
+
+            if (sale.PaintStartConfirmedAt != null || sale.PaintTimeHours > 0 || !string.IsNullOrWhiteSpace(sale.PaintResponsible))
+            {
+                sale.HasPainting = true;
+            }
+        }
+
+        private static DateTime? GetPrintEnd(Sale sale)
+        {
+            var start = sale.PrintStartConfirmedAt ?? sale.PrintStartedAt;
+            if (!start.HasValue)
+            {
+                return null;
+            }
+
+            var duration = Math.Max(GetSaleDurationHours(sale), 0);
+            if (duration <= 0)
+            {
+                return null;
+            }
+
+            return start.Value.AddHours(duration);
+        }
+
+        private static void ValidatePaintSchedule(Sale sale)
+        {
+            if (!sale.PaintStartConfirmedAt.HasValue)
+            {
+                return;
+            }
+
+            var printEnd = GetPrintEnd(sale);
+            if (printEnd.HasValue && sale.PaintStartConfirmedAt.Value < printEnd.Value)
+            {
+                throw new InvalidOperationException("Painting must start after print completion.");
+            }
+        }
+
+        private static void AdjustPaintScheduleAfterPrintChange(Sale sale)
+        {
+            if (!sale.PaintStartConfirmedAt.HasValue)
+            {
+                return;
+            }
+
+            var printEnd = GetPrintEnd(sale);
+            if (printEnd.HasValue && sale.PaintStartConfirmedAt.Value < printEnd.Value)
+            {
+                sale.PaintStartConfirmedAt = null;
+            }
+        }
+
         public async Task CreateAsync(Sale newSale)
         {
             // Calculate Priority based on DeliveryDate
@@ -103,6 +168,8 @@ namespace Byte2Life.API.Services
                 }
             }
 
+            NormalizePaintingFields(newSale);
+            ValidatePaintSchedule(newSale);
             _salesCollection.Insert(newSale);
         }
 
@@ -144,6 +211,8 @@ namespace Byte2Life.API.Services
                 }
             }
 
+            NormalizePaintingFields(updatedSale);
+            ValidatePaintSchedule(updatedSale);
             await AdjustFilamentStockAsync(existingSale, updatedSale);
             _salesCollection.Update(updatedSale);
         }
@@ -222,6 +291,30 @@ namespace Byte2Life.API.Services
             }
 
             sale.PrintStartConfirmedAt = printStartConfirmedAt;
+            AdjustPaintScheduleAfterPrintChange(sale);
+            _salesCollection.Update(sale);
+            return Task.CompletedTask;
+        }
+
+        public Task UpdatePaintScheduleAsync(string id, DateTime? paintStartConfirmedAt, double? paintTimeHours, string? paintResponsible)
+        {
+            var sale = _salesCollection.FindById(new ObjectId(id));
+            if (sale is null)
+            {
+                throw new InvalidOperationException("Sale not found");
+            }
+
+            sale.PaintStartConfirmedAt = paintStartConfirmedAt;
+            if (paintTimeHours.HasValue)
+            {
+                sale.PaintTimeHours = Math.Max(0, paintTimeHours.Value);
+            }
+            if (paintResponsible != null)
+            {
+                sale.PaintResponsible = paintResponsible.Trim();
+            }
+            NormalizePaintingFields(sale);
+            ValidatePaintSchedule(sale);
             _salesCollection.Update(sale);
             return Task.CompletedTask;
         }

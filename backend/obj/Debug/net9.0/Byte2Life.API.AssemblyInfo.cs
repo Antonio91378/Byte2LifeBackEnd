@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Byte2Life.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9e59ac9806fba3535fba75cb6b78a6e869faab70")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1c3cc00f66aa6e8c08348101fa814d77e9ad2441")]
 [assembly: System.Reflection.AssemblyProductAttribute("Byte2Life.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Byte2Life.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
