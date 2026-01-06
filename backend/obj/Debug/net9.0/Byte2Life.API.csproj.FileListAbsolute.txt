@@ -38,3 +38,4 @@ C:\Users\pichau\Desktop\Byte2Life\backend\bin\Debug\net9.0\Byte2Life.API.pdb
 C:\Users\pichau\Desktop\Byte2Life\backend\obj\Debug\net9.0\Byte2Life.API.genruntimeconfig.cache
 C:\Users\pichau\Desktop\Byte2Life\backend\obj\Debug\net9.0\ref\Byte2Life.API.dll
 C:\Users\pichau\Desktop\Byte2Life\backend\bin\Debug\net9.0\Byte2Life.API.staticwebassets.runtime.json
+C:\Users\pichau\Desktop\Byte2Life\backend\obj\Debug\net9.0\Byte2Life.API.sourcelink.json
