@@ -38,6 +38,10 @@ namespace Byte2Life.API.Controllers
         public async Task<List<Sale>> GetPaintingSchedule() =>
             await _saleService.GetPaintingScheduleAsync();
 
+        [HttpGet("services")]
+        public async Task<List<Sale>> GetServiceSchedule() =>
+            await _saleService.GetServiceScheduleAsync();
+
         [HttpGet("current")]
         public async Task<ActionResult<Sale>> GetCurrentPrint()
         {
@@ -135,6 +139,33 @@ namespace Byte2Life.API.Controllers
             try
             {
                 await _saleService.UpdatePaintScheduleAsync(id, update.PaintStartConfirmedAt, update.PaintTimeHours, update.PaintResponsible);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+            return NoContent();
+        }
+
+        [HttpPatch("{id:length(24)}/design-schedule")]
+        public async Task<IActionResult> UpdateDesignSchedule(string id, [FromBody] SaleDesignScheduleUpdate update)
+        {
+            var sale = await _saleService.GetByIdAsync(id);
+
+            if (sale is null)
+            {
+                return NotFound();
+            }
+
+            if (update is null)
+            {
+                return BadRequest("Invalid payload");
+            }
+
+            try
+            {
+                await _saleService.UpdateDesignScheduleAsync(id, update.DesignStartConfirmedAt, update.DesignTimeHours, update.DesignResponsible, update.DesignValue);
             }
             catch (InvalidOperationException ex)
             {

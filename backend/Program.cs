@@ -16,6 +16,10 @@ builder.Services.AddSingleton<IBudgetService, BudgetService>();
 builder.Services.AddSingleton<IInvestmentService, InvestmentService>();
 builder.Services.AddSingleton<IPaintService, PaintService>();
 builder.Services.AddSingleton<IReminderService, ReminderService>();
+builder.Services.AddSingleton<IServiceProviderService, ServiceProviderService>();
+builder.Services.AddSingleton<IDesignTaskService, DesignTaskService>();
+builder.Services.AddSingleton<PaintingTaskService>();
+builder.Services.AddSingleton<IPaintingTaskService>(sp => sp.GetRequiredService<PaintingTaskService>());
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -47,6 +51,40 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseExceptionHandler(handler =>
+{
+    handler.Run(async context =>
+    {
+        var feature = context.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerFeature>();
+        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+        context.Response.ContentType = "application/json";
+        var payload = new
+        {
+            status = context.Response.StatusCode,
+            message = feature?.Error.Message,
+            stackTrace = app.Environment.IsDevelopment() ? feature?.Error.StackTrace : null
+        };
+        await context.Response.WriteAsJsonAsync(payload);
+    });
+});
+
+app.UseStatusCodePages(async context =>
+{
+    var response = context.HttpContext.Response;
+    if (response.HasStarted || response.ContentLength.HasValue || response.ContentType != null)
+    {
+        return;
+    }
+
+    response.ContentType = "application/json";
+    var payload = new
+    {
+        status = response.StatusCode,
+        path = context.HttpContext.Request.Path.Value
+    };
+    await response.WriteAsJsonAsync(payload);
+});
 
 app.UseHttpsRedirection();
 

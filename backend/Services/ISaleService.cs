@@ -10,10 +10,12 @@ namespace Byte2Life.API.Services
         Task<Sale?> GetCurrentPrintAsync();
         Task<List<Sale>> GetQueueAsync();
         Task<List<Sale>> GetPaintingScheduleAsync();
+        Task<List<Sale>> GetServiceScheduleAsync();
         Task CreateAsync(Sale newSale);
         Task UpdateAsync(string id, Sale updatedSale);
         Task UpdateScheduleAsync(string id, DateTime? printStartConfirmedAt);
         Task UpdatePaintScheduleAsync(string id, DateTime? paintStartConfirmedAt, double? paintTimeHours, string? paintResponsible);
+        Task UpdateDesignScheduleAsync(string id, DateTime? designStartConfirmedAt, double? designTimeHours, string? designResponsible, decimal? designValue);
         Task RemoveAsync(string id);
     }
 }

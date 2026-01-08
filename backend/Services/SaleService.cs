@@ -70,6 +70,18 @@ namespace Byte2Life.API.Services
                 s.PaintTimeHours > 0 ||
                 !string.IsNullOrWhiteSpace(s.PaintResponsible)).ToList());
 
+        public Task<List<Sale>> GetServiceScheduleAsync() =>
+            Task.FromResult(_salesCollection.Find(s =>
+                s.HasPainting ||
+                s.PaintStartConfirmedAt != null ||
+                s.PaintTimeHours > 0 ||
+                !string.IsNullOrWhiteSpace(s.PaintResponsible) ||
+                s.HasCustomArt ||
+                s.DesignStartConfirmedAt != null ||
+                s.DesignTimeHours > 0 ||
+                !string.IsNullOrWhiteSpace(s.DesignResponsible) ||
+                s.DesignValue.HasValue).ToList());
+
         private static void NormalizePaintingFields(Sale sale)
         {
             if (sale.HasPainting)
@@ -80,6 +92,19 @@ namespace Byte2Life.API.Services
             if (sale.PaintStartConfirmedAt != null || sale.PaintTimeHours > 0 || !string.IsNullOrWhiteSpace(sale.PaintResponsible))
             {
                 sale.HasPainting = true;
+            }
+        }
+
+        private static void NormalizeDesignFields(Sale sale)
+        {
+            if (sale.HasCustomArt)
+            {
+                return;
+            }
+
+            if (sale.DesignStartConfirmedAt != null || sale.DesignTimeHours > 0 || !string.IsNullOrWhiteSpace(sale.DesignResponsible) || sale.DesignValue.HasValue)
+            {
+                sale.HasCustomArt = true;
             }
         }
 
@@ -100,6 +125,22 @@ namespace Byte2Life.API.Services
             return start.Value.AddHours(duration);
         }
 
+        private static DateTime? GetDesignEnd(Sale sale)
+        {
+            if (!sale.DesignStartConfirmedAt.HasValue)
+            {
+                return null;
+            }
+
+            var duration = Math.Max(sale.DesignTimeHours, 0);
+            if (duration <= 0)
+            {
+                return null;
+            }
+
+            return sale.DesignStartConfirmedAt.Value.AddHours(duration);
+        }
+
         private static void ValidatePaintSchedule(Sale sale)
         {
             if (!sale.PaintStartConfirmedAt.HasValue)
@@ -111,6 +152,21 @@ namespace Byte2Life.API.Services
             if (printEnd.HasValue && sale.PaintStartConfirmedAt.Value < printEnd.Value)
             {
                 throw new InvalidOperationException("Painting must start after print completion.");
+            }
+        }
+
+        private static void ValidateDesignSchedule(Sale sale)
+        {
+            var designEnd = GetDesignEnd(sale);
+            if (!designEnd.HasValue)
+            {
+                return;
+            }
+
+            var printStart = sale.PrintStartConfirmedAt ?? sale.PrintStartedAt;
+            if (printStart.HasValue && designEnd.Value > printStart.Value)
+            {
+                throw new InvalidOperationException("Design must finish before print start.");
             }
         }
 
@@ -169,6 +225,8 @@ namespace Byte2Life.API.Services
             }
 
             NormalizePaintingFields(newSale);
+            NormalizeDesignFields(newSale);
+            ValidateDesignSchedule(newSale);
             ValidatePaintSchedule(newSale);
             _salesCollection.Insert(newSale);
         }
@@ -212,6 +270,8 @@ namespace Byte2Life.API.Services
             }
 
             NormalizePaintingFields(updatedSale);
+            NormalizeDesignFields(updatedSale);
+            ValidateDesignSchedule(updatedSale);
             ValidatePaintSchedule(updatedSale);
             await AdjustFilamentStockAsync(existingSale, updatedSale);
             _salesCollection.Update(updatedSale);
@@ -291,6 +351,7 @@ namespace Byte2Life.API.Services
             }
 
             sale.PrintStartConfirmedAt = printStartConfirmedAt;
+            ValidateDesignSchedule(sale);
             AdjustPaintScheduleAfterPrintChange(sale);
             _salesCollection.Update(sale);
             return Task.CompletedTask;
@@ -315,6 +376,34 @@ namespace Byte2Life.API.Services
             }
             NormalizePaintingFields(sale);
             ValidatePaintSchedule(sale);
+            _salesCollection.Update(sale);
+            return Task.CompletedTask;
+        }
+
+        public Task UpdateDesignScheduleAsync(string id, DateTime? designStartConfirmedAt, double? designTimeHours, string? designResponsible, decimal? designValue)
+        {
+            var sale = _salesCollection.FindById(new ObjectId(id));
+            if (sale is null)
+            {
+                throw new InvalidOperationException("Sale not found");
+            }
+
+            sale.DesignStartConfirmedAt = designStartConfirmedAt;
+            if (designTimeHours.HasValue)
+            {
+                sale.DesignTimeHours = Math.Max(0, designTimeHours.Value);
+            }
+            if (designResponsible != null)
+            {
+                sale.DesignResponsible = designResponsible.Trim();
+            }
+            if (designValue.HasValue)
+            {
+                sale.DesignValue = designValue;
+            }
+
+            NormalizeDesignFields(sale);
+            ValidateDesignSchedule(sale);
             _salesCollection.Update(sale);
             return Task.CompletedTask;
         }

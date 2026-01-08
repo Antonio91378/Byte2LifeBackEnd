@@ -1,6 +1,7 @@
 using Byte2Life.API.Models;
 using Byte2Life.API.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Globalization;
 using System.Text.Json;
 
 namespace Byte2Life.API.Controllers
@@ -117,7 +118,36 @@ namespace Byte2Life.API.Controllers
                 return fallback;
             }
 
-            return value.TryGetDouble(out var parsed) ? parsed : fallback;
+            if (value.ValueKind == JsonValueKind.Number)
+            {
+                return value.TryGetDouble(out var parsed) ? parsed : fallback;
+            }
+
+            if (value.ValueKind == JsonValueKind.String)
+            {
+                var raw = value.GetString();
+                if (string.IsNullOrWhiteSpace(raw))
+                {
+                    return fallback;
+                }
+
+                var normalized = raw.Trim()
+                    .Replace(" ", "")
+                    .Replace("kg", "", StringComparison.OrdinalIgnoreCase)
+                    .Replace("g", "", StringComparison.OrdinalIgnoreCase);
+
+                if (double.TryParse(normalized, NumberStyles.Any, CultureInfo.InvariantCulture, out var parsedInvariant))
+                {
+                    return parsedInvariant;
+                }
+
+                if (double.TryParse(normalized, NumberStyles.Any, new CultureInfo("pt-BR"), out var parsedPt))
+                {
+                    return parsedPt;
+                }
+            }
+
+            return fallback;
         }
 
         private static decimal GetDecimal(JsonElement payload, string propertyName, decimal fallback = 0)
@@ -127,7 +157,32 @@ namespace Byte2Life.API.Controllers
                 return fallback;
             }
 
-            return value.TryGetDecimal(out var parsed) ? parsed : fallback;
+            if (value.ValueKind == JsonValueKind.Number)
+            {
+                return value.TryGetDecimal(out var parsed) ? parsed : fallback;
+            }
+
+            if (value.ValueKind == JsonValueKind.String)
+            {
+                var raw = value.GetString();
+                if (string.IsNullOrWhiteSpace(raw))
+                {
+                    return fallback;
+                }
+
+                var normalized = raw.Trim().Replace(" ", "");
+                if (decimal.TryParse(normalized, NumberStyles.Any, CultureInfo.InvariantCulture, out var parsedInvariant))
+                {
+                    return parsedInvariant;
+                }
+
+                if (decimal.TryParse(normalized, NumberStyles.Any, new CultureInfo("pt-BR"), out var parsedPt))
+                {
+                    return parsedPt;
+                }
+            }
+
+            return fallback;
         }
 
         [HttpDelete("{id:length(24)}")]
