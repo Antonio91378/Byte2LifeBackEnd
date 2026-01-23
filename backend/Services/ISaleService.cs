@@ -16,6 +16,8 @@ namespace Byte2Life.API.Services
         Task UpdateScheduleAsync(string id, DateTime? printStartConfirmedAt);
         Task UpdatePaintScheduleAsync(string id, DateTime? paintStartConfirmedAt, double? paintTimeHours, string? paintResponsible);
         Task UpdateDesignScheduleAsync(string id, DateTime? designStartConfirmedAt, double? designTimeHours, string? designResponsible, decimal? designValue);
+        Task UpdateDesignStatusAsync(string id, string? designStatus);
+        Task UpdatePaintStatusAsync(string id, string? paintStatus);
         Task RemoveAsync(string id);
     }
 }

@@ -48,8 +48,10 @@ namespace Byte2Life.API.Models
         public double DesignTimeHours { get; set; }
         public string? DesignResponsible { get; set; }
         public decimal? DesignValue { get; set; }
+        public string? DesignStatus { get; set; }
         public double PaintTimeHours { get; set; }
         public string? PaintResponsible { get; set; }
+        public string? PaintStatus { get; set; }
 
         public string? NozzleDiameter { get; set; }
         public string? LayerHeight { get; set; }

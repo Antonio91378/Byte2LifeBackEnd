@@ -1,5 +1,6 @@
 using Byte2Life.API.Models;
 using LiteDB;
+using System;
 using System.Text.RegularExpressions;
 
 namespace Byte2Life.API.Services
@@ -82,6 +83,13 @@ namespace Byte2Life.API.Services
                 !string.IsNullOrWhiteSpace(s.DesignResponsible) ||
                 s.DesignValue.HasValue).ToList());
 
+        private static string NormalizeServiceStatus(string? value)
+        {
+            return string.Equals(value, "Concluded", StringComparison.OrdinalIgnoreCase)
+                ? "Concluded"
+                : "Active";
+        }
+
         private static void NormalizePaintingFields(Sale sale)
         {
             if (sale.HasPainting)
@@ -102,7 +110,8 @@ namespace Byte2Life.API.Services
                 return;
             }
 
-            if (sale.DesignStartConfirmedAt != null || sale.DesignTimeHours > 0 || !string.IsNullOrWhiteSpace(sale.DesignResponsible) || sale.DesignValue.HasValue)
+            var hasDesignValue = sale.DesignValue.HasValue && sale.DesignValue.Value > 0;
+            if (sale.DesignStartConfirmedAt != null || sale.DesignTimeHours > 0 || !string.IsNullOrWhiteSpace(sale.DesignResponsible) || hasDesignValue)
             {
                 sale.HasCustomArt = true;
             }
@@ -226,6 +235,8 @@ namespace Byte2Life.API.Services
 
             NormalizePaintingFields(newSale);
             NormalizeDesignFields(newSale);
+            newSale.DesignStatus = NormalizeServiceStatus(newSale.DesignStatus);
+            newSale.PaintStatus = NormalizeServiceStatus(newSale.PaintStatus);
             ValidateDesignSchedule(newSale);
             ValidatePaintSchedule(newSale);
             _salesCollection.Insert(newSale);
@@ -269,8 +280,19 @@ namespace Byte2Life.API.Services
                 }
             }
 
+            if (string.IsNullOrWhiteSpace(updatedSale.DesignStatus))
+            {
+                updatedSale.DesignStatus = existingSale.DesignStatus;
+            }
+            if (string.IsNullOrWhiteSpace(updatedSale.PaintStatus))
+            {
+                updatedSale.PaintStatus = existingSale.PaintStatus;
+            }
+
             NormalizePaintingFields(updatedSale);
             NormalizeDesignFields(updatedSale);
+            updatedSale.DesignStatus = NormalizeServiceStatus(updatedSale.DesignStatus);
+            updatedSale.PaintStatus = NormalizeServiceStatus(updatedSale.PaintStatus);
             ValidateDesignSchedule(updatedSale);
             ValidatePaintSchedule(updatedSale);
             await AdjustFilamentStockAsync(existingSale, updatedSale);
@@ -404,6 +426,32 @@ namespace Byte2Life.API.Services
 
             NormalizeDesignFields(sale);
             ValidateDesignSchedule(sale);
+            _salesCollection.Update(sale);
+            return Task.CompletedTask;
+        }
+
+        public Task UpdateDesignStatusAsync(string id, string? designStatus)
+        {
+            var sale = _salesCollection.FindById(new ObjectId(id));
+            if (sale is null)
+            {
+                throw new InvalidOperationException("Sale not found");
+            }
+
+            sale.DesignStatus = NormalizeServiceStatus(designStatus);
+            _salesCollection.Update(sale);
+            return Task.CompletedTask;
+        }
+
+        public Task UpdatePaintStatusAsync(string id, string? paintStatus)
+        {
+            var sale = _salesCollection.FindById(new ObjectId(id));
+            if (sale is null)
+            {
+                throw new InvalidOperationException("Sale not found");
+            }
+
+            sale.PaintStatus = NormalizeServiceStatus(paintStatus);
             _salesCollection.Update(sale);
             return Task.CompletedTask;
         }

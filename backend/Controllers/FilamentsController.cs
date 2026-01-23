@@ -56,6 +56,7 @@ namespace Byte2Life.API.Controllers
                 Color = GetString(payload, "color"),
                 ColorHex = GetString(payload, "colorHex"),
                 Type = GetString(payload, "type"),
+                IsNozzle02Compatible = GetBool(payload, "isNozzle02Compatible"),
                 WarningComment = GetString(payload, "warningComment"),
                 SlicingProfile3mfPath = GetString(payload, "slicingProfile3mfPath")
             };
@@ -83,6 +84,7 @@ namespace Byte2Life.API.Controllers
             filament.Color = GetString(payload, "color", filament.Color);
             filament.ColorHex = GetString(payload, "colorHex", filament.ColorHex);
             filament.Type = GetString(payload, "type", filament.Type);
+            filament.IsNozzle02Compatible = GetBool(payload, "isNozzle02Compatible", filament.IsNozzle02Compatible);
             filament.WarningComment = GetString(payload, "warningComment", filament.WarningComment);
             filament.SlicingProfile3mfPath = GetString(payload, "slicingProfile3mfPath", filament.SlicingProfile3mfPath);
 
@@ -179,6 +181,35 @@ namespace Byte2Life.API.Controllers
                 if (decimal.TryParse(normalized, NumberStyles.Any, new CultureInfo("pt-BR"), out var parsedPt))
                 {
                     return parsedPt;
+                }
+            }
+
+            return fallback;
+        }
+
+        private static bool GetBool(JsonElement payload, string propertyName, bool fallback = false)
+        {
+            if (!payload.TryGetProperty(propertyName, out var value))
+            {
+                return fallback;
+            }
+
+            if (value.ValueKind == JsonValueKind.True)
+            {
+                return true;
+            }
+
+            if (value.ValueKind == JsonValueKind.False)
+            {
+                return false;
+            }
+
+            if (value.ValueKind == JsonValueKind.String)
+            {
+                var raw = value.GetString();
+                if (bool.TryParse(raw, out var parsed))
+                {
+                    return parsed;
                 }
             }
 

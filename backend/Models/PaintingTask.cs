@@ -11,6 +11,7 @@ namespace Byte2Life.API.Models
         public ObjectId? ResponsibleId { get; set; }
         public string? ResponsibleName { get; set; }
         public decimal? Value { get; set; }
+        public string Status { get; set; } = "Active";
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? UpdatedAt { get; set; }
     }

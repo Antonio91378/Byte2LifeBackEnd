@@ -25,6 +25,10 @@ namespace Byte2Life.API.Services
 
         public Task CreateAsync(DesignTask task)
         {
+            if (string.IsNullOrWhiteSpace(task.Status))
+            {
+                task.Status = "Active";
+            }
             task.CreatedAt = DateTime.UtcNow;
             task.UpdatedAt = null;
             _collection.Insert(task);
@@ -38,6 +42,10 @@ namespace Byte2Life.API.Services
             {
                 task.Id = existing.Id;
                 task.CreatedAt = existing.CreatedAt;
+                if (string.IsNullOrWhiteSpace(task.Status))
+                {
+                    task.Status = string.IsNullOrWhiteSpace(existing.Status) ? "Active" : existing.Status;
+                }
                 task.UpdatedAt = DateTime.UtcNow;
                 _collection.Update(task);
             }

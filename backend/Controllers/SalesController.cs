@@ -175,6 +175,46 @@ namespace Byte2Life.API.Controllers
             return NoContent();
         }
 
+        [HttpPatch("{id:length(24)}/design-status")]
+        public async Task<IActionResult> UpdateDesignStatus(string id, [FromBody] SaleDesignStatusUpdate update)
+        {
+            var sale = await _saleService.GetByIdAsync(id);
+
+            if (sale is null)
+            {
+                return NotFound();
+            }
+
+            if (update is null)
+            {
+                return BadRequest("Invalid payload");
+            }
+
+            await _saleService.UpdateDesignStatusAsync(id, update.DesignStatus);
+
+            return NoContent();
+        }
+
+        [HttpPatch("{id:length(24)}/paint-status")]
+        public async Task<IActionResult> UpdatePaintStatus(string id, [FromBody] SalePaintStatusUpdate update)
+        {
+            var sale = await _saleService.GetByIdAsync(id);
+
+            if (sale is null)
+            {
+                return NotFound();
+            }
+
+            if (update is null)
+            {
+                return BadRequest("Invalid payload");
+            }
+
+            await _saleService.UpdatePaintStatusAsync(id, update.PaintStatus);
+
+            return NoContent();
+        }
+
         [HttpDelete("{id:length(24)}")]
         public async Task<IActionResult> Delete(string id)
         {
