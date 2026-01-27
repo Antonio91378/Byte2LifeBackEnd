@@ -20,6 +20,8 @@ builder.Services.AddSingleton<IServiceProviderService, ServiceProviderService>()
 builder.Services.AddSingleton<IDesignTaskService, DesignTaskService>();
 builder.Services.AddSingleton<PaintingTaskService>();
 builder.Services.AddSingleton<IPaintingTaskService>(sp => sp.GetRequiredService<PaintingTaskService>());
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+builder.Services.AddSingleton<IEmailService, EmailService>();
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
