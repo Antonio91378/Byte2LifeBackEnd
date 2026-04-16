@@ -2,6 +2,7 @@ using Byte2Life.API.Converters;
 using Byte2Life.API.Models;
 using Byte2Life.API.Persistence;
 using Byte2Life.API.Services;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
@@ -60,6 +61,13 @@ builder.Services.AddCors(options =>
         });
 });
 
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    options.KnownNetworks.Clear();
+    options.KnownProxies.Clear();
+});
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -67,6 +75,8 @@ using (var scope = app.Services.CreateScope())
     var database = scope.ServiceProvider.GetRequiredService<IMongoDatabase>();
     await MongoConnectionVerifier.VerifyAsync(database, app.Logger);
 }
+
+app.UseForwardedHeaders();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
