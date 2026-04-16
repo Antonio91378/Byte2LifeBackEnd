@@ -329,7 +329,6 @@ C:\Users\pichau\Desktop\Byte2Life\backend.tests\bin\Debug\net9.0\refs\System.Xml
 C:\Users\pichau\Desktop\Byte2Life\backend.tests\bin\Debug\net9.0\refs\WindowsBase.dll
 C:\Users\pichau\Desktop\Byte2Life\backend.tests\bin\Debug\net9.0\Castle.Core.dll
 C:\Users\pichau\Desktop\Byte2Life\backend.tests\bin\Debug\net9.0\FluentAssertions.dll
-C:\Users\pichau\Desktop\Byte2Life\backend.tests\bin\Debug\net9.0\LiteDB.dll
 C:\Users\pichau\Desktop\Byte2Life\backend.tests\bin\Debug\net9.0\Microsoft.AspNetCore.Mvc.Testing.dll
 C:\Users\pichau\Desktop\Byte2Life\backend.tests\bin\Debug\net9.0\Microsoft.AspNetCore.OpenApi.dll
 C:\Users\pichau\Desktop\Byte2Life\backend.tests\bin\Debug\net9.0\Microsoft.AspNetCore.TestHost.dll
@@ -428,3 +427,10 @@ C:\Users\pichau\Desktop\Byte2Life\backend.tests\obj\Debug\net9.0\ref\backend.tes
 C:\Users\pichau\Desktop\Byte2Life\backend.tests\bin\Debug\net9.0\AutoBogus.dll
 C:\Users\pichau\Desktop\Byte2Life\backend.tests\bin\Debug\net9.0\Bogus.dll
 C:\Users\pichau\Desktop\Byte2Life\backend.tests\bin\Debug\net9.0\Byte2Life.API.staticwebassets.runtime.json
+C:\Users\pichau\Desktop\Byte2Life\backend.tests\bin\Debug\net9.0\DnsClient.dll
+C:\Users\pichau\Desktop\Byte2Life\backend.tests\bin\Debug\net9.0\MongoDB.Bson.dll
+C:\Users\pichau\Desktop\Byte2Life\backend.tests\bin\Debug\net9.0\MongoDB.Driver.dll
+C:\Users\pichau\Desktop\Byte2Life\backend.tests\bin\Debug\net9.0\SharpCompress.dll
+C:\Users\pichau\Desktop\Byte2Life\backend.tests\bin\Debug\net9.0\Snappier.dll
+C:\Users\pichau\Desktop\Byte2Life\backend.tests\bin\Debug\net9.0\ZstdSharp.dll
+C:\Users\pichau\Desktop\Byte2Life\backend.tests\obj\Debug\net9.0\backend.tests.sourcelink.json

@@ -1,7 +1,9 @@
-using LiteDB;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace Byte2Life.API.Models
 {
+    [BsonIgnoreExtraElements]
     public class StockItem
     {
         [BsonId]

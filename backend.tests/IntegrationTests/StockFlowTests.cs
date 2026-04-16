@@ -1,16 +1,16 @@
 using System.Net.Http.Json;
 using Byte2Life.API.Models;
+using Byte2Life.API.Tests;
 using FluentAssertions;
-using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
 
 namespace Byte2Life.API.IntegrationTests
 {
-    public class StockFlowTests : IClassFixture<WebApplicationFactory<Program>>
+    public class StockFlowTests : IClassFixture<CustomWebApplicationFactory<Program>>
     {
         private readonly HttpClient _client;
 
-        public StockFlowTests(WebApplicationFactory<Program> factory)
+        public StockFlowTests(CustomWebApplicationFactory<Program> factory)
         {
             _client = factory.CreateClient();
         }

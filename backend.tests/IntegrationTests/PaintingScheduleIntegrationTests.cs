@@ -3,9 +3,10 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using Byte2Life.API.Converters;
 using Byte2Life.API.Models;
+using Byte2Life.API.Persistence;
 using FluentAssertions;
-using LiteDB;
 using Microsoft.Extensions.DependencyInjection;
+using MongoDB.Driver;
 using Xunit;
 
 namespace Byte2Life.API.Tests.IntegrationTests
@@ -13,7 +14,7 @@ namespace Byte2Life.API.Tests.IntegrationTests
     public class PaintingScheduleIntegrationTests : IClassFixture<CustomWebApplicationFactory<Program>>, IDisposable
     {
         private readonly HttpClient _client;
-        private readonly LiteDatabase _db;
+        private readonly IMongoDatabase _db;
         private readonly JsonSerializerOptions _jsonOptions;
 
         public PaintingScheduleIntegrationTests(CustomWebApplicationFactory<Program> factory)
@@ -21,7 +22,7 @@ namespace Byte2Life.API.Tests.IntegrationTests
             _client = factory.CreateClient();
 
             var scope = factory.Services.CreateScope();
-            _db = scope.ServiceProvider.GetRequiredService<LiteDatabase>();
+            _db = scope.ServiceProvider.GetRequiredService<IMongoDatabase>();
 
             _jsonOptions = new JsonSerializerOptions
             {
@@ -32,7 +33,7 @@ namespace Byte2Life.API.Tests.IntegrationTests
 
         public void Dispose()
         {
-            _db.GetCollection<Sale>("Sales").DeleteAll();
+            _db.GetCollection<Sale>(MongoCollectionNames.Sales).DeleteMany(Builders<Sale>.Filter.Empty);
         }
 
         [Fact]

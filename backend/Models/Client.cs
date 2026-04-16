@@ -1,9 +1,12 @@
-using LiteDB;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace Byte2Life.API.Models
 {
+    [BsonIgnoreExtraElements]
     public class Client
     {
+        [BsonId]
         public ObjectId? Id { get; set; }
 
         public string PhoneNumber { get; set; } = string.Empty;

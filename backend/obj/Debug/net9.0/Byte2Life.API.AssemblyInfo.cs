@@ -10,10 +10,11 @@
 using System;
 using System.Reflection;
 
+[assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("dd5c1620-fbf6-4f69-a694-52d7567e3dc1")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("Byte2Life.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c89011928d185379eb1e4f81981b2eb141dc6dfc")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+31a56d02b15c303c078b397db30606b5b9533921")]
 [assembly: System.Reflection.AssemblyProductAttribute("Byte2Life.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Byte2Life.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

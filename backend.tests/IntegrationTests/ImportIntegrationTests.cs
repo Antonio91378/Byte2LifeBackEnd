@@ -6,11 +6,12 @@ using AutoBogus;
 using Bogus;
 using Byte2Life.API.Converters;
 using Byte2Life.API.Models;
+using Byte2Life.API.Persistence;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Xunit;
-using LiteDB;
 using Microsoft.Extensions.DependencyInjection;
+using MongoDB.Driver;
+using Xunit;
 
 namespace Byte2Life.API.Tests.IntegrationTests
 {
@@ -18,7 +19,7 @@ namespace Byte2Life.API.Tests.IntegrationTests
     {
         private readonly CustomWebApplicationFactory<Program> _factory;
         private readonly HttpClient _client;
-        private readonly LiteDatabase _db;
+        private readonly IMongoDatabase _db;
         private readonly JsonSerializerOptions _jsonOptions;
 
         public ImportIntegrationTests(CustomWebApplicationFactory<Program> factory)
@@ -27,7 +28,7 @@ namespace Byte2Life.API.Tests.IntegrationTests
             _client = factory.CreateClient();
             
             var scope = factory.Services.CreateScope();
-            _db = scope.ServiceProvider.GetRequiredService<LiteDatabase>();
+            _db = scope.ServiceProvider.GetRequiredService<IMongoDatabase>();
 
             _jsonOptions = new JsonSerializerOptions
             {
@@ -36,16 +37,16 @@ namespace Byte2Life.API.Tests.IntegrationTests
             _jsonOptions.Converters.Add(new ObjectIdConverter());
 
             // Ensure clean state
-            _db.GetCollection<Sale>("Sales").DeleteAll();
-            _db.GetCollection<Filament>("Filaments").DeleteAll();
-            _db.GetCollection<Client>("Clients").DeleteAll();
+            _db.GetCollection<Sale>(MongoCollectionNames.Sales).DeleteMany(Builders<Sale>.Filter.Empty);
+            _db.GetCollection<Filament>(MongoCollectionNames.Filaments).DeleteMany(Builders<Filament>.Filter.Empty);
+            _db.GetCollection<Client>(MongoCollectionNames.Clients).DeleteMany(Builders<Client>.Filter.Empty);
         }
 
         public void Dispose()
         {
-            _db.GetCollection<Sale>("Sales").DeleteAll();
-            _db.GetCollection<Filament>("Filaments").DeleteAll();
-            _db.GetCollection<Client>("Clients").DeleteAll();
+            _db.GetCollection<Sale>(MongoCollectionNames.Sales).DeleteMany(Builders<Sale>.Filter.Empty);
+            _db.GetCollection<Filament>(MongoCollectionNames.Filaments).DeleteMany(Builders<Filament>.Filter.Empty);
+            _db.GetCollection<Client>(MongoCollectionNames.Clients).DeleteMany(Builders<Client>.Filter.Empty);
         }
 
         private string GenerateCsvLine(bool isValid = true)
@@ -128,15 +129,15 @@ namespace Byte2Life.API.Tests.IntegrationTests
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             
             // Verify Sales created
-            var sales = _db.GetCollection<Sale>("Sales").FindAll().ToList();
+            var sales = _db.GetCollection<Sale>(MongoCollectionNames.Sales).Find(Builders<Sale>.Filter.Empty).ToList();
             sales.Should().HaveCount(2);
 
             // Verify Filaments created (assuming different filaments generated)
-            var filaments = _db.GetCollection<Filament>("Filaments").FindAll().ToList();
+            var filaments = _db.GetCollection<Filament>(MongoCollectionNames.Filaments).Find(Builders<Filament>.Filter.Empty).ToList();
             filaments.Should().NotBeEmpty();
 
             // Verify Clients created
-            var clients = _db.GetCollection<Client>("Clients").FindAll().ToList();
+            var clients = _db.GetCollection<Client>(MongoCollectionNames.Clients).Find(Builders<Client>.Filter.Empty).ToList();
             clients.Should().NotBeEmpty();
         }
 
@@ -212,14 +213,16 @@ namespace Byte2Life.API.Tests.IntegrationTests
             result.Errors.Should().BeEmpty();
 
             // Verify values in DB
-            var sale = _db.GetCollection<Sale>("Sales").FindOne(x => x.Description == "TestItem");
+            var sale = _db.GetCollection<Sale>(MongoCollectionNames.Sales).Find(x => x.Description == "TestItem").FirstOrDefault();
             sale.Should().NotBeNull();
             sale.MassGrams.Should().Be(10.5);
             sale.Cost.Should().Be(5.25m);
             sale.SaleValue.Should().Be(100.50m);
             sale.Profit.Should().Be(45.25m);
 
-            var filament = _db.GetCollection<Filament>("Filaments").FindById(sale.FilamentId);
+            var filament = _db.GetCollection<Filament>(MongoCollectionNames.Filaments)
+                .Find(MongoId.FilterById<Filament>(sale.FilamentId!.Value))
+                .FirstOrDefault();
             filament.Should().NotBeNull();
             filament.Price.Should().Be(50.00m);
         }
@@ -250,7 +253,7 @@ namespace Byte2Life.API.Tests.IntegrationTests
             result!.SuccessCount.Should().Be(1);
             result.FailureCount.Should().Be(0);
 
-            var sale = _db.GetCollection<Sale>("Sales").FindOne(x => x.Description == "TestItemComma");
+            var sale = _db.GetCollection<Sale>(MongoCollectionNames.Sales).Find(x => x.Description == "TestItemComma").FirstOrDefault();
             sale.Should().NotBeNull();
             sale.MassGrams.Should().Be(10.5);
             sale.Cost.Should().Be(5.00m);

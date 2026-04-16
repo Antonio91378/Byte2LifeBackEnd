@@ -1,9 +1,12 @@
-using LiteDB;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace Byte2Life.API.Models
 {
+    [BsonIgnoreExtraElements]
     public class Sale
     {
+        [BsonId]
         public ObjectId? Id { get; set; }
 
         public string Description { get; set; } = string.Empty;

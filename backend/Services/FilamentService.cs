@@ -1,48 +1,61 @@
 using Byte2Life.API.Models;
-using LiteDB;
+using Byte2Life.API.Persistence;
+using MongoDB.Bson;
+using MongoDB.Driver;
 
 namespace Byte2Life.API.Services
 {
     public class FilamentService : IFilamentService
     {
-        private readonly LiteDatabase _database;
-        private readonly ILiteCollection<Filament> _filamentsCollection;
+        private readonly IMongoCollection<Filament> _filamentsCollection;
+        private readonly IMongoCollection<Sale> _salesCollection;
 
-        public FilamentService(LiteDatabase database)
+        public FilamentService(IMongoDatabase database)
         {
-            _database = database;
-            _filamentsCollection = _database.GetCollection<Filament>("Filaments");
+            _filamentsCollection = database.GetCollection<Filament>(MongoCollectionNames.Filaments);
+            _salesCollection = database.GetCollection<Sale>(MongoCollectionNames.Sales);
         }
 
         public Task<List<Filament>> GetAsync() =>
-            Task.FromResult(_filamentsCollection.FindAll().ToList());
+            Task.FromResult(_filamentsCollection.Find(FilterDefinition<Filament>.Empty).ToList());
 
         public Task<Filament?> GetAsync(string id) =>
-            Task.FromResult<Filament?>(_filamentsCollection.FindById(new ObjectId(id)));
+            Task.FromResult(FindFilamentById(id));
+
+        private Filament? FindFilamentById(string id)
+        {
+            return _filamentsCollection.Find(MongoId.FilterById<Filament>(id)).FirstOrDefault();
+        }
 
         public Task CreateAsync(Filament newFilament)
         {
-            _filamentsCollection.Insert(newFilament);
+            if (!newFilament.Id.HasValue || newFilament.Id.Value == ObjectId.Empty)
+            {
+                newFilament.Id = MongoId.New();
+            }
+
+            _filamentsCollection.InsertOne(newFilament);
             return Task.CompletedTask;
         }
 
         public Task UpdateAsync(string id, Filament updatedFilament)
         {
-            _filamentsCollection.Update(updatedFilament);
+            updatedFilament.Id = MongoId.Parse(id);
+            _filamentsCollection.ReplaceOne(MongoId.FilterById<Filament>(id), updatedFilament);
             return Task.CompletedTask;
         }
 
         public Task RemoveAsync(string id)
         {
-            var salesCollection = _database.GetCollection<Sale>("Sales");
-            var hasSales = salesCollection.Exists(s => s.FilamentId == new ObjectId(id));
+            var objectId = MongoId.Parse(id);
+            var hasSales = _salesCollection.AsQueryable().Any(sale => sale.FilamentId == objectId);
 
             if (hasSales)
             {
                 throw new InvalidOperationException("Cannot delete filament with associated sales.");
             }
 
-            _filamentsCollection.Delete(new ObjectId(id));
+            _filamentsCollection.DeleteOne(MongoId.FilterById<Filament>(id));
             return Task.CompletedTask;
         }
     }

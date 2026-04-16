@@ -1,20 +1,22 @@
 using ServiceProviderModel = Byte2Life.API.Models.ServiceProvider;
-using LiteDB;
+using Byte2Life.API.Persistence;
+using MongoDB.Bson;
+using MongoDB.Driver;
 
 namespace Byte2Life.API.Services
 {
     public class ServiceProviderService : IServiceProviderService
     {
-        private readonly ILiteCollection<ServiceProviderModel> _collection;
+        private readonly IMongoCollection<ServiceProviderModel> _collection;
 
-        public ServiceProviderService(LiteDatabase database)
+        public ServiceProviderService(IMongoDatabase database)
         {
-            _collection = database.GetCollection<ServiceProviderModel>("ServiceProviders");
+            _collection = database.GetCollection<ServiceProviderModel>(MongoCollectionNames.ServiceProviders);
         }
 
         public Task<List<ServiceProviderModel>> GetAsync()
         {
-            var items = _collection.FindAll().ToList();
+            var items = _collection.Find(FilterDefinition<ServiceProviderModel>.Empty).ToList();
             foreach (var provider in items)
             {
                 NormalizeCategories(provider);
@@ -24,7 +26,7 @@ namespace Byte2Life.API.Services
 
         public Task<ServiceProviderModel?> GetAsync(string id)
         {
-            var item = _collection.FindById(new ObjectId(id));
+            var item = _collection.Find(MongoId.FilterById<ServiceProviderModel>(id)).FirstOrDefault();
             if (item != null)
             {
                 NormalizeCategories(item);
@@ -35,20 +37,26 @@ namespace Byte2Life.API.Services
         public Task CreateAsync(ServiceProviderModel provider)
         {
             NormalizeCategories(provider);
-            _collection.Insert(provider);
+            if (!provider.Id.HasValue || provider.Id.Value == ObjectId.Empty)
+            {
+                provider.Id = MongoId.New();
+            }
+
+            _collection.InsertOne(provider);
             return Task.CompletedTask;
         }
 
         public Task UpdateAsync(string id, ServiceProviderModel provider)
         {
             NormalizeCategories(provider);
-            _collection.Update(provider);
+            provider.Id = MongoId.Parse(id);
+            _collection.ReplaceOne(MongoId.FilterById<ServiceProviderModel>(id), provider);
             return Task.CompletedTask;
         }
 
         public Task RemoveAsync(string id)
         {
-            _collection.Delete(new ObjectId(id));
+            _collection.DeleteOne(MongoId.FilterById<ServiceProviderModel>(id));
             return Task.CompletedTask;
         }
 

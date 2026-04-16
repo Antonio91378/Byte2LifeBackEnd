@@ -3,11 +3,12 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using Byte2Life.API.Converters;
 using Byte2Life.API.Models;
+using Byte2Life.API.Persistence;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Xunit;
-using LiteDB;
 using Microsoft.Extensions.DependencyInjection;
+using MongoDB.Driver;
+using Xunit;
 
 namespace Byte2Life.API.Tests.IntegrationTests
 {
@@ -15,7 +16,7 @@ namespace Byte2Life.API.Tests.IntegrationTests
     {
         private readonly CustomWebApplicationFactory<Program> _factory;
         private readonly HttpClient _client;
-        private readonly LiteDatabase _db;
+        private readonly IMongoDatabase _db;
         private readonly JsonSerializerOptions _jsonOptions;
 
         public FilamentIntegrationTests(CustomWebApplicationFactory<Program> factory)
@@ -24,7 +25,7 @@ namespace Byte2Life.API.Tests.IntegrationTests
             _client = factory.CreateClient();
             
             var scope = factory.Services.CreateScope();
-            _db = scope.ServiceProvider.GetRequiredService<LiteDatabase>();
+            _db = scope.ServiceProvider.GetRequiredService<IMongoDatabase>();
 
             _jsonOptions = new JsonSerializerOptions
             {
@@ -35,8 +36,7 @@ namespace Byte2Life.API.Tests.IntegrationTests
 
         public void Dispose()
         {
-            var col = _db.GetCollection<Filament>("Filaments");
-            col.DeleteAll();
+            _db.GetCollection<Filament>(MongoCollectionNames.Filaments).DeleteMany(Builders<Filament>.Filter.Empty);
         }
 
         [Fact]

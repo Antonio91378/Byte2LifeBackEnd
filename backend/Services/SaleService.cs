@@ -1,23 +1,22 @@
 using Byte2Life.API.Models;
-using LiteDB;
-using System;
+using Byte2Life.API.Persistence;
+using MongoDB.Bson;
+using MongoDB.Driver;
 using System.Text.RegularExpressions;
 
 namespace Byte2Life.API.Services
 {
     public class SaleService : ISaleService
     {
-        private readonly LiteDatabase _database;
-        private readonly ILiteCollection<Sale> _salesCollection;
+        private readonly IMongoCollection<Sale> _salesCollection;
         private readonly IFilamentService _filamentService;
         private static readonly TimeSpan PrintStartWindow = new(8, 0, 0);
         private static readonly TimeSpan LastPrintStartWindow = new(23, 0, 0);
         private static readonly TimeSpan PrintGap = TimeSpan.FromMinutes(20);
 
-        public SaleService(LiteDatabase database, IFilamentService filamentService)
+        public SaleService(IMongoDatabase database, IFilamentService filamentService)
         {
-            _database = database;
-            _salesCollection = _database.GetCollection<Sale>("Sales");
+            _salesCollection = database.GetCollection<Sale>(MongoCollectionNames.Sales);
             _filamentService = filamentService;
         }
 
@@ -25,69 +24,105 @@ namespace Byte2Life.API.Services
         {
             if (string.IsNullOrWhiteSpace(dateFilter))
             {
-                return Task.FromResult(_salesCollection.FindAll().ToList());
+                return Task.FromResult(_salesCollection.Find(FilterDefinition<Sale>.Empty).ToList());
             }
 
-            // Filter by Month (YYYY-MM)
             if (dateFilter.Length == 7 && dateFilter.Contains("-"))
             {
                 if (DateTime.TryParseExact(dateFilter, "yyyy-MM", null, System.Globalization.DateTimeStyles.None, out var monthDate))
                 {
                     var start = new DateTime(monthDate.Year, monthDate.Month, 1);
                     var end = start.AddMonths(1);
-                    return Task.FromResult(_salesCollection.Find(s => s.SaleDate >= start && s.SaleDate < end).ToList());
+                    var filter = Builders<Sale>.Filter.Gte(sale => sale.SaleDate, start)
+                        & Builders<Sale>.Filter.Lt(sale => sale.SaleDate, end);
+                    return Task.FromResult(_salesCollection.Find(filter).ToList());
                 }
             }
-            
-            // Filter by Day (YYYY-MM-DD)
+
             if (DateTime.TryParse(dateFilter, out var dayDate))
             {
                 var start = dayDate.Date;
                 var end = start.AddDays(1);
-                return Task.FromResult(_salesCollection.Find(s => s.SaleDate >= start && s.SaleDate < end).ToList());
+                var filter = Builders<Sale>.Filter.Gte(sale => sale.SaleDate, start)
+                    & Builders<Sale>.Filter.Lt(sale => sale.SaleDate, end);
+                return Task.FromResult(_salesCollection.Find(filter).ToList());
             }
 
-            return Task.FromResult(_salesCollection.FindAll().ToList());
+            return Task.FromResult(_salesCollection.Find(FilterDefinition<Sale>.Empty).ToList());
         }
 
         public Task<Sale?> GetByIdAsync(string id) =>
-            Task.FromResult<Sale?>(_salesCollection.FindById(new ObjectId(id)));
+            Task.FromResult(FindSaleById(id));
 
-        public Task<List<Sale>> GetByFilamentIdAsync(string filamentId) =>
-            Task.FromResult(_salesCollection.Find(s => s.FilamentId == new ObjectId(filamentId)).ToList());
+        public Task<List<Sale>> GetByFilamentIdAsync(string filamentId)
+        {
+            var objectId = MongoId.Parse(filamentId);
+            return Task.FromResult(_salesCollection.AsQueryable().Where(sale => sale.FilamentId == objectId).ToList());
+        }
 
         public Task<Sale?> GetCurrentPrintAsync() =>
-            Task.FromResult<Sale?>(_salesCollection.FindOne(s => s.PrintStatus == "InProgress" || s.PrintStatus == "Staged"));
+            Task.FromResult(_salesCollection.AsQueryable().FirstOrDefault(sale => sale.PrintStatus == "InProgress" || sale.PrintStatus == "Staged"));
 
-        public Task<List<Sale>> GetQueueAsync() =>
-            Task.FromResult(UpdateQueueSchedule(_salesCollection.Find(s => s.PrintStatus == "InQueue")
-                .OrderBy(s => s.Priority)
-                .ToList()));
+        public Task<List<Sale>> GetQueueAsync()
+        {
+            var queue = _salesCollection.AsQueryable()
+                .Where(sale => sale.PrintStatus == "InQueue")
+                .OrderByDescending(sale => sale.Priority)
+                .ToList();
 
-        public Task<List<Sale>> GetPaintingScheduleAsync() =>
-            Task.FromResult(_salesCollection.Find(s =>
-                s.HasPainting ||
-                s.PaintStartConfirmedAt != null ||
-                s.PaintTimeHours > 0 ||
-                !string.IsNullOrWhiteSpace(s.PaintResponsible)).ToList());
+            return Task.FromResult(UpdateQueueSchedule(queue));
+        }
 
-        public Task<List<Sale>> GetServiceScheduleAsync() =>
-            Task.FromResult(_salesCollection.Find(s =>
-                s.HasPainting ||
-                s.PaintStartConfirmedAt != null ||
-                s.PaintTimeHours > 0 ||
-                !string.IsNullOrWhiteSpace(s.PaintResponsible) ||
-                s.HasCustomArt ||
-                s.DesignStartConfirmedAt != null ||
-                s.DesignTimeHours > 0 ||
-                !string.IsNullOrWhiteSpace(s.DesignResponsible) ||
-                s.DesignValue.HasValue).ToList());
+        public Task<List<Sale>> GetPaintingScheduleAsync()
+        {
+            var sales = _salesCollection.Find(FilterDefinition<Sale>.Empty).ToList();
+            return Task.FromResult(sales.Where(sale =>
+                sale.HasPainting ||
+                sale.PaintStartConfirmedAt != null ||
+                sale.PaintTimeHours > 0 ||
+                !string.IsNullOrWhiteSpace(sale.PaintResponsible)).ToList());
+        }
+
+        public Task<List<Sale>> GetServiceScheduleAsync()
+        {
+            var sales = _salesCollection.Find(FilterDefinition<Sale>.Empty).ToList();
+            return Task.FromResult(sales.Where(sale =>
+                sale.HasPainting ||
+                sale.PaintStartConfirmedAt != null ||
+                sale.PaintTimeHours > 0 ||
+                !string.IsNullOrWhiteSpace(sale.PaintResponsible) ||
+                sale.HasCustomArt ||
+                sale.DesignStartConfirmedAt != null ||
+                sale.DesignTimeHours > 0 ||
+                !string.IsNullOrWhiteSpace(sale.DesignResponsible) ||
+                sale.DesignValue.HasValue).ToList());
+        }
 
         private static string NormalizeServiceStatus(string? value)
         {
             return string.Equals(value, "Concluded", StringComparison.OrdinalIgnoreCase)
                 ? "Concluded"
                 : "Active";
+        }
+
+        private static int ResolvePriority(DateTime? deliveryDate, int requestedPriority, int fallbackPriority)
+        {
+            if (deliveryDate.HasValue)
+            {
+                var daysUntilDelivery = (deliveryDate.Value.Date - DateTime.Now.Date).TotalDays;
+                if (daysUntilDelivery <= 0) return 0;
+                if (daysUntilDelivery <= 1) return 1;
+                if (daysUntilDelivery <= 3) return 2;
+                if (daysUntilDelivery <= 7) return 3;
+                return 5;
+            }
+
+            return requestedPriority > 0 ? requestedPriority : fallbackPriority;
+        }
+
+        private Sale? FindSaleById(string id)
+        {
+            return _salesCollection.Find(MongoId.FilterById<Sale>(id)).FirstOrDefault();
         }
 
         private static void NormalizePaintingFields(Sale sale)
@@ -195,41 +230,34 @@ namespace Byte2Life.API.Services
 
         public async Task CreateAsync(Sale newSale)
         {
-            // Calculate Priority based on DeliveryDate
-            if (newSale.DeliveryDate.HasValue)
+            if (!newSale.Id.HasValue || newSale.Id.Value == ObjectId.Empty)
             {
-                var daysUntilDelivery = (newSale.DeliveryDate.Value.Date - DateTime.Now.Date).TotalDays;
-                if (daysUntilDelivery <= 0) newSale.Priority = 0; // Overdue or Today
-                else if (daysUntilDelivery <= 1) newSale.Priority = 1; // Tomorrow
-                else if (daysUntilDelivery <= 3) newSale.Priority = 2; // Within 3 days
-                else if (daysUntilDelivery <= 7) newSale.Priority = 3; // Within a week
-                else newSale.Priority = 5; // More than a week
+                newSale.Id = MongoId.New();
             }
-            else
-            {
-                newSale.Priority = 10; // No date, lowest priority
-            }
+
+            newSale.Priority = ResolvePriority(newSale.DeliveryDate, newSale.Priority, 10);
 
             if (newSale.PrintStatus == "InProgress" || newSale.PrintStatus == "Staged")
             {
-                var currentPrint = _salesCollection.FindOne(s => s.PrintStatus == "InProgress" || s.PrintStatus == "Staged");
+                var currentPrint = _salesCollection.AsQueryable().FirstOrDefault(sale => sale.PrintStatus == "InProgress" || sale.PrintStatus == "Staged");
                 if (currentPrint != null)
                 {
                     throw new InvalidOperationException("Only one sale can be InProgress or Staged");
                 }
+
                 if (newSale.PrintStatus == "InProgress")
                 {
                     newSale.PrintStartedAt = DateTime.Now;
                 }
             }
 
-            if (newSale.FilamentId != null)
+            if (newSale.FilamentId.HasValue)
             {
-                var filament = await _filamentService.GetAsync(newSale.FilamentId.ToString());
+                var filament = await _filamentService.GetAsync(newSale.FilamentId.Value.ToString());
                 if (filament != null)
                 {
                     filament.RemainingMassGrams -= newSale.MassGrams;
-                    await _filamentService.UpdateAsync(filament.Id!.ToString(), filament);
+                    await _filamentService.UpdateAsync(filament.Id!.Value.ToString(), filament);
                 }
             }
 
@@ -239,42 +267,30 @@ namespace Byte2Life.API.Services
             newSale.PaintStatus = NormalizeServiceStatus(newSale.PaintStatus);
             ValidateDesignSchedule(newSale);
             ValidatePaintSchedule(newSale);
-            _salesCollection.Insert(newSale);
+            _salesCollection.InsertOne(newSale);
         }
 
         public async Task UpdateAsync(string id, Sale updatedSale)
         {
-            var existingSale = _salesCollection.FindById(new ObjectId(id));
+            var existingSale = _salesCollection.Find(MongoId.FilterById<Sale>(id)).FirstOrDefault();
             if (existingSale is null)
             {
                 throw new InvalidOperationException("Sale not found");
             }
 
-            // Recalculate Priority on Update
-            if (updatedSale.DeliveryDate.HasValue)
-            {
-                var daysUntilDelivery = (updatedSale.DeliveryDate.Value.Date - DateTime.Now.Date).TotalDays;
-                if (daysUntilDelivery <= 0) updatedSale.Priority = 0;
-                else if (daysUntilDelivery <= 1) updatedSale.Priority = 1;
-                else if (daysUntilDelivery <= 3) updatedSale.Priority = 2;
-                else if (daysUntilDelivery <= 7) updatedSale.Priority = 3;
-                else updatedSale.Priority = 5;
-            }
-            else
-            {
-                updatedSale.Priority = 10;
-            }
+            updatedSale.Id = existingSale.Id;
+
+            updatedSale.Priority = ResolvePriority(updatedSale.DeliveryDate, updatedSale.Priority, existingSale.Priority > 0 ? existingSale.Priority : 10);
 
             if (updatedSale.PrintStatus == "InProgress" || updatedSale.PrintStatus == "Staged")
             {
-                var currentPrint = _salesCollection.FindOne(s => s.PrintStatus == "InProgress" || s.PrintStatus == "Staged");
-                if (currentPrint != null && currentPrint.Id!.ToString() != id)
+                var currentPrint = _salesCollection.AsQueryable().FirstOrDefault(sale => sale.PrintStatus == "InProgress" || sale.PrintStatus == "Staged");
+                if (currentPrint != null && currentPrint.Id?.ToString() != id)
                 {
                     throw new InvalidOperationException("Only one sale can be InProgress or Staged");
                 }
-                
-                // If transitioning to InProgress, set start time if not set
-                if (existingSale != null && updatedSale.PrintStatus == "InProgress" && existingSale.PrintStatus != "InProgress")
+
+                if (updatedSale.PrintStatus == "InProgress" && existingSale.PrintStatus != "InProgress")
                 {
                     updatedSale.PrintStartedAt = DateTime.Now;
                 }
@@ -284,6 +300,7 @@ namespace Byte2Life.API.Services
             {
                 updatedSale.DesignStatus = existingSale.DesignStatus;
             }
+
             if (string.IsNullOrWhiteSpace(updatedSale.PaintStatus))
             {
                 updatedSale.PaintStatus = existingSale.PaintStatus;
@@ -296,7 +313,7 @@ namespace Byte2Life.API.Services
             ValidateDesignSchedule(updatedSale);
             ValidatePaintSchedule(updatedSale);
             await AdjustFilamentStockAsync(existingSale, updatedSale);
-            _salesCollection.Update(updatedSale);
+            _salesCollection.ReplaceOne(MongoId.FilterById<Sale>(id), updatedSale);
         }
 
         private async Task AdjustFilamentStockAsync(Sale existingSale, Sale updatedSale)
@@ -317,7 +334,7 @@ namespace Byte2Life.API.Services
                 if (oldFilament != null)
                 {
                     oldFilament.RemainingMassGrams += oldMass;
-                    await _filamentService.UpdateAsync(oldFilament.Id!.ToString(), oldFilament);
+                    await _filamentService.UpdateAsync(oldFilament.Id!.Value.ToString(), oldFilament);
                 }
                 return;
             }
@@ -328,7 +345,7 @@ namespace Byte2Life.API.Services
                 if (newFilament != null)
                 {
                     newFilament.RemainingMassGrams -= newMass;
-                    await _filamentService.UpdateAsync(newFilament.Id!.ToString(), newFilament);
+                    await _filamentService.UpdateAsync(newFilament.Id!.Value.ToString(), newFilament);
                 }
                 return;
             }
@@ -340,11 +357,12 @@ namespace Byte2Life.API.Services
                 {
                     return;
                 }
+
                 var filament = await _filamentService.GetAsync(oldFilamentId!);
                 if (filament != null)
                 {
                     filament.RemainingMassGrams -= delta;
-                    await _filamentService.UpdateAsync(filament.Id!.ToString(), filament);
+                    await _filamentService.UpdateAsync(filament.Id!.Value.ToString(), filament);
                 }
                 return;
             }
@@ -353,20 +371,20 @@ namespace Byte2Life.API.Services
             if (oldFilamentSwap != null)
             {
                 oldFilamentSwap.RemainingMassGrams += oldMass;
-                await _filamentService.UpdateAsync(oldFilamentSwap.Id!.ToString(), oldFilamentSwap);
+                await _filamentService.UpdateAsync(oldFilamentSwap.Id!.Value.ToString(), oldFilamentSwap);
             }
 
             var newFilamentSwap = await _filamentService.GetAsync(newFilamentId!);
             if (newFilamentSwap != null)
             {
                 newFilamentSwap.RemainingMassGrams -= newMass;
-                await _filamentService.UpdateAsync(newFilamentSwap.Id!.ToString(), newFilamentSwap);
+                await _filamentService.UpdateAsync(newFilamentSwap.Id!.Value.ToString(), newFilamentSwap);
             }
         }
 
         public Task UpdateScheduleAsync(string id, DateTime? printStartConfirmedAt)
         {
-            var sale = _salesCollection.FindById(new ObjectId(id));
+            var sale = _salesCollection.Find(MongoId.FilterById<Sale>(id)).FirstOrDefault();
             if (sale is null)
             {
                 throw new InvalidOperationException("Sale not found");
@@ -375,13 +393,13 @@ namespace Byte2Life.API.Services
             sale.PrintStartConfirmedAt = printStartConfirmedAt;
             ValidateDesignSchedule(sale);
             AdjustPaintScheduleAfterPrintChange(sale);
-            _salesCollection.Update(sale);
+            _salesCollection.ReplaceOne(MongoId.FilterById<Sale>(id), sale);
             return Task.CompletedTask;
         }
 
         public Task UpdatePaintScheduleAsync(string id, DateTime? paintStartConfirmedAt, double? paintTimeHours, string? paintResponsible)
         {
-            var sale = _salesCollection.FindById(new ObjectId(id));
+            var sale = _salesCollection.Find(MongoId.FilterById<Sale>(id)).FirstOrDefault();
             if (sale is null)
             {
                 throw new InvalidOperationException("Sale not found");
@@ -398,13 +416,13 @@ namespace Byte2Life.API.Services
             }
             NormalizePaintingFields(sale);
             ValidatePaintSchedule(sale);
-            _salesCollection.Update(sale);
+            _salesCollection.ReplaceOne(MongoId.FilterById<Sale>(id), sale);
             return Task.CompletedTask;
         }
 
         public Task UpdateDesignScheduleAsync(string id, DateTime? designStartConfirmedAt, double? designTimeHours, string? designResponsible, decimal? designValue)
         {
-            var sale = _salesCollection.FindById(new ObjectId(id));
+            var sale = _salesCollection.Find(MongoId.FilterById<Sale>(id)).FirstOrDefault();
             if (sale is null)
             {
                 throw new InvalidOperationException("Sale not found");
@@ -426,49 +444,50 @@ namespace Byte2Life.API.Services
 
             NormalizeDesignFields(sale);
             ValidateDesignSchedule(sale);
-            _salesCollection.Update(sale);
+            _salesCollection.ReplaceOne(MongoId.FilterById<Sale>(id), sale);
             return Task.CompletedTask;
         }
 
         public Task UpdateDesignStatusAsync(string id, string? designStatus)
         {
-            var sale = _salesCollection.FindById(new ObjectId(id));
+            var sale = _salesCollection.Find(MongoId.FilterById<Sale>(id)).FirstOrDefault();
             if (sale is null)
             {
                 throw new InvalidOperationException("Sale not found");
             }
 
             sale.DesignStatus = NormalizeServiceStatus(designStatus);
-            _salesCollection.Update(sale);
+            _salesCollection.ReplaceOne(MongoId.FilterById<Sale>(id), sale);
             return Task.CompletedTask;
         }
 
         public Task UpdatePaintStatusAsync(string id, string? paintStatus)
         {
-            var sale = _salesCollection.FindById(new ObjectId(id));
+            var sale = _salesCollection.Find(MongoId.FilterById<Sale>(id)).FirstOrDefault();
             if (sale is null)
             {
                 throw new InvalidOperationException("Sale not found");
             }
 
             sale.PaintStatus = NormalizeServiceStatus(paintStatus);
-            _salesCollection.Update(sale);
+            _salesCollection.ReplaceOne(MongoId.FilterById<Sale>(id), sale);
             return Task.CompletedTask;
         }
 
         public async Task RemoveAsync(string id)
         {
             var sale = await GetByIdAsync(id);
-            if (sale != null && sale.FilamentId != null)
+            if (sale != null && sale.FilamentId.HasValue)
             {
-                var filament = await _filamentService.GetAsync(sale.FilamentId.ToString());
+                var filament = await _filamentService.GetAsync(sale.FilamentId.Value.ToString());
                 if (filament != null)
                 {
                     filament.RemainingMassGrams += sale.MassGrams;
-                    await _filamentService.UpdateAsync(filament.Id!.ToString(), filament);
+                    await _filamentService.UpdateAsync(filament.Id!.Value.ToString(), filament);
                 }
             }
-            _salesCollection.Delete(new ObjectId(id));
+
+            _salesCollection.DeleteOne(MongoId.FilterById<Sale>(id));
         }
 
         private static DateTime AlignStart(DateTime candidate, bool applyGapIfShifted)
@@ -594,7 +613,7 @@ namespace Byte2Life.API.Services
 
             var baseTime = DateTime.Now;
             var occupied = new List<(DateTime Start, DateTime End)>();
-            var currentPrint = _salesCollection.FindOne(s => s.PrintStatus == "InProgress" || s.PrintStatus == "Staged");
+            var currentPrint = _salesCollection.AsQueryable().FirstOrDefault(sale => sale.PrintStatus == "InProgress" || sale.PrintStatus == "Staged");
             if (currentPrint?.PrintStartedAt != null)
             {
                 var currentDuration = Math.Max(GetSaleDurationHours(currentPrint), 0);
@@ -606,19 +625,20 @@ namespace Byte2Life.API.Services
                 }
             }
 
-            foreach (var sale in queue.Where(sale => sale.PrintStartConfirmedAt.HasValue))
+            foreach (var sale in queue.Where(item => item.PrintStartConfirmedAt.HasValue))
             {
                 var duration = Math.Max(GetSaleDurationHours(sale), 0);
                 if (duration <= 0)
                 {
                     continue;
                 }
+
                 var start = sale.PrintStartConfirmedAt!.Value;
                 var end = start.AddHours(duration);
                 occupied.Add((start, end));
             }
 
-            foreach (var sale in queue.Where(sale => !sale.PrintStartConfirmedAt.HasValue))
+            foreach (var sale in queue.Where(item => !item.PrintStartConfirmedAt.HasValue))
             {
                 var duration = Math.Max(GetSaleDurationHours(sale), 0);
                 if (duration <= 0)
@@ -626,7 +646,7 @@ namespace Byte2Life.API.Services
                     if (sale.PrintStartScheduledAt != null)
                     {
                         sale.PrintStartScheduledAt = null;
-                        _salesCollection.Update(sale);
+                        _salesCollection.ReplaceOne(MongoId.FilterById<Sale>(sale.Id!.Value), sale);
                     }
                     continue;
                 }
@@ -635,7 +655,7 @@ namespace Byte2Life.API.Services
                 if (sale.PrintStartScheduledAt != start)
                 {
                     sale.PrintStartScheduledAt = start;
-                    _salesCollection.Update(sale);
+                    _salesCollection.ReplaceOne(MongoId.FilterById<Sale>(sale.Id!.Value), sale);
                 }
                 var end = start.AddHours(duration);
                 occupied.Add((start, end));

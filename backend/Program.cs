@@ -1,13 +1,29 @@
 using Byte2Life.API.Converters;
 using Byte2Life.API.Models;
+using Byte2Life.API.Persistence;
 using Byte2Life.API.Services;
-using LiteDB;
+using Microsoft.Extensions.Options;
+using MongoDB.Driver;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Configuration
+    .AddJsonFile("appsettings.Local.json", optional: true, reloadOnChange: true)
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.Local.json", optional: true, reloadOnChange: true);
+
 // Add services to the container.
-var connectionString = builder.Configuration.GetValue<string>("LiteDbSettings:ConnectionString") ?? "Byte2Life.db";
-builder.Services.AddSingleton<LiteDatabase>(sp => new LiteDatabase(connectionString));
+builder.Services.Configure<MongoDBSettings>(builder.Configuration.GetSection("MongoDBSettings"));
+builder.Services.AddSingleton<IMongoClient>(sp =>
+{
+    var settings = sp.GetRequiredService<IOptions<MongoDBSettings>>().Value;
+    return new MongoClient(settings.ConnectionString);
+});
+builder.Services.AddSingleton(sp =>
+{
+    var settings = sp.GetRequiredService<IOptions<MongoDBSettings>>().Value;
+    var client = sp.GetRequiredService<IMongoClient>();
+    return client.GetDatabase(settings.DatabaseName);
+});
 
 builder.Services.AddSingleton<IFilamentService, FilamentService>();
 builder.Services.AddSingleton<IClientService, ClientService>();
@@ -45,6 +61,12 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var database = scope.ServiceProvider.GetRequiredService<IMongoDatabase>();
+    await MongoConnectionVerifier.VerifyAsync(database, app.Logger);
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -95,6 +117,28 @@ app.UseCors("AllowAll");
 app.UseStaticFiles(); // Enable static files for photo uploads
 
 app.UseAuthorization();
+
+app.MapGet("/health/mongo", async (IMongoDatabase database) =>
+{
+    try
+    {
+        await MongoConnectionVerifier.PingAsync(database);
+
+        return Results.Ok(new
+        {
+            status = "Healthy",
+            database = database.DatabaseNamespace.DatabaseName,
+            checkedAt = DateTime.UtcNow
+        });
+    }
+    catch (Exception ex)
+    {
+        return Results.Problem(
+            detail: ex.Message,
+            statusCode: StatusCodes.Status503ServiceUnavailable,
+            title: "MongoDB health check failed");
+    }
+});
 
 app.MapControllers();
 

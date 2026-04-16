@@ -153,13 +153,13 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "dependencies": {
-            "LiteDB": {
-              "target": "Package",
-              "version": "[5.0.21, )"
-            },
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[9.0.9, )"
+            },
+            "MongoDB.Driver": {
+              "target": "Package",
+              "version": "[3.4.0, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",

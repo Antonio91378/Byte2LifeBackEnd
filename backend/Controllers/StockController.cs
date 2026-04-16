@@ -1,7 +1,9 @@
 using Byte2Life.API.Models;
+using Byte2Life.API.Persistence;
 using Byte2Life.API.Services;
-using LiteDB;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
+using MongoDB.Driver;
 using System.Globalization;
 
 namespace Byte2Life.API.Controllers
@@ -10,15 +12,15 @@ namespace Byte2Life.API.Controllers
     [Route("api/stock")]
     public class StockController : ControllerBase
     {
-        private readonly LiteDatabase _db;
-        private readonly ILiteCollection<StockItem> _collection;
+        private readonly IMongoCollection<StockItem> _collection;
+        private readonly IMongoCollection<Sale> _salesCollection;
         private readonly IWebHostEnvironment _env;
         private readonly IBudgetService _budgetService;
 
-        public StockController(LiteDatabase db, IWebHostEnvironment env, IBudgetService budgetService)
+        public StockController(IMongoDatabase database, IWebHostEnvironment env, IBudgetService budgetService)
         {
-            _db = db;
-            _collection = _db.GetCollection<StockItem>("stock");
+            _collection = database.GetCollection<StockItem>(MongoCollectionNames.Stock);
+            _salesCollection = database.GetCollection<Sale>(MongoCollectionNames.Sales);
             _env = env;
             _budgetService = budgetService;
         }
@@ -26,16 +28,17 @@ namespace Byte2Life.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<StockItem>>> GetAll()
         {
-            var items = _collection.FindAll().OrderByDescending(x => x.CreatedAt).ToList();
-            bool updated = false;
+            var items = _collection.Find(FilterDefinition<StockItem>.Empty)
+                .ToList()
+                .OrderByDescending(x => x.CreatedAt)
+                .ToList();
 
             foreach (var item in items)
             {
                 if (item.ProductionCost == 0 && !string.IsNullOrEmpty(item.FilamentId) && item.WeightGrams > 0)
                 {
                     await CalculateCost(item);
-                    _collection.Update(item);
-                    updated = true;
+                    _collection.ReplaceOne(MongoId.FilterById<StockItem>(item.Id!.Value), item);
                 }
             }
 
@@ -118,7 +121,7 @@ namespace Byte2Life.API.Controllers
         [HttpGet("{id}")]
         public ActionResult<StockItem> GetById(string id)
         {
-            var item = _collection.FindById(new ObjectId(id));
+            var item = _collection.Find(MongoId.FilterById<StockItem>(id)).FirstOrDefault();
             if (item == null) return NotFound();
             return Ok(item);
         }
@@ -126,7 +129,7 @@ namespace Byte2Life.API.Controllers
         [HttpPost]
         public async Task<ActionResult<StockItem>> Create(StockItem item)
         {
-            if (item.Id == null) item.Id = ObjectId.NewObjectId();
+            if (!item.Id.HasValue || item.Id.Value == ObjectId.Empty) item.Id = MongoId.New();
             
             // Only calculate if not provided by frontend
             if (item.ProductionCost == 0)
@@ -134,17 +137,17 @@ namespace Byte2Life.API.Controllers
                 await CalculateCost(item);
             }
 
-            _collection.Insert(item);
+            _collection.InsertOne(item);
             return CreatedAtAction(nameof(GetById), new { id = item.Id.ToString() }, item);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(string id, StockItem item)
         {
-            var existing = _collection.FindById(new ObjectId(id));
+            var existing = _collection.Find(MongoId.FilterById<StockItem>(id)).FirstOrDefault();
             if (existing == null) return NotFound();
 
-            item.Id = new ObjectId(id);
+            item.Id = existing.Id;
             
             // Only calculate if not provided by frontend (trust the user/frontend calculation)
             if (item.ProductionCost == 0)
@@ -152,14 +155,14 @@ namespace Byte2Life.API.Controllers
                 await CalculateCost(item);
             }
 
-            _collection.Update(item);
+            _collection.ReplaceOne(MongoId.FilterById<StockItem>(id), item);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
         public IActionResult Delete(string id)
         {
-            var item = _collection.FindById(new ObjectId(id));
+            var item = _collection.Find(MongoId.FilterById<StockItem>(id)).FirstOrDefault();
             if (item == null) return NotFound();
 
             // Delete associated photos
@@ -173,28 +176,27 @@ namespace Byte2Life.API.Controllers
                 }
             }
 
-            _collection.Delete(new ObjectId(id));
+            _collection.DeleteOne(MongoId.FilterById<StockItem>(id));
             return NoContent();
         }
 
         [HttpPost("from-sale/{saleId}")]
         public IActionResult MoveFromSale(string saleId)
         {
-            var salesCollection = _db.GetCollection<Sale>("sales");
-            var sale = salesCollection.FindById(new ObjectId(saleId));
+            var sale = _salesCollection.Find(MongoId.FilterById<Sale>(saleId)).FirstOrDefault();
             
             if (sale == null) return NotFound("Venda não encontrada");
 
             // Check if this sale is linked to an existing stock item
-            if (sale.StockItemId != null)
+            if (sale.StockItemId.HasValue)
             {
-                var existingStockItem = _collection.FindById(sale.StockItemId);
+                var existingStockItem = _collection.Find(MongoId.FilterById<StockItem>(sale.StockItemId.Value)).FirstOrDefault();
                 if (existingStockItem != null)
                 {
                     // Restore the existing item
                     existingStockItem.Status = "Available";
-                    _collection.Update(existingStockItem);
-                    salesCollection.Delete(new ObjectId(saleId));
+                    _collection.ReplaceOne(MongoId.FilterById<StockItem>(existingStockItem.Id!.Value), existingStockItem);
+                    _salesCollection.DeleteOne(MongoId.FilterById<Sale>(saleId));
                     return Ok(existingStockItem);
                 }
             }
@@ -202,7 +204,7 @@ namespace Byte2Life.API.Controllers
             // Fallback: Create new item if no link or link broken
             var stockItem = new StockItem
             {
-                Id = ObjectId.NewObjectId(),
+                Id = MongoId.New(),
                 Description = sale.Description,
                 FilamentId = sale.FilamentId?.ToString() ?? "",
                 PrintTime = sale.DesignPrintTime ?? "",
@@ -212,8 +214,8 @@ namespace Byte2Life.API.Controllers
                 CreatedAt = DateTime.Now
             };
 
-            _collection.Insert(stockItem);
-            salesCollection.Delete(new ObjectId(saleId));
+            _collection.InsertOne(stockItem);
+            _salesCollection.DeleteOne(MongoId.FilterById<Sale>(saleId));
 
             return Ok(stockItem);
         }

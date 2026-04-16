@@ -95,7 +95,7 @@ namespace Byte2Life.API.Controllers
 
         private static string GetString(JsonElement payload, string propertyName, string? fallback = null)
         {
-            if (!payload.TryGetProperty(propertyName, out var value))
+            if (!TryGetPropertyIgnoreCase(payload, propertyName, out var value))
             {
                 return fallback ?? "";
             }
@@ -115,7 +115,7 @@ namespace Byte2Life.API.Controllers
 
         private static double GetDouble(JsonElement payload, string propertyName, double fallback = 0)
         {
-            if (!payload.TryGetProperty(propertyName, out var value))
+            if (!TryGetPropertyIgnoreCase(payload, propertyName, out var value))
             {
                 return fallback;
             }
@@ -154,7 +154,7 @@ namespace Byte2Life.API.Controllers
 
         private static decimal GetDecimal(JsonElement payload, string propertyName, decimal fallback = 0)
         {
-            if (!payload.TryGetProperty(propertyName, out var value))
+            if (!TryGetPropertyIgnoreCase(payload, propertyName, out var value))
             {
                 return fallback;
             }
@@ -189,7 +189,7 @@ namespace Byte2Life.API.Controllers
 
         private static bool GetBool(JsonElement payload, string propertyName, bool fallback = false)
         {
-            if (!payload.TryGetProperty(propertyName, out var value))
+            if (!TryGetPropertyIgnoreCase(payload, propertyName, out var value))
             {
                 return fallback;
             }
@@ -214,6 +214,26 @@ namespace Byte2Life.API.Controllers
             }
 
             return fallback;
+        }
+
+        private static bool TryGetPropertyIgnoreCase(JsonElement payload, string propertyName, out JsonElement value)
+        {
+            if (payload.TryGetProperty(propertyName, out value))
+            {
+                return true;
+            }
+
+            foreach (var property in payload.EnumerateObject())
+            {
+                if (string.Equals(property.Name, propertyName, StringComparison.OrdinalIgnoreCase))
+                {
+                    value = property.Value;
+                    return true;
+                }
+            }
+
+            value = default;
+            return false;
         }
 
         [HttpDelete("{id:length(24)}")]

@@ -1,56 +1,69 @@
 using Byte2Life.API.Models;
-using LiteDB;
+using Byte2Life.API.Persistence;
+using MongoDB.Bson;
+using MongoDB.Driver;
 
 namespace Byte2Life.API.Services
 {
     public class ClientService : IClientService
     {
-        private readonly LiteDatabase _database;
-        private readonly ILiteCollection<Client> _clientsCollection;
+        private readonly IMongoCollection<Client> _clientsCollection;
+        private readonly IMongoCollection<Sale> _salesCollection;
 
-        public ClientService(LiteDatabase database)
+        public ClientService(IMongoDatabase database)
         {
-            _database = database;
-            _clientsCollection = _database.GetCollection<Client>("Clients");
+            _clientsCollection = database.GetCollection<Client>(MongoCollectionNames.Clients);
+            _salesCollection = database.GetCollection<Sale>(MongoCollectionNames.Sales);
         }
 
         public Task<List<Client>> GetAsync(string? name = null)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
-                return Task.FromResult(_clientsCollection.FindAll().ToList());
+                return Task.FromResult(_clientsCollection.Find(FilterDefinition<Client>.Empty).ToList());
             }
-            
-            // Case insensitive search
-            return Task.FromResult(_clientsCollection.Find(c => c.Name.ToLower().Contains(name.ToLower())).ToList());
+
+            var filter = Builders<Client>.Filter.Regex(client => client.Name, new BsonRegularExpression(name.Trim(), "i"));
+            return Task.FromResult(_clientsCollection.Find(filter).ToList());
         }
 
         public Task<Client?> GetByIdAsync(string id) =>
-            Task.FromResult<Client?>(_clientsCollection.FindById(new ObjectId(id)));
+            Task.FromResult(FindClientById(id));
+
+        private Client? FindClientById(string id)
+        {
+            return _clientsCollection.Find(MongoId.FilterById<Client>(id)).FirstOrDefault();
+        }
 
         public Task CreateAsync(Client newClient)
         {
-            _clientsCollection.Insert(newClient);
+            if (!newClient.Id.HasValue || newClient.Id.Value == ObjectId.Empty)
+            {
+                newClient.Id = MongoId.New();
+            }
+
+            _clientsCollection.InsertOne(newClient);
             return Task.CompletedTask;
         }
 
         public Task UpdateAsync(string id, Client updatedClient)
         {
-            _clientsCollection.Update(updatedClient);
+            updatedClient.Id = MongoId.Parse(id);
+            _clientsCollection.ReplaceOne(MongoId.FilterById<Client>(id), updatedClient);
             return Task.CompletedTask;
         }
 
         public Task RemoveAsync(string id)
         {
-            var salesCollection = _database.GetCollection<Sale>("Sales");
-            var hasSales = salesCollection.Exists(s => s.ClientId == new ObjectId(id));
+            var objectId = MongoId.Parse(id);
+            var hasSales = _salesCollection.AsQueryable().Any(sale => sale.ClientId == objectId);
 
             if (hasSales)
             {
                 throw new InvalidOperationException("Cannot delete client with associated sales.");
             }
 
-            _clientsCollection.Delete(new ObjectId(id));
+            _clientsCollection.DeleteOne(MongoId.FilterById<Client>(id));
             return Task.CompletedTask;
         }
     }

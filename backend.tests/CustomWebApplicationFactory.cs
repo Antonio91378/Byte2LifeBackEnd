@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using LiteDB;
+using MongoDB.Driver;
 using System.IO;
 using Xunit;
 
@@ -13,11 +13,11 @@ namespace Byte2Life.API.Tests
 {
     public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProgram> where TProgram : class
     {
-        private readonly string _dbPath;
+        private readonly string _databaseName;
 
         public CustomWebApplicationFactory()
         {
-            _dbPath = $"Byte2Life_Test_{Guid.NewGuid()}.db";
+            _databaseName = $"btl_{Guid.NewGuid():N}";
         }
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -28,41 +28,27 @@ namespace Byte2Life.API.Tests
                 var configPath = Path.Combine(projectDir, "appsettings.Test.json");
 
                 config.AddJsonFile(configPath, optional: true);
-            });
-
-            builder.ConfigureServices(services =>
-            {
-                // Remove the existing LiteDatabase registration
-                var descriptor = services.SingleOrDefault(
-                    d => d.ServiceType == typeof(LiteDatabase));
-
-                if (descriptor != null)
+                config.AddInMemoryCollection(new Dictionary<string, string?>
                 {
-                    services.Remove(descriptor);
-                }
-
-                // Add LiteDatabase with Unique Test Connection String
-                services.AddSingleton<LiteDatabase>(sp =>
-                {
-                    return new LiteDatabase($"Filename={_dbPath};Connection=Shared");
+                    ["MongoDBSettings:DatabaseName"] = _databaseName
                 });
             });
         }
 
         protected override void Dispose(bool disposing)
         {
-            base.Dispose(disposing);
             if (disposing)
             {
                 try
                 {
-                    if (File.Exists(_dbPath))
-                    {
-                        File.Delete(_dbPath);
-                    }
+                    using var scope = Services.CreateScope();
+                    var client = scope.ServiceProvider.GetRequiredService<IMongoClient>();
+                    client.DropDatabase(_databaseName);
                 }
                 catch { /* Ignore cleanup errors */ }
             }
+
+            base.Dispose(disposing);
         }
     }
 }

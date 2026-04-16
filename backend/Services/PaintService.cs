@@ -1,40 +1,51 @@
 using Byte2Life.API.Models;
-using LiteDB;
+using Byte2Life.API.Persistence;
+using MongoDB.Bson;
+using MongoDB.Driver;
 
 namespace Byte2Life.API.Services
 {
     public class PaintService : IPaintService
     {
-        private readonly LiteDatabase _database;
-        private readonly ILiteCollection<Paint> _paintsCollection;
+        private readonly IMongoCollection<Paint> _paintsCollection;
 
-        public PaintService(LiteDatabase database)
+        public PaintService(IMongoDatabase database)
         {
-            _database = database;
-            _paintsCollection = _database.GetCollection<Paint>("Paints");
+            _paintsCollection = database.GetCollection<Paint>(MongoCollectionNames.Paints);
         }
 
         public Task<List<Paint>> GetAsync() =>
-            Task.FromResult(_paintsCollection.FindAll().ToList());
+            Task.FromResult(_paintsCollection.Find(FilterDefinition<Paint>.Empty).ToList());
 
         public Task<Paint?> GetAsync(string id) =>
-            Task.FromResult<Paint?>(_paintsCollection.FindById(new ObjectId(id)));
+            Task.FromResult(FindPaintById(id));
+
+        private Paint? FindPaintById(string id)
+        {
+            return _paintsCollection.Find(MongoId.FilterById<Paint>(id)).FirstOrDefault();
+        }
 
         public Task CreateAsync(Paint newPaint)
         {
-            _paintsCollection.Insert(newPaint);
+            if (!newPaint.Id.HasValue || newPaint.Id.Value == ObjectId.Empty)
+            {
+                newPaint.Id = MongoId.New();
+            }
+
+            _paintsCollection.InsertOne(newPaint);
             return Task.CompletedTask;
         }
 
         public Task UpdateAsync(string id, Paint updatedPaint)
         {
-            _paintsCollection.Update(updatedPaint);
+            updatedPaint.Id = MongoId.Parse(id);
+            _paintsCollection.ReplaceOne(MongoId.FilterById<Paint>(id), updatedPaint);
             return Task.CompletedTask;
         }
 
         public Task RemoveAsync(string id)
         {
-            _paintsCollection.Delete(new ObjectId(id));
+            _paintsCollection.DeleteOne(MongoId.FilterById<Paint>(id));
             return Task.CompletedTask;
         }
     }
