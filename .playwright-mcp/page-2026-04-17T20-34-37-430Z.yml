@@ -1,0 +1,158 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e3]:
+      - link "BYTE2LIFE" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img [ref=e6]
+        - generic [ref=e8]: BYTE2LIFE
+      - button [ref=e10]:
+        - img [ref=e11]
+  - main [ref=e13]:
+    - generic [ref=e14]:
+      - heading "Servicos" [level=1] [ref=e16]
+      - generic [ref=e17]:
+        - generic [ref=e18]:
+          - heading "Relatorio de Servicos" [level=2] [ref=e19]
+          - generic [ref=e20]:
+            - generic [ref=e21]:
+              - generic [ref=e22]:
+                - generic [ref=e23]:
+                  - img [ref=e24]
+                  - text: "Filtrar:"
+                - combobox [ref=e26] [cursor=pointer]:
+                  - option "Dia" [selected]
+                  - option "Mes"
+                - combobox [ref=e27] [cursor=pointer]:
+                  - option "Todos os Responsaveis" [selected]
+              - textbox "Filtrar:" [ref=e29] [cursor=pointer]
+            - button "Filtros" [ref=e31]:
+              - img [ref=e32]
+              - generic [ref=e34]: Filtros
+              - img [ref=e35]
+        - generic [ref=e37]:
+          - generic [ref=e38]:
+            - paragraph [ref=e39]: Lucro total (servicos)
+            - paragraph [ref=e40]: R$ 0,00
+          - generic [ref=e41]:
+            - paragraph [ref=e42]: Lucro design
+            - paragraph [ref=e43]: R$ 0,00
+          - generic [ref=e44]:
+            - paragraph [ref=e45]: Lucro pintura
+            - paragraph [ref=e46]: R$ 0,00
+        - table [ref=e49]:
+          - rowgroup [ref=e50]:
+            - row "Data Descricao Valor Status Acoes" [ref=e51]:
+              - columnheader "Data" [ref=e52]
+              - columnheader "Descricao" [ref=e53]
+              - columnheader "Valor" [ref=e54]
+              - columnheader "Status" [ref=e55]
+              - columnheader "Acoes" [ref=e56]
+          - rowgroup
+        - generic [ref=e57]:
+          - img [ref=e58]
+          - heading "Nenhum servico encontrado" [level=3] [ref=e60]
+          - paragraph [ref=e61]: Ajuste os filtros ou cadastre novos servicos.
+        - generic [ref=e62]: Carregando servicos...
+      - generic [ref=e63]:
+        - generic [ref=e65]:
+          - generic [ref=e67]:
+            - heading "Prestadores de Servico" [level=2] [ref=e68]
+            - paragraph [ref=e69]: Cadastre designers e pintores.
+          - generic [ref=e70]:
+            - generic [ref=e71]:
+              - generic [ref=e72]: Nome
+              - textbox [ref=e73]
+            - generic [ref=e74]:
+              - generic [ref=e75]: Email
+              - textbox "exemplo@dominio.com" [ref=e76]
+            - generic [ref=e77]:
+              - generic [ref=e78]: Tags
+              - button "Selecione tags..." [ref=e79]:
+                - generic [ref=e81]: Selecione tags...
+                - img [ref=e82]
+            - button "Cadastrar" [ref=e85]
+          - paragraph [ref=e87]: Nenhum prestador cadastrado.
+        - generic [ref=e89]:
+          - generic [ref=e90]:
+            - generic [ref=e91]:
+              - heading "Agendamento de servicos" [level=2] [ref=e92]
+              - paragraph [ref=e93]: Gerencie design e pintura no mesmo fluxo.
+            - generic [ref=e94]:
+              - button "Design" [ref=e95]
+              - button "Pintura" [ref=e96]
+          - generic [ref=e97]:
+            - generic [ref=e98]:
+              - generic [ref=e99]:
+                - generic [ref=e101]:
+                  - generic [ref=e102]:
+                    - generic [ref=e103]: Titulo
+                    - textbox [ref=e104]
+                  - generic [ref=e105]:
+                    - generic [ref=e106]: Responsavel
+                    - combobox [ref=e107]:
+                      - option "Selecione..." [selected]
+                  - generic [ref=e108]:
+                    - generic [ref=e109]: Duracao (h)
+                    - spinbutton [ref=e110]: "0"
+                  - generic [ref=e111]:
+                    - generic [ref=e112]: Status
+                    - combobox [ref=e113]:
+                      - option "Ativo" [selected]
+                      - option "Concluido"
+                  - generic [ref=e114]:
+                    - generic [ref=e115]: Valor (R$)
+                    - spinbutton [ref=e116]: "0"
+                  - generic [ref=e117]:
+                    - generic [ref=e118]: Horario
+                    - textbox [ref=e119]
+                  - button "Agendar" [ref=e121]
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic: Titulo
+                      - textbox
+                    - generic:
+                      - generic: Responsavel
+                      - combobox:
+                        - option "Selecione..." [selected]
+                    - generic:
+                      - generic: Duracao (h)
+                      - spinbutton: "0"
+                    - generic:
+                      - generic: Status
+                      - combobox:
+                        - option "Ativo" [selected]
+                        - option "Concluido"
+                    - generic:
+                      - generic: Valor (R$)
+                      - spinbutton: "0"
+                    - generic:
+                      - generic: Horario
+                      - textbox
+                    - generic:
+                      - button "Agendar"
+              - generic [ref=e122]:
+                - img [ref=e123]
+                - text: Clique na agenda para escolher o horario.
+            - generic [ref=e125]:
+              - generic [ref=e126]:
+                - paragraph [ref=e127]: Agenda bloqueada
+                - paragraph [ref=e128]: Selecione Design/Pintura e preencha Titulo e Duracao do design para liberar a agenda.
+              - generic [ref=e129]: Carregando agenda...
+          - generic [ref=e130]:
+            - generic [ref=e131]:
+              - heading "Designs agendados" [level=3] [ref=e132]
+              - paragraph [ref=e134]: Nenhum design agendado.
+            - generic [ref=e135]:
+              - heading "Pinturas agendadas" [level=3] [ref=e136]
+              - paragraph [ref=e138]: Nenhuma pintura agendada.
+          - generic [ref=e139]:
+            - generic [ref=e140]:
+              - heading "Designs finalizados" [level=3] [ref=e141]
+              - paragraph [ref=e143]: Nenhum design finalizado.
+            - generic [ref=e144]:
+              - heading "Pinturas finalizadas" [level=3] [ref=e145]
+              - paragraph [ref=e147]: Nenhuma pintura finalizada.
+  - button "Open Next.js Dev Tools" [ref=e153] [cursor=pointer]:
+    - img [ref=e154]
+  - alert [ref=e157]

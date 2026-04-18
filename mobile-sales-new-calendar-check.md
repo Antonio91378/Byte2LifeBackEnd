@@ -1,0 +1,19 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e3]:
+      - link "BYTE2LIFE" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img [ref=e6]
+        - generic [ref=e8]: BYTE2LIFE
+      - button [ref=e365]:
+        - img [ref=e366]
+  - main [ref=e31]:
+    - generic [ref=e368]:
+      - heading "Nova Venda" [level=1] [ref=e369]
+      - generic [ref=e370]:
+        - generic [ref=e371]
+        - generic [ref=e445]
+        - generic [ref=e455]
+  - button "Open Next.js Dev Tools" [ref=e38] [cursor=pointer]:
+    - img [ref=e39]
+  - alert [ref=e42]

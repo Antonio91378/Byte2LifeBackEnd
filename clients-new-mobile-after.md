@@ -1,0 +1,30 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e3]:
+      - link "BYTE2LIFE" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img [ref=e6]
+        - generic [ref=e8]: BYTE2LIFE
+      - button [ref=e10]:
+        - img [ref=e11]
+  - main [ref=e13]:
+    - generic [ref=e14]:
+      - generic [ref=e15]:
+        - heading "Novo Cliente" [level=1] [ref=e16]
+        - paragraph [ref=e17]: Cadastre rapidamente um cliente para usar nas próximas vendas.
+      - generic [ref=e18]:
+        - generic [ref=e19]:
+          - generic [ref=e20]: Nome
+          - textbox [ref=e21]
+        - generic [ref=e22]:
+          - generic [ref=e23]: Telefone
+          - textbox [ref=e24]
+        - generic [ref=e25]:
+          - generic [ref=e26]
+          - generic [ref=e29]
+        - generic [ref=e32]:
+          - button "Cancelar" [ref=e33]
+          - button "Salvar Cliente" [ref=e34]
+  - button "Open Next.js Dev Tools" [ref=e40] [cursor=pointer]:
+    - img [ref=e41]
+  - alert [ref=e44]

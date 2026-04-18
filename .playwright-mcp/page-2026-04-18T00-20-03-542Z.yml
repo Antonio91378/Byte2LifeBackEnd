@@ -1,0 +1,29 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e3]:
+      - link "BYTE2LIFE" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img [ref=e6]
+        - generic [ref=e8]: BYTE2LIFE
+      - button [ref=e10]:
+        - img [ref=e11]
+  - main [ref=e13]:
+    - generic [ref=e14]:
+      - generic [ref=e15]:
+        - heading "Estoque de Impressões" [level=1] [ref=e16]
+        - generic [ref=e17]:
+          - generic [ref=e18]:
+            - textbox "Buscar item..." [ref=e19]
+            - img [ref=e20]
+          - combobox [ref=e22]:
+            - option "Todos os Status" [selected]
+            - option "Disponíveis"
+            - option "Vendidos"
+          - link "Novo Item" [ref=e23] [cursor=pointer]:
+            - /url: /stock/new
+            - img [ref=e24]
+            - text: Novo Item
+      - generic [ref=e26]:
+        - img [ref=e27]
+        - heading "Nenhum item encontrado" [level=3] [ref=e29]
+        - paragraph [ref=e30]: Tente ajustar os filtros ou adicione um novo item.

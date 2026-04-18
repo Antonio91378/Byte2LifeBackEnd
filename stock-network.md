@@ -1,0 +1,1 @@
+[GET] http://localhost:5000/api/stock => [200] OK

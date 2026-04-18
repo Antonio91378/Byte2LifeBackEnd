@@ -1,0 +1,75 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e3]:
+      - link "BYTE2LIFE" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img [ref=e6]
+        - generic [ref=e8]: BYTE2LIFE
+      - button [ref=e10]:
+        - img [ref=e11]
+  - main [ref=e13]:
+    - generic [ref=e14]:
+      - heading "Nova Venda" [level=1] [ref=e15]
+      - generic [ref=e16]:
+        - generic [ref=e17]:
+          - generic [ref=e18]:
+            - generic [ref=e19]: Descricao do Produto
+            - textbox [ref=e20]
+          - generic [ref=e21]:
+            - generic [ref=e22]: Massa (g)
+            - spinbutton [ref=e23]: "0"
+          - generic [ref=e24]:
+            - generic [ref=e25]: Filamento
+            - button "Informe a massa para listar filamentos" [disabled] [ref=e27]
+          - generic [ref=e32]:
+            - generic [ref=e33]: Data da Venda
+            - textbox [ref=e34]: 2026-04-17
+          - generic [ref=e35]:
+            - generic [ref=e36]: Data de Entrega
+            - textbox [ref=e37]
+          - generic [ref=e38]:
+            - generic [ref=e39]: Tempo de Impressao
+            - 'textbox "ex: 4h 30m" [ref=e40]'
+          - generic [ref=e41]:
+            - generic [ref=e42]: Adicionais
+            - generic [ref=e43]
+          - generic [ref=e55]:
+            - generic [ref=e56]
+            - generic [ref=e61]
+            - generic [ref=e68]
+            - generic [ref=e72]
+            - generic [ref=e273]: "Regras: inicio entre 08:00-23:00, intervalo de 20 min, entrega ate 18:00."
+          - generic [ref=e274]:
+            - generic [ref=e275]: Cliente
+            - combobox [ref=e276]
+          - generic [ref=e277]:
+            - generic [ref=e278]: Link do Produto (STL)
+            - textbox [ref=e279]
+          - generic [ref=e280]:
+            - generic [ref=e281]: Qualidade de Impressao
+            - combobox [ref=e282]
+          - generic [ref=e283]:
+            - generic [ref=e284]: Status da Impressao
+            - combobox [ref=e285]
+          - generic [ref=e286]:
+            - heading "Detalhamento de Custos" [level=3] [ref=e287]
+            - generic [ref=e290]
+          - generic [ref=e300]:
+            - generic [ref=e301]
+            - generic [ref=e306]
+        - generic [ref=e311]:
+          - generic [ref=e312] [cursor=pointer]:
+            - checkbox "Impressão Concluída" [ref=e313]
+            - generic [ref=e314]: Impressão Concluída
+          - generic [ref=e315] [cursor=pointer]:
+            - checkbox "Entregue" [ref=e316]
+            - generic [ref=e317]: Entregue
+          - generic [ref=e318] [cursor=pointer]:
+            - checkbox "Pago" [ref=e319]
+            - generic [ref=e320]: Pago
+        - generic [ref=e321]:
+          - button "Cancelar" [ref=e322]
+          - button "Salvar Venda" [ref=e323]
+  - button "Open Next.js Dev Tools" [ref=e329] [cursor=pointer]:
+    - img [ref=e330]
+  - alert [ref=e333]

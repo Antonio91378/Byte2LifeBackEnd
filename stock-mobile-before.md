@@ -1,0 +1,83 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e3]:
+      - link "BYTE2LIFE" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img [ref=e6]
+        - generic [ref=e8]: BYTE2LIFE
+      - button [ref=e10]:
+        - img [ref=e11]
+  - main [ref=e13]:
+    - generic [ref=e14]:
+      - generic [ref=e15]:
+        - heading "Estoque de Impressões" [level=1] [ref=e16]
+        - generic [ref=e17]:
+          - generic [ref=e18]:
+            - textbox "Buscar item..." [ref=e19]
+            - img [ref=e20]
+          - combobox [ref=e22]:
+            - option "Todos os Status" [selected]
+            - option "Disponíveis"
+            - option "Vendidos"
+          - link "Novo Item" [ref=e23] [cursor=pointer]:
+            - /url: /stock/new
+            - img [ref=e24]
+            - text: Novo Item
+      - generic [ref=e26]:
+        - generic [ref=e41] [cursor=pointer]:
+          - generic [ref=e42]:
+            - img [ref=e44]
+            - generic [ref=e46]: Disponível
+          - generic [ref=e47]:
+            - heading "Bandeja Organizadora de Mesa e Entrada com Cabeça de Dragão" [level=3] [ref=e48]
+            - paragraph [ref=e49]: Pla Preto Velvet Premium Voolt3d (Preto Fosco)
+            - generic [ref=e50]
+            - generic [ref=e57]
+        - generic [ref=e67] [cursor=pointer]:
+          - generic [ref=e68]:
+            - img [ref=e70]
+            - generic [ref=e72]: Disponível
+          - generic [ref=e73]:
+            - heading "suporte HeadSet e Controle" [level=3] [ref=e74]
+            - paragraph [ref=e75]: EN-PLA Plus Branco (Branco)
+            - generic [ref=e76]
+            - generic [ref=e83]
+        - generic [ref=e93] [cursor=pointer]:
+          - generic [ref=e94]:
+            - img [ref=e96]
+            - generic [ref=e98]: Vendido
+          - generic [ref=e99]:
+            - heading "Angel (Stitch)" [level=3] [ref=e100]
+            - paragraph [ref=e101]: Creality Ender-pla+ Branco (Branco)
+            - generic [ref=e102]
+            - generic [ref=e109]
+        - generic [ref=e119] [cursor=pointer]:
+          - generic [ref=e120]:
+            - img "Organizador Escritório" [ref=e121]
+            - generic [ref=e122]: Disponível
+          - generic [ref=e123]:
+            - heading "Organizador Escritório" [level=3] [ref=e124]
+            - paragraph [ref=e125]: EN-PLA-highSpeed Black (Preto)
+            - generic [ref=e126]
+            - generic [ref=e133]
+        - generic [ref=e143] [cursor=pointer]:
+          - generic [ref=e144]:
+            - img "Miniatura de Camaleão Guerreiro" [ref=e145]
+            - generic [ref=e146]: Disponível
+          - generic [ref=e147]:
+            - heading "Miniatura de Camaleão Guerreiro" [level=3] [ref=e148]
+            - paragraph [ref=e149]: EN-PLA Plus Branco (Branco)
+            - generic [ref=e150]
+            - generic [ref=e157]
+        - generic [ref=e167] [cursor=pointer]:
+          - generic [ref=e168]:
+            - img "Barquinho Benchy" [ref=e169]
+            - generic [ref=e170]: Disponível
+          - generic [ref=e171]:
+            - heading "Barquinho Benchy" [level=3] [ref=e172]
+            - paragraph [ref=e173]: EN-PLA Plus Branco (Branco)
+            - generic [ref=e174]
+            - generic [ref=e181]
+  - button "Open Next.js Dev Tools" [ref=e36] [cursor=pointer]:
+    - img [ref=e37]
+  - alert [ref=e40]

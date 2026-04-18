@@ -1,0 +1,35 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e3]:
+      - link "BYTE2LIFE" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img [ref=e6]
+        - generic [ref=e8]: BYTE2LIFE
+      - button [ref=e10]:
+        - img [ref=e11]
+  - main [ref=e13]:
+    - generic [ref=e14]:
+      - heading "Novo Cliente" [level=1] [ref=e15]
+      - generic [ref=e16]:
+        - generic [ref=e17]:
+          - generic [ref=e18]: Nome
+          - textbox [ref=e19]
+        - generic [ref=e20]:
+          - generic [ref=e21]: Telefone
+          - textbox [ref=e22]
+        - generic [ref=e23]:
+          - generic [ref=e24]:
+            - generic [ref=e25]: Sexo
+            - combobox [ref=e26]:
+              - option "Selecione" [selected]
+              - option "Masculino"
+              - option "Feminino"
+              - option "Outro"
+          - generic [ref=e27]:
+            - generic [ref=e28]: Categoria
+            - textbox [ref=e29]
+        - generic [ref=e30]:
+          - button "Cancelar" [ref=e31]
+          - button "Salvar Cliente" [ref=e32]
+  - button "Open Next.js Dev Tools" [ref=e38] [cursor=pointer]:
+    - img [ref=e39]

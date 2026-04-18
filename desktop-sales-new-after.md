@@ -1,0 +1,32 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e3]:
+      - link "BYTE2LIFE" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img [ref=e6]
+        - generic [ref=e8]: BYTE2LIFE
+      - generic [ref=e9]:
+        - link "Estoque" [ref=e10] [cursor=pointer]:
+          - /url: /stock
+        - link "Filamentos" [ref=e13] [cursor=pointer]:
+          - /url: /filaments
+        - link "Tintas" [ref=e16] [cursor=pointer]:
+          - /url: /paints
+        - link "Servicos" [ref=e19] [cursor=pointer]:
+          - /url: /services
+        - link "Clientes" [ref=e22] [cursor=pointer]:
+          - /url: /clients
+        - link "Vendas" [ref=e25] [cursor=pointer]:
+          - /url: /sales
+        - link "Importar" [ref=e28] [cursor=pointer]:
+          - /url: /import
+  - main [ref=e31]:
+    - generic [ref=e43]:
+      - heading "Nova Venda" [level=1] [ref=e44]
+      - generic [ref=e45]:
+        - generic [ref=e46]
+        - generic [ref=e351]
+        - generic [ref=e361]
+  - button "Open Next.js Dev Tools" [ref=e38] [cursor=pointer]:
+    - img [ref=e39]
+  - alert [ref=e42]

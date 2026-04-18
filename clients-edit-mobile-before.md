@@ -1,0 +1,28 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e3]:
+      - link "BYTE2LIFE" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img [ref=e6]
+        - generic [ref=e8]: BYTE2LIFE
+      - button [ref=e10]:
+        - img [ref=e11]
+  - main [ref=e13]:
+    - generic [ref=e14]:
+      - heading "Editar Cliente" [level=1] [ref=e25]
+      - generic [ref=e26]:
+        - generic [ref=e27]:
+          - generic [ref=e28]: Nome
+          - textbox [ref=e29]: A
+        - generic [ref=e30]:
+          - generic [ref=e31]: Telefone
+          - textbox [ref=e32]: +55 13 99147-1444
+        - generic [ref=e33]:
+          - generic [ref=e34]
+          - generic [ref=e37]
+        - generic [ref=e40]:
+          - button "Cancelar" [ref=e41]
+          - button "Salvar Alterações" [ref=e42]
+  - button "Open Next.js Dev Tools" [ref=e20] [cursor=pointer]:
+    - img [ref=e21]
+  - alert [ref=e24]

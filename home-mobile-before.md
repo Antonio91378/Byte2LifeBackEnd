@@ -1,0 +1,48 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e3]:
+      - link "BYTE2LIFE" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img [ref=e6]
+        - generic [ref=e8]: BYTE2LIFE
+      - button [ref=e10]:
+        - img [ref=e11]
+  - main [ref=e13]:
+    - generic [ref=e14]:
+      - generic [ref=e15]:
+        - heading "Byte2Life" [level=1] [ref=e16]
+        - paragraph [ref=e17]: Plataforma de gerenciamento inteligente para sua produção de impressão 3D.
+      - generic [ref=e19]:
+        - generic [ref=e77]:
+          - generic [ref=e78]
+          - generic [ref=e105]
+        - button "Abrir agenda de impressao" [ref=e187]
+      - generic [ref=e21]:
+        - generic [ref=e22]:
+          - generic [ref=e23]
+          - generic [ref=e26]
+        - generic [ref=e33]:
+          - generic [ref=e188]
+          - generic [ref=e202]
+          - generic [ref=e216]
+          - generic [ref=e230]
+          - generic [ref=e244]
+          - generic [ref=e258]
+          - generic [ref=e272]
+          - generic [ref=e286]
+      - generic [ref=e35]:
+        - link "Filamentos Gerencie seu estoque de materiais. Acompanhe cores, quantidades e custos em tempo real." [ref=e36] [cursor=pointer]:
+          - /url: /filaments
+          - generic [ref=e38]
+        - link "Vendas Controle total sobre seus pedidos. Visualize lucros, status de entrega e pagamentos." [ref=e44] [cursor=pointer]:
+          - /url: /sales
+          - generic [ref=e46]
+        - link "Simulação Faça orçamentos precisos. Calcule custos e lucros baseados em material, tempo e qualidade." [ref=e52] [cursor=pointer]:
+          - /url: /budget
+          - generic [ref=e54]
+        - link "Investimentos Acompanhe o ROI do seu negócio. Compare lucros vs investimentos e saiba quando atingirá o break-even." [ref=e60] [cursor=pointer]:
+          - /url: /investments
+          - generic [ref=e62]
+  - button "Open Next.js Dev Tools" [ref=e73] [cursor=pointer]:
+    - img [ref=e74]
+  - alert [ref=e300]

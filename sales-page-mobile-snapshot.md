@@ -1,0 +1,206 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e3]:
+      - link "BYTE2LIFE" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img [ref=e6]
+        - generic [ref=e8]: BYTE2LIFE
+      - button [ref=e10]:
+        - img [ref=e11]
+  - main [ref=e13]:
+    - generic [ref=e14]:
+      - heading "Servicos" [level=1] [ref=e16]
+      - generic [ref=e17]:
+        - generic [ref=e18]:
+          - heading "Relatorio de Servicos" [level=2] [ref=e19]
+          - generic [ref=e20]:
+            - generic [ref=e21]:
+              - generic [ref=e22]
+              - textbox "Filtrar:" [ref=e29] [cursor=pointer]
+            - button "Filtros" [ref=e31]:
+              - img [ref=e32]
+              - generic [ref=e34]: Filtros
+              - img [ref=e35]
+        - generic [ref=e37]:
+          - generic [ref=e38]:
+            - paragraph [ref=e39]: Lucro total (servicos)
+            - paragraph [ref=e40]: R$ 90,00
+          - generic [ref=e41]:
+            - paragraph [ref=e42]: Lucro design
+            - paragraph [ref=e43]: R$ 60,00
+          - generic [ref=e44]:
+            - paragraph [ref=e45]: Lucro pintura
+            - paragraph [ref=e46]: R$ 30,00
+        - table [ref=e49]:
+          - rowgroup [ref=e50]:
+            - row "Data Descricao Valor Status Acoes" [ref=e51]:
+              - columnheader "Data" [ref=e52]
+              - columnheader "Descricao" [ref=e53]
+              - columnheader "Valor" [ref=e54]
+              - columnheader "Status" [ref=e55]
+              - columnheader "Acoes" [ref=e56]
+          - rowgroup [ref=e158]:
+            - row "24/02/2026 Caldeirão de doces Hogwarts R$ 0,00 Concluido Ver venda" [ref=e159] [cursor=pointer]:
+              - cell "24/02/2026" [ref=e160]
+              - cell "Caldeirão de doces Hogwarts" [ref=e161]
+              - cell "R$ 0,00" [ref=e165]
+              - cell "Concluido" [ref=e166]
+              - cell "Ver venda" [ref=e168]
+            - row "27/01/2026 Pintura abobora rostos R$ 10,00 Concluido Editar Excluir" [ref=e170] [cursor=pointer]:
+              - cell "27/01/2026" [ref=e171]
+              - cell "Pintura abobora rostos" [ref=e172]
+              - cell "R$ 10,00" [ref=e176]
+              - cell "Concluido" [ref=e177]
+              - cell "Editar Excluir" [ref=e179]
+            - row "24/01/2026 Casal Stitch R$ 0,00 Concluido Ver venda" [ref=e183] [cursor=pointer]:
+              - cell "24/01/2026" [ref=e184]
+              - cell "Casal Stitch" [ref=e185]
+              - cell "R$ 0,00" [ref=e189]
+              - cell "Concluido" [ref=e190]
+              - cell "Ver venda" [ref=e192]
+            - row "24/01/2026 Stitch R$ 0,00 Concluido Ver venda" [ref=e194] [cursor=pointer]:
+              - cell "24/01/2026" [ref=e195]
+              - cell "Stitch" [ref=e196]
+              - cell "R$ 0,00" [ref=e200]
+              - cell "Concluido" [ref=e201]
+              - cell "Ver venda" [ref=e203]
+            - row "24/01/2026 Funko Personalizado R$ 0,00 Concluido Ver venda" [ref=e205] [cursor=pointer]:
+              - cell "24/01/2026" [ref=e206]
+              - cell "Funko Personalizado" [ref=e207]
+              - cell "R$ 0,00" [ref=e211]
+              - cell "Concluido" [ref=e212]
+              - cell "Ver venda" [ref=e214]
+            - row "24/01/2026 Estatueta Personalizada Claudinei R$ 0,00 Ativo Ver venda" [ref=e216] [cursor=pointer]:
+              - cell "24/01/2026" [ref=e217]
+              - cell "Estatueta Personalizada Claudinei" [ref=e218]
+              - cell "R$ 0,00" [ref=e222]
+              - cell "Ativo" [ref=e223]
+              - cell "Ver venda" [ref=e225]
+            - row "24/01/2026 Design sacada e cruz da renata R$ 30,00 Concluido Editar Excluir" [ref=e227] [cursor=pointer]:
+              - cell "24/01/2026" [ref=e228]
+              - cell "Design sacada e cruz da renata" [ref=e229]
+              - cell "R$ 30,00" [ref=e233]
+              - cell "Concluido" [ref=e234]
+              - cell "Editar Excluir" [ref=e236]
+            - row "20/01/2026 Design roda de anjo Jaqueline R$ 0,00 Concluido Editar Excluir" [ref=e240] [cursor=pointer]:
+              - cell "20/01/2026" [ref=e241]
+              - cell "Design roda de anjo Jaqueline" [ref=e242]
+              - cell "R$ 0,00" [ref=e246]
+              - cell "Concluido" [ref=e247]
+              - cell "Editar Excluir" [ref=e249]
+            - row "20/01/2026 Itachi R$ 0,00 Concluido Editar Excluir" [ref=e253] [cursor=pointer]:
+              - cell "20/01/2026" [ref=e254]
+              - cell "Itachi" [ref=e255]
+              - cell "R$ 0,00" [ref=e259]
+              - cell "Concluido" [ref=e260]
+              - cell "Editar Excluir" [ref=e262]
+            - row "18/01/2026 Caveiras Guirlanda R$ 20,00 Concluido Editar Excluir" [ref=e266] [cursor=pointer]:
+              - cell "18/01/2026" [ref=e267]
+              - cell "Caveiras Guirlanda" [ref=e268]
+              - cell "R$ 20,00" [ref=e272]
+              - cell "Concluido" [ref=e273]
+              - cell "Editar Excluir" [ref=e275]
+            - row "16/01/2026 Funko Personalizado R$ 0,00 Concluido Ver venda" [ref=e279] [cursor=pointer]:
+              - cell "16/01/2026" [ref=e280]
+              - cell "Funko Personalizado" [ref=e281]
+              - cell "R$ 0,00" [ref=e285]
+              - cell "Concluido" [ref=e286]
+              - cell "Ver venda" [ref=e288]
+            - row "13/01/2026 Estatueta personalizada Jaqueline e geovana R$ 0,00 Concluido Ver venda" [ref=e290] [cursor=pointer]:
+              - cell "13/01/2026" [ref=e291]
+              - cell "Estatueta personalizada Jaqueline e geovana" [ref=e292]
+              - cell "R$ 0,00" [ref=e296]
+              - cell "Concluido" [ref=e297]
+              - cell "Ver venda" [ref=e299]
+            - row "12/01/2026 Porta-Canetas de Halloween Abóbora R$ 0,00 Concluido Ver venda" [ref=e301] [cursor=pointer]:
+              - cell "12/01/2026" [ref=e302]
+              - cell "Porta-Canetas de Halloween Abóbora" [ref=e303]
+              - cell "R$ 0,00" [ref=e307]
+              - cell "Concluido" [ref=e308]
+              - cell "Ver venda" [ref=e310]
+            - row "10/01/2026 Conceituar arte da roda espiritualista no blender R$ 0,00 Concluido Editar Excluir" [ref=e312] [cursor=pointer]:
+              - cell "10/01/2026" [ref=e313]
+              - cell "Conceituar arte da roda espiritualista no blender" [ref=e314]
+              - cell "R$ 0,00" [ref=e318]
+              - cell "Concluido" [ref=e319]
+              - cell "Editar Excluir" [ref=e321]
+            - row "10/01/2026 Corrimão Barroco Diamantina R$ 30,00 Concluido Editar Excluir" [ref=e325] [cursor=pointer]:
+              - cell "10/01/2026" [ref=e326]
+              - cell "Corrimão Barroco Diamantina" [ref=e327]
+              - cell "R$ 30,00" [ref=e331]
+              - cell "Concluido" [ref=e332]
+              - cell "Editar Excluir" [ref=e334]
+            - row "- Porta-Canetas de Halloween Abóbora R$ 0,00 Concluido Ver venda" [ref=e338] [cursor=pointer]:
+              - cell "-" [ref=e339]
+              - cell "Porta-Canetas de Halloween Abóbora" [ref=e340]
+              - cell "R$ 0,00" [ref=e344]
+              - cell "Concluido" [ref=e345]
+              - cell "Ver venda" [ref=e347]
+            - row "- Mascote Cruzeiro R$ 0,00 Ativo Ver venda" [ref=e349] [cursor=pointer]:
+              - cell "-" [ref=e350]
+              - cell "Mascote Cruzeiro" [ref=e351]
+              - cell "R$ 0,00" [ref=e355]
+              - cell "Ativo" [ref=e356]
+              - cell "Ver venda" [ref=e358]
+            - row "- George, O Curioso R$ 0,00 Concluido Ver venda" [ref=e360] [cursor=pointer]:
+              - cell "-" [ref=e361]
+              - cell "George, O Curioso" [ref=e362]
+              - cell "R$ 0,00" [ref=e366]
+              - cell "Concluido" [ref=e367]
+              - cell "Ver venda" [ref=e369]
+        - generic [ref=e62]: "Servicos ativos: 2"
+      - generic [ref=e63]:
+        - generic [ref=e65]:
+          - generic [ref=e67]:
+            - heading "Prestadores de Servico" [level=2] [ref=e68]
+            - paragraph [ref=e69]: Cadastre designers e pintores.
+          - generic [ref=e70]:
+            - generic [ref=e71]:
+              - generic [ref=e72]: Nome
+              - textbox [ref=e73]
+            - generic [ref=e74]:
+              - generic [ref=e75]: Email
+              - textbox "exemplo@dominio.com" [ref=e76]
+            - generic [ref=e77]:
+              - generic [ref=e78]: Tags
+              - button "Selecione tags..." [ref=e79]
+            - button "Cadastrar" [ref=e85]
+          - generic [ref=e86]:
+            - generic [ref=e371]:
+              - generic [ref=e372]
+              - generic [ref=e378]
+            - generic [ref=e381]:
+              - generic [ref=e382]
+              - generic [ref=e387]
+        - generic [ref=e89]:
+          - generic [ref=e90]:
+            - generic [ref=e91]:
+              - heading "Agendamento de servicos" [level=2] [ref=e92]
+              - paragraph [ref=e93]: Gerencie design e pintura no mesmo fluxo.
+            - generic [ref=e94]:
+              - button "Design" [ref=e95]
+              - button "Pintura" [ref=e96]
+          - generic [ref=e97]:
+            - generic [ref=e98]:
+              - generic [ref=e99]
+              - generic [ref=e122]
+            - generic [ref=e125]:
+              - generic [ref=e390]
+              - generic [ref=e129]: Agenda geral de servicos (design e pintura).
+          - generic [ref=e130]:
+            - generic [ref=e131]:
+              - heading "Designs agendados" [level=3] [ref=e132]
+              - paragraph [ref=e134]: Nenhum design agendado.
+            - generic [ref=e135]:
+              - heading "Pinturas agendadas" [level=3] [ref=e136]
+              - paragraph [ref=e138]: Nenhuma pintura agendada.
+          - generic [ref=e139]:
+            - generic [ref=e140]:
+              - heading "Designs finalizados" [level=3] [ref=e141]
+              - generic [ref=e142]
+            - generic [ref=e144]:
+              - heading "Pinturas finalizadas" [level=3] [ref=e145]
+              - generic [ref=e146]
+  - button "Open Next.js Dev Tools" [ref=e153] [cursor=pointer]:
+    - img [ref=e154]
+  - alert [ref=e157]

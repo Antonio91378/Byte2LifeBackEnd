@@ -1,0 +1,67 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e3]:
+      - link "BYTE2LIFE" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img [ref=e6]
+        - generic [ref=e8]: BYTE2LIFE
+      - button [ref=e10]:
+        - img [ref=e11]
+  - main [ref=e13]:
+    - generic [ref=e14]:
+      - heading "Editar Venda" [level=1] [ref=e25]
+      - generic [ref=e26]:
+        - generic [ref=e27]:
+          - generic [ref=e28]:
+            - generic [ref=e29]: Descricao do Produto
+            - textbox [ref=e30]: Escultura Em Linha 1
+          - generic [ref=e31]:
+            - generic [ref=e32]: Massa (g)
+            - spinbutton [ref=e33]: "15.15"
+          - generic [ref=e34]:
+            - generic [ref=e35]: Filamento
+            - button "EN-PLA Black (Preto)" [ref=e37]
+          - generic [ref=e44]:
+            - generic [ref=e45]: Cliente
+            - combobox [ref=e46]
+          - generic [ref=e47]:
+            - generic [ref=e48]: Data da Venda
+            - textbox [ref=e49]: 2025-06-23
+          - generic [ref=e50]:
+            - generic [ref=e51]: Data de Entrega
+            - textbox [ref=e52]
+          - generic [ref=e53]:
+            - generic [ref=e54]: Tempo de Impressao
+            - 'textbox "ex: 4h 30m" [ref=e55]': "2"
+          - generic [ref=e56]:
+            - generic [ref=e57]: Adicionais
+            - generic [ref=e58]
+          - generic [ref=e70]:
+            - generic [ref=e71]
+            - button "Abrir agenda" [ref=e74]
+          - button "Configurações avançadas 8/10 • Concluído Mostrar" [ref=e77]:
+            - generic [ref=e78]
+            - generic [ref=e81]: Mostrar
+          - generic [ref=e82]:
+            - generic [ref=e83]
+            - generic [ref=e89]
+          - generic [ref=e92]:
+            - generic [ref=e93]
+            - generic [ref=e96]
+            - generic [ref=e101]
+        - generic [ref=e106]:
+          - generic [ref=e107] [cursor=pointer]:
+            - checkbox "Impressao Concluida" [checked] [ref=e108]
+            - generic [ref=e109]: Impressao Concluida
+          - generic [ref=e110] [cursor=pointer]:
+            - checkbox "Entregue" [checked] [ref=e111]
+            - generic [ref=e112]: Entregue
+          - generic [ref=e113] [cursor=pointer]:
+            - checkbox "Pago" [checked] [ref=e114]
+            - generic [ref=e115]: Pago
+        - generic [ref=e116]:
+          - button "Cancelar" [ref=e117]
+          - button "Salvar Alterações" [ref=e118]
+  - button "Open Next.js Dev Tools" [ref=e20] [cursor=pointer]:
+    - img [ref=e21]
+  - alert [ref=e24]
