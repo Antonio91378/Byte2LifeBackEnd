@@ -1,0 +1,348 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e3]:
+      - link "BYTE2LIFE" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img [ref=e6]
+        - generic [ref=e8]: BYTE2LIFE
+      - generic [ref=e9]:
+        - link "Estoque" [ref=e10] [cursor=pointer]:
+          - /url: /stock
+          - img [ref=e11]
+          - text: Estoque
+        - link "Filamentos" [ref=e13] [cursor=pointer]:
+          - /url: /filaments
+          - img [ref=e14]
+          - text: Filamentos
+        - link "Tintas" [ref=e16] [cursor=pointer]:
+          - /url: /paints
+          - img [ref=e17]
+          - text: Tintas
+        - link "Servicos" [ref=e19] [cursor=pointer]:
+          - /url: /services
+          - img [ref=e20]
+          - text: Servicos
+        - link "Clientes" [ref=e22] [cursor=pointer]:
+          - /url: /clients
+          - img [ref=e23]
+          - text: Clientes
+        - link "Vendas" [ref=e25] [cursor=pointer]:
+          - /url: /sales
+          - img [ref=e26]
+          - text: Vendas
+        - link "Importar" [ref=e28] [cursor=pointer]:
+          - /url: /import
+          - img [ref=e29]
+          - text: Importar
+  - main [ref=e31]:
+    - generic [ref=e247]:
+      - heading "Nova Venda" [level=1] [ref=e248]
+      - generic [ref=e249]:
+        - generic [ref=e250]:
+          - generic [ref=e251]:
+            - generic [ref=e252]: Descricao do Produto
+            - textbox [ref=e253]
+          - generic [ref=e254]:
+            - generic [ref=e255]: Massa (g)
+            - spinbutton [ref=e256]: "0"
+          - generic [ref=e257]:
+            - generic [ref=e258]: Filamento
+            - button "Informe a massa para listar filamentos" [disabled] [ref=e260]:
+              - generic [ref=e262]: Informe a massa para listar filamentos
+              - img [ref=e263]
+          - generic [ref=e265]:
+            - generic [ref=e266]: Cliente
+            - combobox [ref=e267]:
+              - option "Selecione um cliente..." [selected]
+              - option "A"
+              - option "B"
+              - option "C"
+              - option "D"
+              - option "E"
+              - option "F"
+              - option "G"
+              - option "H"
+              - option "J"
+              - option "K"
+              - option "L"
+              - option "M"
+              - option "N"
+              - option "Pablo"
+              - option "Gabriel"
+              - option "GABI"
+              - option "RH brasil insp"
+              - option "colega de trabalho donizeti"
+              - option "Cássio CEFET"
+              - option "Lara"
+              - option "Matheus Santiago Almeida Ferreira"
+              - option "Helton CEFET"
+              - option "Ulisses Carvalho"
+              - option "Jaqueline"
+              - option "Giovana"
+              - option "Mãe do Helton"
+              - option "Lucas Carvalho CEFET"
+              - option "Claudinei"
+              - option "Assis (Gabriel)"
+              - option "Gustavo"
+              - option "Gabriel Vinnis"
+              - option "Michael Lima"
+              - option "Muller Gutierrez"
+              - option "Malter"
+          - generic [ref=e268]:
+            - generic [ref=e269]: Data da Venda
+            - textbox [ref=e270]: 2026-04-20
+          - generic [ref=e271]:
+            - generic [ref=e272]: Data de Entrega
+            - textbox [ref=e273]
+          - generic [ref=e274]:
+            - generic [ref=e275]: Tempo de Impressao
+            - 'textbox "ex: 4h 30m" [ref=e276]'
+          - generic [ref=e277]:
+            - generic [ref=e278]: Adicionais
+            - generic [ref=e279]:
+              - generic [ref=e280] [cursor=pointer]:
+                - checkbox "Arte Personalizada" [ref=e281]
+                - generic [ref=e282]: Arte Personalizada
+              - generic [ref=e283] [cursor=pointer]:
+                - checkbox "Pintura" [ref=e284]
+                - generic [ref=e285]: Pintura
+              - generic [ref=e286] [cursor=pointer]:
+                - checkbox "Verniz" [ref=e287]
+                - generic [ref=e288]: Verniz
+          - generic [ref=e290]:
+            - generic [ref=e292]:
+              - heading "Agenda de impressão" [level=2] [ref=e293]
+              - paragraph [ref=e294]: Escolha um horário para impressão e serviços adicionais.
+            - generic [ref=e296]:
+              - generic [ref=e297]:
+                - generic [ref=e298]:
+                  - heading "Agenda de impressao" [level=3] [ref=e299]
+                  - paragraph [ref=e300]: Sugestao baseada na fila e no horario de trabalho.
+                - generic [ref=e301]: Impressao
+              - generic [ref=e302]:
+                - generic [ref=e303]:
+                  - paragraph [ref=e304]: Inicio sugerido
+                  - paragraph [ref=e305]: "--"
+                - generic [ref=e306]:
+                  - paragraph [ref=e307]: Entrega sugerida
+                  - paragraph [ref=e308]: "--"
+              - generic [ref=e309]:
+                - img [ref=e310]
+                - text: Marque a agenda de impressao clicando no horario desejado.
+              - generic [ref=e313]:
+                - generic [ref=e314]:
+                  - generic [ref=e315]:
+                    - generic [ref=e316]:
+                      - button "Previous week" [ref=e317] [cursor=pointer]:
+                        - img [ref=e318]: 
+                      - button "Next week" [ref=e319] [cursor=pointer]:
+                        - img [ref=e320]: 
+                    - button "today" [disabled] [ref=e321]
+                  - heading "Apr 19 – 25, 2026" [level=2] [ref=e323]
+                  - generic [ref=e325]:
+                    - button "week" [pressed] [ref=e326] [cursor=pointer]
+                    - button "day" [ref=e327] [cursor=pointer]
+                - generic "Apr 19 – 25, 2026" [ref=e328]:
+                  - grid [ref=e330]:
+                    - rowgroup [ref=e331]:
+                      - row "April 19, 2026 April 20, 2026 April 21, 2026 April 22, 2026 April 23, 2026 April 24, 2026 April 25, 2026" [ref=e336]:
+                        - columnheader "April 19, 2026" [ref=e337]:
+                          - generic "April 19, 2026" [ref=e339]: Sun 4/19
+                        - columnheader "April 20, 2026" [ref=e340]:
+                          - generic "April 20, 2026" [ref=e342]: Mon 4/20
+                        - columnheader "April 21, 2026" [ref=e343]:
+                          - generic "April 21, 2026" [ref=e345]: Tue 4/21
+                        - columnheader "April 22, 2026" [ref=e346]:
+                          - generic "April 22, 2026" [ref=e348]: Wed 4/22
+                        - columnheader "April 23, 2026" [ref=e349]:
+                          - generic "April 23, 2026" [ref=e351]: Thu 4/23
+                        - columnheader "April 24, 2026" [ref=e352]:
+                          - generic "April 24, 2026" [ref=e354]: Fri 4/24
+                        - columnheader "April 25, 2026" [ref=e355]:
+                          - generic "April 25, 2026" [ref=e357]: Sat 4/25
+                    - rowgroup [ref=e358]:
+                      - generic [ref=e361]:
+                        - table [ref=e363]:
+                          - rowgroup [ref=e366]:
+                            - row [ref=e367]:
+                              - cell [ref=e368]:
+                                - generic [ref=e370]: 8am
+                              - cell [ref=e371]
+                            - row [ref=e372]:
+                              - cell [ref=e373]
+                              - cell [ref=e374]
+                            - row [ref=e375]:
+                              - cell [ref=e376]:
+                                - generic [ref=e378]: 9am
+                              - cell [ref=e379]
+                            - row [ref=e380]:
+                              - cell [ref=e381]
+                              - cell [ref=e382]
+                            - row [ref=e383]:
+                              - cell [ref=e384]:
+                                - generic [ref=e386]: 10am
+                              - cell [ref=e387]
+                            - row [ref=e388]:
+                              - cell [ref=e389]
+                              - cell [ref=e390]
+                            - row [ref=e391]:
+                              - cell [ref=e392]:
+                                - generic [ref=e394]: 11am
+                              - cell [ref=e395]
+                            - row [ref=e396]:
+                              - cell [ref=e397]
+                              - cell [ref=e398]
+                            - row [ref=e399]:
+                              - cell [ref=e400]:
+                                - generic [ref=e402]: 12pm
+                              - cell [ref=e403]
+                            - row [ref=e404]:
+                              - cell [ref=e405]
+                              - cell [ref=e406]
+                            - row [ref=e407]:
+                              - cell [ref=e408]:
+                                - generic [ref=e410]: 1pm
+                              - cell [ref=e411]
+                            - row [ref=e412]:
+                              - cell [ref=e413]
+                              - cell [ref=e414]
+                            - row [ref=e415]:
+                              - cell [ref=e416]:
+                                - generic [ref=e418]: 2pm
+                              - cell [ref=e419]
+                            - row [ref=e420]:
+                              - cell [ref=e421]
+                              - cell [ref=e422]
+                            - row [ref=e423]:
+                              - cell [ref=e424]:
+                                - generic [ref=e426]: 3pm
+                              - cell [ref=e427]
+                            - row [ref=e428]:
+                              - cell [ref=e429]
+                              - cell [ref=e430]
+                            - row [ref=e431]:
+                              - cell [ref=e432]:
+                                - generic [ref=e434]: 4pm
+                              - cell [ref=e435]
+                            - row [ref=e436]:
+                              - cell [ref=e437]
+                              - cell [ref=e438]
+                            - row [ref=e439]:
+                              - cell [ref=e440]:
+                                - generic [ref=e442]: 5pm
+                              - cell [ref=e443]
+                            - row [ref=e444]:
+                              - cell [ref=e445]
+                              - cell [ref=e446]
+                            - row [ref=e447]:
+                              - cell [ref=e448]:
+                                - generic [ref=e450]: 6pm
+                              - cell [ref=e451]
+                            - row [ref=e452]:
+                              - cell [ref=e453]
+                              - cell [ref=e454]
+                            - row [ref=e455]:
+                              - cell [ref=e456]:
+                                - generic [ref=e458]: 7pm
+                              - cell [ref=e459]
+                            - row [ref=e460]:
+                              - cell [ref=e461]
+                              - cell [ref=e462]
+                            - row [ref=e463]:
+                              - cell [ref=e464]:
+                                - generic [ref=e466]: 8pm
+                              - cell [ref=e467]
+                            - row [ref=e468]:
+                              - cell [ref=e469]
+                              - cell [ref=e470]
+                            - row [ref=e471]:
+                              - cell [ref=e472]:
+                                - generic [ref=e474]: 9pm
+                              - cell [ref=e475]
+                            - row [ref=e476]:
+                              - cell [ref=e477]
+                              - cell [ref=e478]
+                            - row [ref=e479]:
+                              - cell [ref=e480]:
+                                - generic [ref=e482]: 10pm
+                              - cell [ref=e483]
+                            - row [ref=e484]:
+                              - cell [ref=e485]
+                              - cell [ref=e486]
+                        - row "Morcego rolo de papel" [ref=e490]:
+                          - gridcell [ref=e493]
+                          - gridcell "Morcego rolo de papel" [ref=e496]:
+                            - generic [ref=e500]: Morcego rolo de papel
+                          - gridcell [ref=e502]
+                          - gridcell [ref=e505]
+                          - gridcell [ref=e508]
+                          - gridcell [ref=e511]
+                          - gridcell [ref=e514]
+              - generic [ref=e517]: "Regras: inicio entre 08:00-23:00, intervalo de 20 min, entrega ate 18:00."
+          - generic [ref=e519]:
+            - generic [ref=e520]:
+              - generic [ref=e521]: Link do Produto (STL)
+              - textbox [ref=e522]
+            - generic [ref=e523]:
+              - generic [ref=e524]: Qualidade de Impressao
+              - combobox "Qualidade de Impressao" [ref=e525]:
+                - option "Baixo"
+                - option "Normal" [selected]
+                - option "Alto"
+                - option "Extremo"
+            - generic [ref=e526]:
+              - generic [ref=e527]: Status da Impressao
+              - combobox "Status da Impressao" [ref=e528]:
+                - option "Pendente"
+                - option "Na Fila" [selected]
+                - option "Preparado"
+                - option "Em Andamento"
+                - option "Concluído"
+          - generic [ref=e529]:
+            - heading "Detalhamento de Custos" [level=3] [ref=e531]:
+              - img [ref=e532]
+              - text: Detalhamento de Custos
+            - generic [ref=e534]:
+              - generic [ref=e535]:
+                - generic [ref=e536]: Custo de Produção
+                - generic [ref=e537]: R$ 0.00
+              - generic [ref=e538]:
+                - generic [ref=e539]: Frete
+                - spinbutton "Frete" [ref=e540]: "0"
+              - generic [ref=e541]:
+                - generic [ref=e542]: Custo Total
+                - generic [ref=e543]: R$ 0.00
+              - generic [ref=e544]:
+                - generic [ref=e545]: Nozzle
+                - textbox "0.4mm" [ref=e546]
+              - generic [ref=e547]:
+                - generic [ref=e548]: Camada
+                - textbox "0.2mm" [ref=e549]
+          - generic [ref=e550]:
+            - generic [ref=e551]:
+              - generic [ref=e552]: Valor de Venda (R$)
+              - generic [ref=e553]:
+                - generic [ref=e554]: R$
+                - spinbutton "Valor de Venda (R$)" [ref=e555]: "0"
+            - generic [ref=e556]:
+              - paragraph [ref=e557]: Lucro Estimado
+              - generic [ref=e558]:
+                - generic [ref=e559]: R$ 0.00
+                - generic [ref=e560]: 0.00%
+              - paragraph [ref=e561]: Margem calculada sobre o custo de producao. O frete fica fora da base percentual.
+        - generic [ref=e562]:
+          - generic [ref=e563] [cursor=pointer]:
+            - checkbox "Impressão Concluída" [ref=e564]
+            - generic [ref=e565]: Impressão Concluída
+          - generic [ref=e566] [cursor=pointer]:
+            - checkbox "Entregue" [ref=e567]
+            - generic [ref=e568]: Entregue
+          - generic [ref=e569] [cursor=pointer]:
+            - checkbox "Pago" [ref=e570]
+            - generic [ref=e571]: Pago
+        - generic [ref=e572]:
+          - button "Cancelar" [ref=e573]
+          - button "Salvar Venda" [ref=e574]
+  - button "Open Next.js Dev Tools" [ref=e235] [cursor=pointer]:
+    - img [ref=e236]
+  - alert [ref=e80]

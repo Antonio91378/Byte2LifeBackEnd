@@ -1,0 +1,86 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e3]:
+      - link "BYTE2LIFE" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img [ref=e6]
+        - generic [ref=e8]: BYTE2LIFE
+      - generic [ref=e9]:
+        - link "Estoque" [ref=e10] [cursor=pointer]:
+          - /url: /stock
+          - img [ref=e11]
+          - text: Estoque
+        - link "Filamentos" [ref=e13] [cursor=pointer]:
+          - /url: /filaments
+          - img [ref=e14]
+          - text: Filamentos
+        - link "Tintas" [ref=e16] [cursor=pointer]:
+          - /url: /paints
+          - img [ref=e17]
+          - text: Tintas
+        - link "Servicos" [ref=e19] [cursor=pointer]:
+          - /url: /services
+          - img [ref=e20]
+          - text: Servicos
+        - link "Clientes" [ref=e22] [cursor=pointer]:
+          - /url: /clients
+          - img [ref=e23]
+          - text: Clientes
+        - link "Vendas" [ref=e25] [cursor=pointer]:
+          - /url: /sales
+          - img [ref=e26]
+          - text: Vendas
+        - link "Importar" [ref=e28] [cursor=pointer]:
+          - /url: /import
+          - img [ref=e29]
+          - text: Importar
+  - main [ref=e31]:
+    - generic [ref=e371]:
+      - generic [ref=e372]:
+        - heading "Registro de Vendas" [level=1] [ref=e373]
+        - generic [ref=e374]:
+          - generic [ref=e375]:
+            - generic [ref=e376]:
+              - generic [ref=e377]:
+                - img [ref=e378]
+                - text: "Filtrar:"
+              - combobox [ref=e380] [cursor=pointer]:
+                - option "Dia" [selected]
+                - option "Mês"
+              - generic [ref=e382]:
+                - combobox "Cliente" [ref=e383]: Gab
+                - button "Limpar cliente" [ref=e384]:
+                  - img [ref=e385]
+              - generic [ref=e388]:
+                - textbox "Produto" [ref=e389]: Angel
+                - button "Limpar produto" [ref=e390]:
+                  - img [ref=e391]
+            - textbox "Filtrar:" [ref=e395] [cursor=pointer]
+          - button "Filtros" [ref=e397]:
+            - img [ref=e398]
+            - generic [ref=e400]: Filtros
+            - img [ref=e401]
+          - button "Ocultar lucro" [ref=e403]:
+            - img [ref=e404]
+            - text: Ocultar lucro
+          - link "Nova Venda" [ref=e407] [cursor=pointer]:
+            - /url: /sales/new?filterType=date&filterClientName=Gab&filterProductName=Angel
+            - img [ref=e408]
+            - text: Nova Venda
+      - generic [ref=e410]:
+        - generic [ref=e411]:
+          - paragraph [ref=e412]: Faturamento Total
+          - paragraph [ref=e413]: R$ 0.00
+        - generic [ref=e414]:
+          - paragraph [ref=e415]: Lucro Líquido
+          - paragraph [ref=e416]: R$ 0.00
+        - generic [ref=e417]:
+          - paragraph [ref=e418]: Impressões Pendentes
+          - paragraph [ref=e419]: "0"
+      - generic [ref=e420]:
+        - img [ref=e421]
+        - heading "Nenhuma venda encontrada" [level=3] [ref=e423]
+        - paragraph [ref=e424]: Ajuste os filtros ou limpe a busca para ver mais resultados.
+  - button "Open Next.js Dev Tools" [ref=e38] [cursor=pointer]:
+    - img [ref=e39]
+  - alert [ref=e42]

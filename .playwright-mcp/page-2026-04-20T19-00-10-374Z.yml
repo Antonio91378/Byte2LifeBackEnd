@@ -1,0 +1,163 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e3]:
+      - link "BYTE2LIFE" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img [ref=e6]
+        - generic [ref=e8]: BYTE2LIFE
+      - generic [ref=e9]:
+        - link "Estoque" [ref=e10] [cursor=pointer]:
+          - /url: /stock
+          - img [ref=e11]
+          - text: Estoque
+        - link "Filamentos" [ref=e13] [cursor=pointer]:
+          - /url: /filaments
+          - img [ref=e14]
+          - text: Filamentos
+        - link "Tintas" [ref=e16] [cursor=pointer]:
+          - /url: /paints
+          - img [ref=e17]
+          - text: Tintas
+        - link "Servicos" [ref=e19] [cursor=pointer]:
+          - /url: /services
+          - img [ref=e20]
+          - text: Servicos
+        - link "Clientes" [ref=e22] [cursor=pointer]:
+          - /url: /clients
+          - img [ref=e23]
+          - text: Clientes
+        - link "Vendas" [ref=e25] [cursor=pointer]:
+          - /url: /sales
+          - img [ref=e26]
+          - text: Vendas
+        - link "Importar" [ref=e28] [cursor=pointer]:
+          - /url: /import
+          - img [ref=e29]
+          - text: Importar
+  - main [ref=e31]:
+    - generic [ref=e32]:
+      - heading "Nova Venda" [level=1] [ref=e33]
+      - generic [ref=e34]:
+        - generic [ref=e35]:
+          - generic [ref=e36]:
+            - generic [ref=e37]: Descricao do Produto
+            - textbox [ref=e38]
+          - generic [ref=e39]:
+            - generic [ref=e40]: Massa (g)
+            - spinbutton [ref=e41]: "0"
+          - generic [ref=e42]:
+            - generic [ref=e43]: Filamento
+            - button "Informe a massa para listar filamentos" [disabled] [ref=e45]:
+              - generic [ref=e47]: Informe a massa para listar filamentos
+              - img [ref=e48]
+          - generic [ref=e50]:
+            - generic [ref=e51]: Cliente
+            - combobox [ref=e52]:
+              - option "Selecione um cliente..." [selected]
+          - generic [ref=e53]:
+            - generic [ref=e54]: Data da Venda
+            - textbox [ref=e55]: 2026-04-20
+          - generic [ref=e56]:
+            - generic [ref=e57]: Data de Entrega
+            - textbox [ref=e58]
+          - generic [ref=e59]:
+            - generic [ref=e60]: Tempo de Impressao
+            - 'textbox "ex: 4h 30m" [ref=e61]'
+          - generic [ref=e62]:
+            - generic [ref=e63]: Adicionais
+            - generic [ref=e64]:
+              - generic [ref=e65] [cursor=pointer]:
+                - checkbox "Arte Personalizada" [ref=e66]
+                - generic [ref=e67]: Arte Personalizada
+              - generic [ref=e68] [cursor=pointer]:
+                - checkbox "Pintura" [ref=e69]
+                - generic [ref=e70]: Pintura
+              - generic [ref=e71] [cursor=pointer]:
+                - checkbox "Verniz" [ref=e72]
+                - generic [ref=e73]: Verniz
+          - generic [ref=e75]:
+            - generic [ref=e77]:
+              - heading "Agenda de impressão" [level=2] [ref=e78]
+              - paragraph [ref=e79]: Escolha um horário para impressão e serviços adicionais.
+            - generic [ref=e81]:
+              - generic [ref=e82]:
+                - generic [ref=e83]:
+                  - heading "Agenda de impressao" [level=3] [ref=e84]
+                  - paragraph [ref=e85]: Sugestao baseada na fila e no horario de trabalho.
+                - generic [ref=e86]: Impressao
+              - generic [ref=e87]:
+                - generic [ref=e88]:
+                  - paragraph [ref=e89]: Inicio sugerido
+                  - paragraph [ref=e90]: "--"
+                - generic [ref=e91]:
+                  - paragraph [ref=e92]: Entrega sugerida
+                  - paragraph [ref=e93]: "--"
+              - generic [ref=e94]:
+                - img [ref=e95]
+                - text: Marque a agenda de impressao clicando no horario desejado.
+              - generic [ref=e97]: Carregando agenda...
+          - generic [ref=e99]:
+            - generic [ref=e100]:
+              - generic [ref=e101]: Link do Produto (STL)
+              - textbox [ref=e102]
+            - generic [ref=e103]:
+              - generic [ref=e104]: Qualidade de Impressao
+              - combobox "Qualidade de Impressao" [ref=e105]:
+                - option "Baixo"
+                - option "Normal" [selected]
+                - option "Alto"
+                - option "Extremo"
+            - generic [ref=e106]:
+              - generic [ref=e107]: Status da Impressao
+              - combobox "Status da Impressao" [ref=e108]:
+                - option "Pendente"
+                - option "Na Fila" [selected]
+                - option "Preparado"
+                - option "Em Andamento"
+                - option "Concluído"
+          - generic [ref=e109]:
+            - heading "Detalhamento de Custos" [level=3] [ref=e111]:
+              - img [ref=e112]
+              - text: Detalhamento de Custos
+            - generic [ref=e114]:
+              - generic [ref=e115]:
+                - generic [ref=e116]: Custo de Produção
+                - generic [ref=e117]: R$ 0.00
+              - generic [ref=e118]:
+                - generic [ref=e119]: Frete
+                - spinbutton "Frete" [ref=e120]: "0"
+              - generic [ref=e121]:
+                - generic [ref=e122]: Custo Total
+                - generic [ref=e123]: R$ 0.00
+              - generic [ref=e124]:
+                - generic [ref=e125]: Nozzle
+                - textbox "0.4mm" [ref=e126]
+              - generic [ref=e127]:
+                - generic [ref=e128]: Camada
+                - textbox "0.2mm" [ref=e129]
+          - generic [ref=e130]:
+            - generic [ref=e131]:
+              - generic [ref=e132]: Valor de Venda (R$)
+              - generic [ref=e133]:
+                - generic [ref=e134]: R$
+                - spinbutton "Valor de Venda (R$)" [ref=e135]: "0"
+            - generic [ref=e136]:
+              - paragraph [ref=e137]: Lucro Estimado
+              - generic [ref=e139]: R$ 0.00
+              - paragraph [ref=e141]: Margem calculada sobre o custo de producao. O frete fica fora da base percentual.
+        - generic [ref=e142]:
+          - generic [ref=e143] [cursor=pointer]:
+            - checkbox "Impressão Concluída" [ref=e144]
+            - generic [ref=e145]: Impressão Concluída
+          - generic [ref=e146] [cursor=pointer]:
+            - checkbox "Entregue" [ref=e147]
+            - generic [ref=e148]: Entregue
+          - generic [ref=e149] [cursor=pointer]:
+            - checkbox "Pago" [ref=e150]
+            - generic [ref=e151]: Pago
+        - generic [ref=e152]:
+          - button "Cancelar" [ref=e153]
+          - button "Salvar Venda" [ref=e154]
+  - button "Open Next.js Dev Tools" [ref=e160] [cursor=pointer]:
+    - img [ref=e161]
+  - alert [ref=e164]
