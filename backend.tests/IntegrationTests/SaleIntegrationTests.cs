@@ -7,6 +7,7 @@ using Byte2Life.API.Persistence;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using Xunit;
 
@@ -63,6 +64,7 @@ namespace Byte2Life.API.Tests.IntegrationTests
                 Description = "3D Print Job", 
                 MassGrams = 100, 
                 Cost = 20.00m, 
+                ShippingCost = 12.50m,
                 SaleValue = 50.00m,
                 FilamentId = createdFilament!.Id
             };
@@ -75,6 +77,9 @@ namespace Byte2Life.API.Tests.IntegrationTests
             var createdSale = await response.Content.ReadFromJsonAsync<Sale>(_jsonOptions);
             createdSale.Should().NotBeNull();
             createdSale!.Description.Should().Be(newSale.Description);
+            createdSale.ShippingCost.Should().Be(newSale.ShippingCost);
+            createdSale.Profit.Should().Be(30.00m);
+            createdSale.ProfitPercentage.Should().Be("400.00%");
 
             // Assert - Filament Updated
             var getFilamentResponse = await _client.GetAsync($"/api/filaments/{createdFilament.Id}");
@@ -105,6 +110,36 @@ namespace Byte2Life.API.Tests.IntegrationTests
             sales.Should().Contain(s => s.Description == "Sale Jan");
             sales.Should().Contain(s => s.Description == "Sale Jan 2");
             sales.Should().NotContain(s => s.Description == "Sale Feb");
+        }
+
+        [Fact]
+        public async Task GetSaleById_NormalizesProfitPercentage_UsingProductionCostBase()
+        {
+            // Arrange
+            var sale = new Sale
+            {
+                Id = ObjectId.GenerateNewId(),
+                Description = "Freight normalization",
+                Cost = 44.205m,
+                ShippingCost = 31.60m,
+                ProductionCost = 12.605m,
+                SaleValue = 65.00m,
+                Profit = 999m,
+                ProfitPercentage = "999%"
+            };
+
+            await _db.GetCollection<Sale>(MongoCollectionNames.Sales).InsertOneAsync(sale);
+
+            // Act
+            var response = await _client.GetAsync($"/api/sales/{sale.Id}");
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            var normalizedSale = await response.Content.ReadFromJsonAsync<Sale>(_jsonOptions);
+
+            normalizedSale.Should().NotBeNull();
+            normalizedSale!.Profit.Should().Be(20.795m);
+            normalizedSale.ProfitPercentage.Should().Be("164.97%");
         }
 
         [Fact]

@@ -2,6 +2,7 @@ using Byte2Life.API.Models;
 using Byte2Life.API.Persistence;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using System.Globalization;
 using System.Text.RegularExpressions;
 
 namespace Byte2Life.API.Services
@@ -24,7 +25,7 @@ namespace Byte2Life.API.Services
         {
             if (string.IsNullOrWhiteSpace(dateFilter))
             {
-                return Task.FromResult(_salesCollection.Find(FilterDefinition<Sale>.Empty).ToList());
+                return Task.FromResult(NormalizeFinancialFields(_salesCollection.Find(FilterDefinition<Sale>.Empty).ToList()));
             }
 
             if (dateFilter.Length == 7 && dateFilter.Contains("-"))
@@ -35,7 +36,7 @@ namespace Byte2Life.API.Services
                     var end = start.AddMonths(1);
                     var filter = Builders<Sale>.Filter.Gte(sale => sale.SaleDate, start)
                         & Builders<Sale>.Filter.Lt(sale => sale.SaleDate, end);
-                    return Task.FromResult(_salesCollection.Find(filter).ToList());
+                    return Task.FromResult(NormalizeFinancialFields(_salesCollection.Find(filter).ToList()));
                 }
             }
 
@@ -45,10 +46,10 @@ namespace Byte2Life.API.Services
                 var end = start.AddDays(1);
                 var filter = Builders<Sale>.Filter.Gte(sale => sale.SaleDate, start)
                     & Builders<Sale>.Filter.Lt(sale => sale.SaleDate, end);
-                return Task.FromResult(_salesCollection.Find(filter).ToList());
+                return Task.FromResult(NormalizeFinancialFields(_salesCollection.Find(filter).ToList()));
             }
 
-            return Task.FromResult(_salesCollection.Find(FilterDefinition<Sale>.Empty).ToList());
+            return Task.FromResult(NormalizeFinancialFields(_salesCollection.Find(FilterDefinition<Sale>.Empty).ToList()));
         }
 
         public Task<Sale?> GetByIdAsync(string id) =>
@@ -57,11 +58,11 @@ namespace Byte2Life.API.Services
         public Task<List<Sale>> GetByFilamentIdAsync(string filamentId)
         {
             var objectId = MongoId.Parse(filamentId);
-            return Task.FromResult(_salesCollection.AsQueryable().Where(sale => sale.FilamentId == objectId).ToList());
+            return Task.FromResult(NormalizeFinancialFields(_salesCollection.AsQueryable().Where(sale => sale.FilamentId == objectId).ToList()));
         }
 
         public Task<Sale?> GetCurrentPrintAsync() =>
-            Task.FromResult(_salesCollection.AsQueryable().FirstOrDefault(sale => sale.PrintStatus == "InProgress" || sale.PrintStatus == "Staged"));
+            Task.FromResult(GetNormalizedCurrentPrint());
 
         public Task<List<Sale>> GetQueueAsync()
         {
@@ -70,23 +71,23 @@ namespace Byte2Life.API.Services
                 .OrderByDescending(sale => sale.Priority)
                 .ToList();
 
-            return Task.FromResult(UpdateQueueSchedule(queue));
+            return Task.FromResult(NormalizeFinancialFields(UpdateQueueSchedule(queue)));
         }
 
         public Task<List<Sale>> GetPaintingScheduleAsync()
         {
             var sales = _salesCollection.Find(FilterDefinition<Sale>.Empty).ToList();
-            return Task.FromResult(sales.Where(sale =>
+            return Task.FromResult(NormalizeFinancialFields(sales.Where(sale =>
                 sale.HasPainting ||
                 sale.PaintStartConfirmedAt != null ||
                 sale.PaintTimeHours > 0 ||
-                !string.IsNullOrWhiteSpace(sale.PaintResponsible)).ToList());
+                !string.IsNullOrWhiteSpace(sale.PaintResponsible)).ToList()));
         }
 
         public Task<List<Sale>> GetServiceScheduleAsync()
         {
             var sales = _salesCollection.Find(FilterDefinition<Sale>.Empty).ToList();
-            return Task.FromResult(sales.Where(sale =>
+            return Task.FromResult(NormalizeFinancialFields(sales.Where(sale =>
                 sale.HasPainting ||
                 sale.PaintStartConfirmedAt != null ||
                 sale.PaintTimeHours > 0 ||
@@ -95,7 +96,7 @@ namespace Byte2Life.API.Services
                 sale.DesignStartConfirmedAt != null ||
                 sale.DesignTimeHours > 0 ||
                 !string.IsNullOrWhiteSpace(sale.DesignResponsible) ||
-                sale.DesignValue.HasValue).ToList());
+                sale.DesignValue.HasValue).ToList()));
         }
 
         private static string NormalizeServiceStatus(string? value)
@@ -122,7 +123,67 @@ namespace Byte2Life.API.Services
 
         private Sale? FindSaleById(string id)
         {
-            return _salesCollection.Find(MongoId.FilterById<Sale>(id)).FirstOrDefault();
+            var sale = _salesCollection.Find(MongoId.FilterById<Sale>(id)).FirstOrDefault();
+            if (sale is null)
+            {
+                return null;
+            }
+
+            return NormalizeFinancialFields(sale);
+        }
+
+        private Sale? GetNormalizedCurrentPrint()
+        {
+            var sale = _salesCollection.AsQueryable().FirstOrDefault(currentSale => currentSale.PrintStatus == "InProgress" || currentSale.PrintStatus == "Staged");
+            if (sale is null)
+            {
+                return null;
+            }
+
+            return NormalizeFinancialFields(sale);
+        }
+
+        private static decimal ResolveBaseCost(Sale sale)
+        {
+            if (sale.ProductionCost.HasValue && sale.ProductionCost.Value > 0)
+            {
+                return sale.ProductionCost.Value;
+            }
+
+            if (sale.Cost <= 0)
+            {
+                return 0;
+            }
+
+            var shippingCost = Math.Max(sale.ShippingCost, 0);
+            var derivedBaseCost = sale.Cost - shippingCost;
+            return derivedBaseCost > 0 ? derivedBaseCost : sale.Cost;
+        }
+
+        private static Sale NormalizeFinancialFields(Sale sale)
+        {
+            if (sale.Cost <= 0 && (sale.ProductionCost.GetValueOrDefault() > 0 || sale.ShippingCost > 0))
+            {
+                sale.Cost = sale.ProductionCost.GetValueOrDefault() + Math.Max(sale.ShippingCost, 0);
+            }
+
+            sale.Profit = sale.SaleValue - sale.Cost;
+
+            var baseCost = ResolveBaseCost(sale);
+            sale.ProfitPercentage = baseCost > 0
+                ? ((sale.Profit / baseCost) * 100m).ToString("0.00", CultureInfo.InvariantCulture) + "%"
+                : "0%";
+
+            return sale;
+        }
+
+        private static List<Sale> NormalizeFinancialFields(List<Sale> sales)
+        {
+            sales.ForEach(sale =>
+            {
+                NormalizeFinancialFields(sale);
+            });
+            return sales;
         }
 
         private static void NormalizePaintingFields(Sale sale)
@@ -265,6 +326,7 @@ namespace Byte2Life.API.Services
             NormalizeDesignFields(newSale);
             newSale.DesignStatus = NormalizeServiceStatus(newSale.DesignStatus);
             newSale.PaintStatus = NormalizeServiceStatus(newSale.PaintStatus);
+            NormalizeFinancialFields(newSale);
             ValidateDesignSchedule(newSale);
             ValidatePaintSchedule(newSale);
             _salesCollection.InsertOne(newSale);
@@ -310,6 +372,7 @@ namespace Byte2Life.API.Services
             NormalizeDesignFields(updatedSale);
             updatedSale.DesignStatus = NormalizeServiceStatus(updatedSale.DesignStatus);
             updatedSale.PaintStatus = NormalizeServiceStatus(updatedSale.PaintStatus);
+            NormalizeFinancialFields(updatedSale);
             ValidateDesignSchedule(updatedSale);
             ValidatePaintSchedule(updatedSale);
             await AdjustFilamentStockAsync(existingSale, updatedSale);
@@ -393,6 +456,7 @@ namespace Byte2Life.API.Services
             sale.PrintStartConfirmedAt = printStartConfirmedAt;
             ValidateDesignSchedule(sale);
             AdjustPaintScheduleAfterPrintChange(sale);
+            NormalizeFinancialFields(sale);
             _salesCollection.ReplaceOne(MongoId.FilterById<Sale>(id), sale);
             return Task.CompletedTask;
         }
@@ -416,6 +480,7 @@ namespace Byte2Life.API.Services
             }
             NormalizePaintingFields(sale);
             ValidatePaintSchedule(sale);
+            NormalizeFinancialFields(sale);
             _salesCollection.ReplaceOne(MongoId.FilterById<Sale>(id), sale);
             return Task.CompletedTask;
         }
@@ -444,6 +509,7 @@ namespace Byte2Life.API.Services
 
             NormalizeDesignFields(sale);
             ValidateDesignSchedule(sale);
+            NormalizeFinancialFields(sale);
             _salesCollection.ReplaceOne(MongoId.FilterById<Sale>(id), sale);
             return Task.CompletedTask;
         }
@@ -457,6 +523,7 @@ namespace Byte2Life.API.Services
             }
 
             sale.DesignStatus = NormalizeServiceStatus(designStatus);
+            NormalizeFinancialFields(sale);
             _salesCollection.ReplaceOne(MongoId.FilterById<Sale>(id), sale);
             return Task.CompletedTask;
         }
@@ -470,6 +537,7 @@ namespace Byte2Life.API.Services
             }
 
             sale.PaintStatus = NormalizeServiceStatus(paintStatus);
+            NormalizeFinancialFields(sale);
             _salesCollection.ReplaceOne(MongoId.FilterById<Sale>(id), sale);
             return Task.CompletedTask;
         }

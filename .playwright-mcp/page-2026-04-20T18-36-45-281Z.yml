@@ -1,0 +1,14 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e3]:
+      - link "BYTE2LIFE" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img [ref=e6]
+        - generic [ref=e8]: BYTE2LIFE
+      - button [ref=e10]:
+        - img [ref=e11]
+  - main [ref=e13]:
+    - generic [ref=e14]: Carregando...
+  - button "Open Next.js Dev Tools" [ref=e20] [cursor=pointer]:
+    - img [ref=e21]
+  - alert [ref=e24]

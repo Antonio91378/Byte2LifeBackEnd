@@ -58,6 +58,7 @@ namespace Byte2Life.API.Models
 
         public string? NozzleDiameter { get; set; }
         public string? LayerHeight { get; set; }
+        public decimal ShippingCost { get; set; }
         public decimal? ProductionCost { get; set; }
     }
 }
