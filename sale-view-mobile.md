@@ -1,0 +1,143 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e3]:
+      - link "BYTE2LIFE" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img [ref=e6]
+        - generic [ref=e8]: BYTE2LIFE
+      - button [ref=e180]:
+        - img [ref=e181]
+  - main [ref=e31]:
+    - generic [ref=e32]:
+      - generic [ref=e43]:
+        - generic [ref=e44]:
+          - generic [ref=e45]:
+            - generic [ref=e46]: Pendente
+            - generic [ref=e47]: A enviar
+            - generic [ref=e48]: Não pago
+          - generic [ref=e49]:
+            - paragraph [ref=e50]: Visualização da venda
+            - heading "VENDA QA NAVEGADOR 2026-04-20 20-02 EDITADA" [level=1] [ref=e51]
+          - generic [ref=e52]:
+            - generic [ref=e53]:
+              - generic [ref=e54]: "Cliente:"
+              - generic [ref=e55]: Não informado
+            - generic [ref=e56]:
+              - generic [ref=e57]: "Filamento:"
+              - generic [ref=e58]: Não informado
+            - generic [ref=e59]:
+              - generic [ref=e60]: "Data da venda:"
+              - generic [ref=e61]: 20/04/2026
+            - generic [ref=e62]:
+              - generic [ref=e63]: "Entrega:"
+              - generic [ref=e64]: 25/04/2026
+        - generic [ref=e65]:
+          - button "Voltar" [ref=e66]
+          - link "Editar venda" [ref=e67] [cursor=pointer]:
+            - /url: /sales/69e686f6f93d7ed936cb8b07
+      - generic [ref=e68]:
+        - generic [ref=e69]:
+          - paragraph [ref=e70]: Valor de venda
+          - paragraph [ref=e71]: R$ 89.90
+        - generic [ref=e72]:
+          - paragraph [ref=e73]: Custo total
+          - paragraph [ref=e74]: R$ 12.50
+        - generic [ref=e75]:
+          - paragraph [ref=e76]: Lucro
+          - paragraph [ref=e77]: R$ 77.40
+        - generic [ref=e78]:
+          - paragraph [ref=e79]: Margem
+          - paragraph [ref=e80]: 619.20%
+      - generic [ref=e81]:
+        - generic [ref=e82]:
+          - generic [ref=e83]:
+            - generic [ref=e84]:
+              - generic [ref=e85]:
+                - heading "Imagem do produto" [level=2] [ref=e86]
+                - paragraph [ref=e87]: Imagem principal que identifica a peça vendida.
+              - generic [ref=e88]: 1 de 1
+            - img "produto-qa.png" [ref=e91]
+          - generic [ref=e92]:
+            - generic [ref=e93]:
+              - generic [ref=e94]:
+                - heading "Imagens complementares" [level=2] [ref=e95]
+                - paragraph [ref=e96]: Comprovantes, etiquetas ou qualquer material visual de apoio.
+              - generic [ref=e97]: 1 de 1
+            - img "complementar-qa.png" [ref=e100]
+          - generic [ref=e101]:
+            - generic [ref=e103]:
+              - heading "Arquivos complementares" [level=2] [ref=e104]
+              - paragraph [ref=e105]: Modelos 3MF, STL, PDFs ou outros arquivos anexados à venda.
+            - generic [ref=e106]:
+              - generic [ref=e107]:
+                - generic [ref=e108]
+                - link "Baixar arquivo" [ref=e111] [cursor=pointer]:
+                  - /url: http://localhost:5000/api/sales/files/69e686f6f93d7ed936cb8b05
+              - generic [ref=e112]:
+                - generic [ref=e113]
+                - link "Baixar arquivo" [ref=e116] [cursor=pointer]:
+                  - /url: http://localhost:5000/api/sales/files/69e6878af93d7ed936cb8b08
+        - generic [ref=e117]:
+          - generic [ref=e118]:
+            - heading "Dados da venda" [level=2] [ref=e119]
+            - generic [ref=e120]:
+              - generic [ref=e121]:
+                - generic [ref=e122]: Cliente
+                - generic [ref=e123]: Não informado
+              - generic [ref=e124]:
+                - generic [ref=e125]: Filamento
+                - generic [ref=e126]: Não informado
+              - generic [ref=e127]:
+                - generic [ref=e128]: Qualidade
+                - generic [ref=e129]: Normal
+              - generic [ref=e130]:
+                - generic [ref=e131]: Massa
+                - generic [ref=e132]: 10 g
+              - generic [ref=e133]:
+                - generic [ref=e134]: Tempo estimado
+                - generic [ref=e135]: 1h 15m
+              - generic [ref=e136]:
+                - generic [ref=e137]: Início confirmado
+                - generic [ref=e138]: Não informado
+              - generic [ref=e139]:
+                - generic [ref=e140]: Frete
+                - generic [ref=e141]: R$ 12.50
+              - generic [ref=e142]:
+                - generic [ref=e143]: Custo de produção
+                - generic [ref=e144]: R$ 0.00
+          - generic [ref=e145]:
+            - heading "Serviços adicionais" [level=2] [ref=e146]
+            - generic [ref=e147]:
+              - generic [ref=e148]:
+                - generic [ref=e149]: Arte personalizada
+                - generic [ref=e150]: Não
+              - generic [ref=e151]:
+                - generic [ref=e152]: Pintura
+                - generic [ref=e153]: Não
+              - generic [ref=e154]:
+                - generic [ref=e155]: Verniz
+                - generic [ref=e156]: Não
+              - generic [ref=e157]:
+                - generic [ref=e158]: Responsável design
+                - generic [ref=e159]: Não informado
+              - generic [ref=e160]:
+                - generic [ref=e161]: Tempo design
+                - generic [ref=e162]: Não informado
+              - generic [ref=e163]:
+                - generic [ref=e164]: Valor design
+                - generic [ref=e165]: Não informado
+              - generic [ref=e166]:
+                - generic [ref=e167]: Responsável pintura
+                - generic [ref=e168]: Não informado
+              - generic [ref=e169]:
+                - generic [ref=e170]: Tempo pintura
+                - generic [ref=e171]: Não informado
+          - generic [ref=e172]:
+            - heading "Links e observações" [level=2] [ref=e173]
+            - generic [ref=e176]:
+              - paragraph [ref=e177]: Link do produto
+              - link "https://example.com/qa-sale-20260420" [ref=e178] [cursor=pointer]:
+                - /url: https://example.com/qa-sale-20260420
+  - button "Open Next.js Dev Tools" [ref=e38] [cursor=pointer]:
+    - img [ref=e39]
+  - alert [ref=e42]

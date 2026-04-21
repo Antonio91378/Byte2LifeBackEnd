@@ -1,0 +1,83 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e3]:
+      - link "BYTE2LIFE" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img [ref=e6]
+        - generic [ref=e8]: BYTE2LIFE
+      - generic [ref=e9]:
+        - link "Estoque" [ref=e10] [cursor=pointer]:
+          - /url: /stock
+          - img [ref=e11]
+          - text: Estoque
+        - link "Filamentos" [ref=e13] [cursor=pointer]:
+          - /url: /filaments
+          - img [ref=e14]
+          - text: Filamentos
+        - link "Tintas" [ref=e16] [cursor=pointer]:
+          - /url: /paints
+          - img [ref=e17]
+          - text: Tintas
+        - link "Servicos" [ref=e19] [cursor=pointer]:
+          - /url: /services
+          - img [ref=e20]
+          - text: Servicos
+        - link "Clientes" [ref=e22] [cursor=pointer]:
+          - /url: /clients
+          - img [ref=e23]
+          - text: Clientes
+        - link "Vendas" [ref=e25] [cursor=pointer]:
+          - /url: /sales
+          - img [ref=e26]
+          - text: Vendas
+        - link "Importar" [ref=e28] [cursor=pointer]:
+          - /url: /import
+          - img [ref=e29]
+          - text: Importar
+  - main [ref=e31]:
+    - generic [ref=e32]:
+      - generic [ref=e33]:
+        - heading "Registro de Vendas" [level=1] [ref=e34]
+        - generic [ref=e35]:
+          - generic [ref=e36]:
+            - generic [ref=e37]:
+              - generic [ref=e38]:
+                - img [ref=e39]
+                - text: "Filtrar:"
+              - combobox [ref=e41] [cursor=pointer]:
+                - option "Dia" [selected]
+                - option "Mês"
+              - combobox "Cliente" [ref=e44]
+              - textbox "Produto" [ref=e47]
+            - textbox "Filtrar:" [ref=e50] [cursor=pointer]
+          - button "Filtros" [ref=e52]:
+            - img [ref=e53]
+            - generic [ref=e55]: Filtros
+            - img [ref=e56]
+          - button "Ocultar lucro" [ref=e58]:
+            - img [ref=e59]
+            - text: Ocultar lucro
+          - button "Mais novas primeiro" [ref=e62]:
+            - img [ref=e63]
+            - text: Mais novas primeiro
+          - link "Nova Venda" [ref=e65] [cursor=pointer]:
+            - /url: /sales/new?filterType=date&sortDirection=desc
+            - img [ref=e66]
+            - text: Nova Venda
+      - generic [ref=e68]:
+        - generic [ref=e69]:
+          - paragraph [ref=e70]: Faturamento Total
+          - paragraph [ref=e71]: R$ 0.00
+        - generic [ref=e72]:
+          - paragraph [ref=e73]: Lucro Líquido
+          - paragraph [ref=e74]: R$ 0.00
+        - generic [ref=e75]:
+          - paragraph [ref=e76]: Impressões Pendentes
+          - paragraph [ref=e77]: "0"
+      - generic [ref=e78]:
+        - img [ref=e79]
+        - heading "Nenhuma venda registrada" [level=3] [ref=e81]
+        - paragraph [ref=e82]: Comece importando uma planilha ou criando uma nova venda.
+  - button "Open Next.js Dev Tools" [ref=e88] [cursor=pointer]:
+    - img [ref=e89]
+  - alert [ref=e92]

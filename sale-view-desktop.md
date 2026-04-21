@@ -1,0 +1,167 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e3]:
+      - link "BYTE2LIFE" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img [ref=e6]
+        - generic [ref=e8]: BYTE2LIFE
+      - generic [ref=e9]:
+        - link "Estoque" [ref=e10] [cursor=pointer]:
+          - /url: /stock
+          - img [ref=e11]
+          - text: Estoque
+        - link "Filamentos" [ref=e13] [cursor=pointer]:
+          - /url: /filaments
+          - img [ref=e14]
+          - text: Filamentos
+        - link "Tintas" [ref=e16] [cursor=pointer]:
+          - /url: /paints
+          - img [ref=e17]
+          - text: Tintas
+        - link "Servicos" [ref=e19] [cursor=pointer]:
+          - /url: /services
+          - img [ref=e20]
+          - text: Servicos
+        - link "Clientes" [ref=e22] [cursor=pointer]:
+          - /url: /clients
+          - img [ref=e23]
+          - text: Clientes
+        - link "Vendas" [ref=e25] [cursor=pointer]:
+          - /url: /sales
+          - img [ref=e26]
+          - text: Vendas
+        - link "Importar" [ref=e28] [cursor=pointer]:
+          - /url: /import
+          - img [ref=e29]
+          - text: Importar
+  - main [ref=e31]:
+    - generic [ref=e32]:
+      - generic [ref=e43]:
+        - generic [ref=e44]:
+          - generic [ref=e45]:
+            - generic [ref=e46]: Pendente
+            - generic [ref=e47]: A enviar
+            - generic [ref=e48]: Não pago
+          - generic [ref=e49]:
+            - paragraph [ref=e50]: Visualização da venda
+            - heading "VENDA QA NAVEGADOR 2026-04-20 20-02" [level=1] [ref=e51]
+          - generic [ref=e52]:
+            - generic [ref=e53]:
+              - generic [ref=e54]: "Cliente:"
+              - generic [ref=e55]: Não informado
+            - generic [ref=e56]:
+              - generic [ref=e57]: "Filamento:"
+              - generic [ref=e58]: Não informado
+            - generic [ref=e59]:
+              - generic [ref=e60]: "Data da venda:"
+              - generic [ref=e61]: 20/04/2026
+            - generic [ref=e62]:
+              - generic [ref=e63]: "Entrega:"
+              - generic [ref=e64]: 25/04/2026
+        - generic [ref=e65]:
+          - button "Voltar" [ref=e66]
+          - link "Editar venda" [ref=e67] [cursor=pointer]:
+            - /url: /sales/69e686f6f93d7ed936cb8b07
+      - generic [ref=e68]:
+        - generic [ref=e69]:
+          - paragraph [ref=e70]: Valor de venda
+          - paragraph [ref=e71]: R$ 89.90
+        - generic [ref=e72]:
+          - paragraph [ref=e73]: Custo total
+          - paragraph [ref=e74]: R$ 12.50
+        - generic [ref=e75]:
+          - paragraph [ref=e76]: Lucro
+          - paragraph [ref=e77]: R$ 77.40
+        - generic [ref=e78]:
+          - paragraph [ref=e79]: Margem
+          - paragraph [ref=e80]: 619.20%
+      - generic [ref=e81]:
+        - generic [ref=e82]:
+          - generic [ref=e83]:
+            - generic [ref=e84]:
+              - generic [ref=e85]:
+                - heading "Imagem do produto" [level=2] [ref=e86]
+                - paragraph [ref=e87]: Imagem principal que identifica a peça vendida.
+              - generic [ref=e88]: 1 de 1
+            - img "produto-qa.png" [ref=e91]
+          - generic [ref=e92]:
+            - generic [ref=e93]:
+              - generic [ref=e94]:
+                - heading "Imagens complementares" [level=2] [ref=e95]
+                - paragraph [ref=e96]: Comprovantes, etiquetas ou qualquer material visual de apoio.
+              - generic [ref=e97]: 1 de 1
+            - img "complementar-qa.png" [ref=e100]
+          - generic [ref=e101]:
+            - generic [ref=e103]:
+              - heading "Arquivos complementares" [level=2] [ref=e104]
+              - paragraph [ref=e105]: Modelos 3MF, STL, PDFs ou outros arquivos anexados à venda.
+            - generic [ref=e107]:
+              - generic [ref=e108]:
+                - paragraph [ref=e109]: instrucoes-qa.txt
+                - paragraph [ref=e110]: text/plain • 88 B
+              - link "Baixar arquivo" [ref=e111] [cursor=pointer]:
+                - /url: http://localhost:5000/api/sales/files/69e686f6f93d7ed936cb8b05
+        - generic [ref=e112]:
+          - generic [ref=e113]:
+            - heading "Dados da venda" [level=2] [ref=e114]
+            - generic [ref=e115]:
+              - generic [ref=e116]:
+                - generic [ref=e117]: Cliente
+                - generic [ref=e118]: Não informado
+              - generic [ref=e119]:
+                - generic [ref=e120]: Filamento
+                - generic [ref=e121]: Não informado
+              - generic [ref=e122]:
+                - generic [ref=e123]: Qualidade
+                - generic [ref=e124]: Normal
+              - generic [ref=e125]:
+                - generic [ref=e126]: Massa
+                - generic [ref=e127]: 10 g
+              - generic [ref=e128]:
+                - generic [ref=e129]: Tempo estimado
+                - generic [ref=e130]: 1h 15m
+              - generic [ref=e131]:
+                - generic [ref=e132]: Início confirmado
+                - generic [ref=e133]: Não informado
+              - generic [ref=e134]:
+                - generic [ref=e135]: Frete
+                - generic [ref=e136]: R$ 12.50
+              - generic [ref=e137]:
+                - generic [ref=e138]: Custo de produção
+                - generic [ref=e139]: R$ 0.00
+          - generic [ref=e140]:
+            - heading "Serviços adicionais" [level=2] [ref=e141]
+            - generic [ref=e142]:
+              - generic [ref=e143]:
+                - generic [ref=e144]: Arte personalizada
+                - generic [ref=e145]: Não
+              - generic [ref=e146]:
+                - generic [ref=e147]: Pintura
+                - generic [ref=e148]: Não
+              - generic [ref=e149]:
+                - generic [ref=e150]: Verniz
+                - generic [ref=e151]: Não
+              - generic [ref=e152]:
+                - generic [ref=e153]: Responsável design
+                - generic [ref=e154]: Não informado
+              - generic [ref=e155]:
+                - generic [ref=e156]: Tempo design
+                - generic [ref=e157]: Não informado
+              - generic [ref=e158]:
+                - generic [ref=e159]: Valor design
+                - generic [ref=e160]: Não informado
+              - generic [ref=e161]:
+                - generic [ref=e162]: Responsável pintura
+                - generic [ref=e163]: Não informado
+              - generic [ref=e164]:
+                - generic [ref=e165]: Tempo pintura
+                - generic [ref=e166]: Não informado
+          - generic [ref=e167]:
+            - heading "Links e observações" [level=2] [ref=e168]
+            - generic [ref=e171]:
+              - paragraph [ref=e172]: Link do produto
+              - link "https://example.com/qa-sale-20260420" [ref=e173] [cursor=pointer]:
+                - /url: https://example.com/qa-sale-20260420
+  - button "Open Next.js Dev Tools" [ref=e38] [cursor=pointer]:
+    - img [ref=e39]
+  - alert [ref=e42]

@@ -1,0 +1,155 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e3]:
+      - link "BYTE2LIFE" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img [ref=e6]
+        - generic [ref=e8]: BYTE2LIFE
+      - button [ref=e10]:
+        - img [ref=e11]
+  - main [ref=e13]:
+    - generic [ref=e14]:
+      - generic [ref=e15]:
+        - heading "Byte2Life" [level=1] [ref=e16]
+        - paragraph [ref=e17]: Plataforma de gerenciamento inteligente para sua produção de impressão 3D.
+      - generic [ref=e19]:
+        - generic [ref=e20]:
+          - generic [ref=e21]:
+            - heading "Lembretes" [level=2] [ref=e22]
+            - paragraph [ref=e23]: 4 pendentes
+          - generic [ref=e24]:
+            - button "Ocultar lembretes" [ref=e25]:
+              - img [ref=e26]
+            - button "Adicionar lembrete" [ref=e28]:
+              - img [ref=e29]
+        - generic [ref=e31]:
+          - generic [ref=e78]:
+            - button "Marcar como concluido" [ref=e79]:
+              - img [ref=e80]
+            - generic [ref=e82]:
+              - paragraph [ref=e83]: "Adicionar campo de anexar arquivos de imagem nas vendas (ex: notinha dos correios)"
+              - paragraph [ref=e84]: Criado em 20/04/2026
+            - generic [ref=e85]:
+              - button "Editar lembrete" [ref=e86]:
+                - img [ref=e87]
+              - button "Excluir lembrete" [ref=e89]:
+                - img [ref=e90]
+          - generic [ref=e92]:
+            - button "Marcar como concluido" [ref=e93]:
+              - img [ref=e94]
+            - generic [ref=e96]:
+              - paragraph [ref=e97]: Criar favicon e nome da página certinho
+              - paragraph [ref=e98]: Criado em 20/04/2026
+            - generic [ref=e99]:
+              - button "Editar lembrete" [ref=e100]:
+                - img [ref=e101]
+              - button "Excluir lembrete" [ref=e103]:
+                - img [ref=e104]
+          - generic [ref=e106]:
+            - button "Marcar como concluido" [ref=e107]:
+              - img [ref=e108]
+            - generic [ref=e110]:
+              - paragraph [ref=e111]: Tentar encontrar um PLA Transparente compatível com Bico de 0.2mm
+              - paragraph [ref=e112]: Criado em 17/04/2026
+            - generic [ref=e113]:
+              - button "Editar lembrete" [ref=e114]:
+                - img [ref=e115]
+              - button "Excluir lembrete" [ref=e117]:
+                - img [ref=e118]
+          - generic [ref=e120]:
+            - button "Marcar como concluido" [ref=e121]:
+              - img [ref=e122]
+            - generic [ref=e124]:
+              - paragraph [ref=e125]: Experimentar comprar o PLA Revolution
+              - paragraph [ref=e126]: Criado em 09/01/2026
+            - generic [ref=e127]:
+              - button "Editar lembrete" [ref=e128]:
+                - img [ref=e129]
+              - button "Excluir lembrete" [ref=e131]:
+                - img [ref=e132]
+          - generic [ref=e134]:
+            - button "Marcar como pendente" [ref=e135]:
+              - img [ref=e136]
+            - generic [ref=e138]:
+              - paragraph [ref=e139]: Filtrar vendas pelo nome do produto
+              - paragraph [ref=e140]: Criado em 20/04/2026
+            - generic [ref=e141]:
+              - button "Editar lembrete" [ref=e142]:
+                - img [ref=e143]
+              - button "Excluir lembrete" [ref=e145]:
+                - img [ref=e146]
+          - generic [ref=e148]:
+            - button "Marcar como pendente" [ref=e149]:
+              - img [ref=e150]
+            - generic [ref=e152]:
+              - paragraph [ref=e153]: Adicionar campo de custo de frete
+              - paragraph [ref=e154]: Criado em 18/04/2026
+            - generic [ref=e155]:
+              - button "Editar lembrete" [ref=e156]:
+                - img [ref=e157]
+              - button "Excluir lembrete" [ref=e159]:
+                - img [ref=e160]
+      - generic [ref=e34]:
+        - generic [ref=e162]:
+          - generic [ref=e163]:
+            - generic [ref=e164]:
+              - heading "Impressão Atual" [level=2] [ref=e165]:
+                - img [ref=e166]
+                - text: Impressão Atual
+              - generic [ref=e168]:
+                - button "Impressora 4" [ref=e169]
+                - button "Antônio 1" [ref=e171]
+                - button "Lara 1" [ref=e173]
+            - generic [ref=e176]:
+              - generic [ref=e177]: Aguardando Início
+              - heading "Estatueta Personalizada Claudinei" [level=3] [ref=e178]
+              - paragraph [ref=e179]: Pronto para imprimir
+              - generic [ref=e182]: "Filamento: Preto"
+              - generic [ref=e183]:
+                - link "Ver Detalhes" [ref=e184] [cursor=pointer]:
+                  - /url: /sales/view/695edb652cd7380f2f0cb7bc
+                - button "Iniciar Contabilizador" [ref=e188]
+          - generic [ref=e192]:
+            - heading "Fila de Impressão" [level=2] [ref=e194]:
+              - img [ref=e195]
+              - text: Fila de Impressão
+            - table [ref=e198]:
+              - rowgroup [ref=e199]:
+                - row "Prioridade Entrega/Início Descrição Status Ação" [ref=e200]
+              - rowgroup [ref=e206]:
+                - row "1 24/01/2026, 12:30:00 Design Estatueta Personalizada Claudinei Ativo Detalhes" [ref=e207]
+                - row "2 01/02/2026 Impressão Vaso de caixão com drenagem e bandeja InQueue Detalhes Iniciar" [ref=e223]
+                - row "3 05/02/2026 Impressão Moldura de morcego InQueue Detalhes Iniciar" [ref=e244]
+                - row "4 25/04/2026 Impressão VENDA QA NAVEGADOR 2026-04-20 20-02 EDITADA InQueue Detalhes Iniciar" [ref=e265]
+                - row "5 27/01/2026 Impressão Morcego rolo de papel InQueue Detalhes Iniciar" [ref=e286]
+                - row "6 - Pintura Angel (Stitch) Ativo Detalhes" [ref=e307]
+                - row "7 - Pintura Mascote Cruzeiro Ativo Detalhes" [ref=e323]
+        - button "Abrir agenda de impressao" [ref=e340]
+      - generic [ref=e35]:
+        - link "Filamentos Gerencie seu estoque de materiais. Acompanhe cores, quantidades e custos em tempo real." [ref=e36] [cursor=pointer]:
+          - /url: /filaments
+          - generic [ref=e38]:
+            - img [ref=e40]
+            - heading "Filamentos" [level=2] [ref=e42]
+            - paragraph [ref=e43]: Gerencie seu estoque de materiais. Acompanhe cores, quantidades e custos em tempo real.
+        - link "Vendas Controle total sobre seus pedidos. Visualize lucros, status de entrega e pagamentos." [ref=e44] [cursor=pointer]:
+          - /url: /sales
+          - generic [ref=e46]:
+            - img [ref=e48]
+            - heading "Vendas" [level=2] [ref=e50]
+            - paragraph [ref=e51]: Controle total sobre seus pedidos. Visualize lucros, status de entrega e pagamentos.
+        - link "Simulação Faça orçamentos precisos. Calcule custos e lucros baseados em material, tempo e qualidade." [ref=e52] [cursor=pointer]:
+          - /url: /budget
+          - generic [ref=e54]:
+            - img [ref=e56]
+            - heading "Simulação" [level=2] [ref=e58]
+            - paragraph [ref=e59]: Faça orçamentos precisos. Calcule custos e lucros baseados em material, tempo e qualidade.
+        - link "Investimentos Acompanhe o ROI do seu negócio. Compare lucros vs investimentos e saiba quando atingirá o break-even." [ref=e60] [cursor=pointer]:
+          - /url: /investments
+          - generic [ref=e62]:
+            - img [ref=e64]
+            - heading "Investimentos" [level=2] [ref=e66]
+            - paragraph [ref=e67]: Acompanhe o ROI do seu negócio. Compare lucros vs investimentos e saiba quando atingirá o break-even.
+  - button "Open Next.js Dev Tools" [ref=e73] [cursor=pointer]:
+    - img [ref=e74]
+  - alert [ref=e77]

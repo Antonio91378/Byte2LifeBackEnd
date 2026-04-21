@@ -16,13 +16,19 @@ namespace Byte2Life.API.Controllers
         private readonly IMongoCollection<Sale> _salesCollection;
         private readonly IWebHostEnvironment _env;
         private readonly IBudgetService _budgetService;
+        private readonly ISaleAttachmentStorageService _saleAttachmentStorageService;
 
-        public StockController(IMongoDatabase database, IWebHostEnvironment env, IBudgetService budgetService)
+        public StockController(
+            IMongoDatabase database,
+            IWebHostEnvironment env,
+            IBudgetService budgetService,
+            ISaleAttachmentStorageService saleAttachmentStorageService)
         {
             _collection = database.GetCollection<StockItem>(MongoCollectionNames.Stock);
             _salesCollection = database.GetCollection<Sale>(MongoCollectionNames.Sales);
             _env = env;
             _budgetService = budgetService;
+            _saleAttachmentStorageService = saleAttachmentStorageService;
         }
 
         [HttpGet]
@@ -181,7 +187,7 @@ namespace Byte2Life.API.Controllers
         }
 
         [HttpPost("from-sale/{saleId}")]
-        public IActionResult MoveFromSale(string saleId)
+        public async Task<IActionResult> MoveFromSale(string saleId)
         {
             var sale = _salesCollection.Find(MongoId.FilterById<Sale>(saleId)).FirstOrDefault();
             
@@ -196,6 +202,7 @@ namespace Byte2Life.API.Controllers
                     // Restore the existing item
                     existingStockItem.Status = "Available";
                     _collection.ReplaceOne(MongoId.FilterById<StockItem>(existingStockItem.Id!.Value), existingStockItem);
+                    await _saleAttachmentStorageService.DeleteManyAsync(sale.Attachments.Select(attachment => attachment.StorageId));
                     _salesCollection.DeleteOne(MongoId.FilterById<Sale>(saleId));
                     return Ok(existingStockItem);
                 }
@@ -215,6 +222,7 @@ namespace Byte2Life.API.Controllers
             };
 
             _collection.InsertOne(stockItem);
+            await _saleAttachmentStorageService.DeleteManyAsync(sale.Attachments.Select(attachment => attachment.StorageId));
             _salesCollection.DeleteOne(MongoId.FilterById<Sale>(saleId));
 
             return Ok(stockItem);

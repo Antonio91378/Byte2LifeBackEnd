@@ -1,0 +1,54 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e3]:
+      - link "BYTE2LIFE" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img [ref=e6]
+        - generic [ref=e8]: BYTE2LIFE
+      - button [ref=e10]:
+        - img [ref=e11]
+  - main [ref=e13]:
+    - generic [ref=e14]:
+      - generic [ref=e15]:
+        - heading "Byte2Life" [level=1] [ref=e16]
+        - paragraph [ref=e17]: Plataforma de gerenciamento inteligente para sua produção de impressão 3D.
+      - generic [ref=e19]:
+        - generic [ref=e20]:
+          - generic [ref=e21]:
+            - heading "Lembretes" [level=2] [ref=e22]
+            - paragraph [ref=e23]: 0 pendentes
+          - generic [ref=e24]:
+            - button "Ocultar lembretes" [ref=e25]:
+              - img [ref=e26]
+            - button "Adicionar lembrete" [ref=e28]:
+              - img [ref=e29]
+        - generic [ref=e32]: Carregando...
+      - generic [ref=e34]: Carregando dashboard...
+      - generic [ref=e35]:
+        - link "Filamentos Gerencie seu estoque de materiais. Acompanhe cores, quantidades e custos em tempo real." [ref=e36] [cursor=pointer]:
+          - /url: /filaments
+          - generic [ref=e38]:
+            - img [ref=e40]
+            - heading "Filamentos" [level=2] [ref=e42]
+            - paragraph [ref=e43]: Gerencie seu estoque de materiais. Acompanhe cores, quantidades e custos em tempo real.
+        - link "Vendas Controle total sobre seus pedidos. Visualize lucros, status de entrega e pagamentos." [ref=e44] [cursor=pointer]:
+          - /url: /sales
+          - generic [ref=e46]:
+            - img [ref=e48]
+            - heading "Vendas" [level=2] [ref=e50]
+            - paragraph [ref=e51]: Controle total sobre seus pedidos. Visualize lucros, status de entrega e pagamentos.
+        - link "Simulação Faça orçamentos precisos. Calcule custos e lucros baseados em material, tempo e qualidade." [ref=e52] [cursor=pointer]:
+          - /url: /budget
+          - generic [ref=e54]:
+            - img [ref=e56]
+            - heading "Simulação" [level=2] [ref=e58]
+            - paragraph [ref=e59]: Faça orçamentos precisos. Calcule custos e lucros baseados em material, tempo e qualidade.
+        - link "Investimentos Acompanhe o ROI do seu negócio. Compare lucros vs investimentos e saiba quando atingirá o break-even." [ref=e60] [cursor=pointer]:
+          - /url: /investments
+          - generic [ref=e62]:
+            - img [ref=e64]
+            - heading "Investimentos" [level=2] [ref=e66]
+            - paragraph [ref=e67]: Acompanhe o ROI do seu negócio. Compare lucros vs investimentos e saiba quando atingirá o break-even.
+  - button "Open Next.js Dev Tools" [ref=e73] [cursor=pointer]:
+    - img [ref=e74]
+  - alert [ref=e77]

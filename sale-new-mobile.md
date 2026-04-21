@@ -1,0 +1,157 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e3]:
+      - link "BYTE2LIFE" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img [ref=e6]
+        - generic [ref=e8]: BYTE2LIFE
+      - button [ref=e10]:
+        - img [ref=e11]
+  - main [ref=e13]:
+    - generic [ref=e25]:
+      - heading "Nova Venda" [level=1] [ref=e26]
+      - generic [ref=e27]:
+        - generic [ref=e28]:
+          - generic [ref=e29]:
+            - generic [ref=e30]: Descricao do Produto
+            - textbox [ref=e31]
+          - generic [ref=e32]:
+            - generic [ref=e33]: Massa (g)
+            - spinbutton [ref=e34]: "0"
+          - generic [ref=e35]:
+            - generic [ref=e36]: Filamento
+            - button "Informe a massa para listar filamentos" [disabled] [ref=e38]:
+              - generic [ref=e40]: Informe a massa para listar filamentos
+              - img [ref=e41]
+          - generic [ref=e43]:
+            - generic [ref=e44]: Cliente
+            - combobox [ref=e45]:
+              - option "Selecione um cliente..." [selected]
+              - option "A"
+              - option "B"
+              - option "C"
+              - option "D"
+              - option "E"
+              - option "F"
+              - option "G"
+              - option "H"
+              - option "J"
+              - option "K"
+              - option "L"
+              - option "M"
+              - option "N"
+              - option "Pablo"
+              - option "Gabriel"
+              - option "GABI"
+              - option "RH brasil insp"
+              - option "colega de trabalho donizeti"
+              - option "Cássio CEFET"
+              - option "Lara"
+              - option "Matheus Santiago Almeida Ferreira"
+              - option "Helton CEFET"
+              - option "Ulisses Carvalho"
+              - option "Jaqueline"
+              - option "Giovana"
+              - option "Mãe do Helton"
+              - option "Lucas Carvalho CEFET"
+              - option "Claudinei"
+              - option "Assis (Gabriel)"
+              - option "Gustavo"
+              - option "Gabriel Vinnis"
+              - option "Michael Lima"
+              - option "Muller Gutierrez"
+              - option "Malter"
+          - generic [ref=e46]:
+            - generic [ref=e47]: Data da Venda
+            - textbox [ref=e48]: 2026-04-20
+          - generic [ref=e49]:
+            - generic [ref=e50]: Data de Entrega
+            - textbox [ref=e51]
+          - generic [ref=e52]:
+            - generic [ref=e53]: Tempo de Impressao
+            - 'textbox "ex: 4h 30m" [ref=e54]'
+          - generic [ref=e55]:
+            - generic [ref=e56]: Adicionais
+            - generic [ref=e57]:
+              - generic [ref=e58] [cursor=pointer]:
+                - checkbox "Arte Personalizada" [ref=e59]
+                - generic [ref=e60]: Arte Personalizada
+              - generic [ref=e61] [cursor=pointer]:
+                - checkbox "Pintura" [ref=e62]
+                - generic [ref=e63]: Pintura
+              - generic [ref=e64] [cursor=pointer]:
+                - checkbox "Verniz" [ref=e65]
+                - generic [ref=e66]: Verniz
+          - generic [ref=e69]:
+            - generic [ref=e70]:
+              - heading "Agenda de impressão" [level=2] [ref=e71]
+              - paragraph [ref=e72]: "Horário atual: Nenhum horário selecionado"
+            - button "Abrir agenda" [ref=e73]
+          - button "Configurações avançadas Normal • Na fila Mostrar" [ref=e76]:
+            - generic [ref=e77]:
+              - paragraph [ref=e78]: Configurações avançadas
+              - paragraph [ref=e79]: Normal • Na fila
+            - generic [ref=e80]: Mostrar
+          - generic [ref=e81]:
+            - generic [ref=e82]:
+              - heading "Detalhamento de Custos" [level=3] [ref=e83]:
+                - img [ref=e84]
+                - text: Detalhamento de Custos
+              - button "Ver ajustes" [ref=e86]
+            - generic [ref=e87]:
+              - generic [ref=e88]:
+                - generic [ref=e89]: Custo de Produção
+                - generic [ref=e90]: R$ 0.00
+              - generic [ref=e91]:
+                - generic [ref=e92]: Frete
+                - spinbutton "Frete" [ref=e93]: "0"
+              - generic [ref=e94]:
+                - generic [ref=e95]: Custo Total
+                - generic [ref=e96]: R$ 0.00
+          - generic [ref=e97]:
+            - generic [ref=e98]:
+              - generic [ref=e99]: Valor de Venda (R$)
+              - generic [ref=e100]:
+                - generic [ref=e101]: R$
+                - spinbutton "Valor de Venda (R$)" [ref=e102]: "0"
+            - generic [ref=e103]:
+              - paragraph [ref=e104]: Lucro Estimado
+              - generic [ref=e105]:
+                - generic [ref=e106]: R$ 0.00
+                - generic [ref=e107]: 0.00%
+              - paragraph [ref=e108]: Margem calculada sobre o custo de producao. O frete fica fora da base percentual.
+          - generic [ref=e109]:
+            - generic [ref=e110]:
+              - heading "Imagens e arquivos da venda" [level=3] [ref=e111]
+              - paragraph [ref=e112]: Imagens são preparadas no navegador antes do envio para reduzir uso de armazenamento no plano free.
+            - generic [ref=e113]:
+              - generic [ref=e114]:
+                - generic [ref=e115]
+                - generic [ref=e118] [cursor=pointer]: Adicionar arquivos
+              - generic [ref=e119]: Nenhuma imagem principal adicionada.
+            - generic [ref=e120]:
+              - generic [ref=e121]:
+                - generic [ref=e122]
+                - generic [ref=e125] [cursor=pointer]: Adicionar arquivos
+              - generic [ref=e126]: Nenhuma imagem complementar adicionada.
+            - generic [ref=e127]:
+              - generic [ref=e128]:
+                - generic [ref=e129]
+                - generic [ref=e132] [cursor=pointer]: Adicionar arquivos
+              - generic [ref=e133]: Nenhum arquivo complementar adicionado.
+        - generic [ref=e134]:
+          - generic [ref=e135] [cursor=pointer]:
+            - checkbox "Impressão Concluída" [ref=e136]
+            - generic [ref=e137]: Impressão Concluída
+          - generic [ref=e138] [cursor=pointer]:
+            - checkbox "Entregue" [ref=e139]
+            - generic [ref=e140]: Entregue
+          - generic [ref=e141] [cursor=pointer]:
+            - checkbox "Pago" [ref=e142]
+            - generic [ref=e143]: Pago
+        - generic [ref=e144]:
+          - button "Cancelar" [ref=e145]
+          - button "Salvar Venda" [ref=e146]
+  - button "Open Next.js Dev Tools" [ref=e20] [cursor=pointer]:
+    - img [ref=e21]
+  - alert [ref=e24]

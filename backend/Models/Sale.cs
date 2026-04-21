@@ -60,5 +60,6 @@ namespace Byte2Life.API.Models
         public string? LayerHeight { get; set; }
         public decimal ShippingCost { get; set; }
         public decimal? ProductionCost { get; set; }
+        public List<SaleAttachment> Attachments { get; set; } = new();
     }
 }

@@ -1,0 +1,203 @@
+- generic [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e3]:
+      - link "BYTE2LIFE" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img [ref=e6]
+        - generic [ref=e8]: BYTE2LIFE
+      - generic [ref=e9]:
+        - link "Estoque" [ref=e10] [cursor=pointer]:
+          - /url: /stock
+          - img [ref=e11]
+          - text: Estoque
+        - link "Filamentos" [ref=e13] [cursor=pointer]:
+          - /url: /filaments
+          - img [ref=e14]
+          - text: Filamentos
+        - link "Tintas" [ref=e16] [cursor=pointer]:
+          - /url: /paints
+          - img [ref=e17]
+          - text: Tintas
+        - link "Servicos" [ref=e19] [cursor=pointer]:
+          - /url: /services
+          - img [ref=e20]
+          - text: Servicos
+        - link "Clientes" [ref=e22] [cursor=pointer]:
+          - /url: /clients
+          - img [ref=e23]
+          - text: Clientes
+        - link "Vendas" [ref=e25] [cursor=pointer]:
+          - /url: /sales
+          - img [ref=e26]
+          - text: Vendas
+        - link "Importar" [ref=e28] [cursor=pointer]:
+          - /url: /import
+          - img [ref=e29]
+          - text: Importar
+  - main [ref=e31]:
+    - generic [ref=e32]:
+      - generic [ref=e33]:
+        - generic [ref=e34]:
+          - generic [ref=e35]:
+            - generic [ref=e36]: Impresso
+            - generic [ref=e37]: A enviar
+            - generic [ref=e38]: Pago
+          - generic [ref=e39]:
+            - paragraph [ref=e40]: Visualização da venda
+            - heading "Angel (Stitch)" [level=1] [ref=e41]
+          - generic [ref=e42]:
+            - generic [ref=e43]:
+              - generic [ref=e44]: "Cliente:"
+              - generic [ref=e45]: Malter
+            - generic [ref=e46]:
+              - generic [ref=e47]: "Filamento:"
+              - generic [ref=e48]: Creality Ender-pla+ Branco (Branco)
+            - generic [ref=e49]:
+              - generic [ref=e50]: "Data da venda:"
+              - generic [ref=e51]: 18/04/2026
+            - generic [ref=e52]:
+              - generic [ref=e53]: "Entrega:"
+              - generic [ref=e54]: 24/04/2026
+        - generic [ref=e55]:
+          - button "Voltar" [ref=e56]
+          - link "Editar venda" [ref=e57] [cursor=pointer]:
+            - /url: /sales/69e40ccdc7258a56d2a472a5
+      - generic [ref=e58]:
+        - generic [ref=e59]:
+          - paragraph [ref=e60]: Valor de venda
+          - paragraph [ref=e61]: R$ 65.00
+        - generic [ref=e62]:
+          - paragraph [ref=e63]: Custo total
+          - paragraph [ref=e64]: R$ 44.20
+        - generic [ref=e65]:
+          - paragraph [ref=e66]: Lucro
+          - paragraph [ref=e67]: R$ 20.80
+        - generic [ref=e68]:
+          - paragraph [ref=e69]: Margem
+          - paragraph [ref=e70]: 164.97%
+      - generic [ref=e71]:
+        - generic [ref=e72]:
+          - generic [ref=e73]:
+            - heading "Imagem do produto" [level=2] [ref=e74]
+            - paragraph [ref=e75]: Imagem principal que identifica a peça vendida.
+            - generic [ref=e76]: Nenhuma imagem cadastrada nesta categoria.
+          - generic [ref=e77]:
+            - generic [ref=e78]:
+              - generic [ref=e79]:
+                - heading "Imagens complementares" [level=2] [ref=e80]
+                - paragraph [ref=e81]: Comprovantes, etiquetas ou qualquer material visual de apoio.
+              - generic [ref=e82]: 1 de 2
+            - generic [ref=e84]:
+              - button "WhatsApp Image 2026-04-20 at 13.22.10.jpeg Clique para ampliar Zoom com scroll do mouse Ver grande" [active] [ref=e85]:
+                - img "WhatsApp Image 2026-04-20 at 13.22.10.jpeg" [ref=e86]
+                - generic:
+                  - generic:
+                    - paragraph: Clique para ampliar
+                    - paragraph: Zoom com scroll do mouse
+                  - generic:
+                    - img
+                    - text: Ver grande
+              - button "Imagem anterior" [ref=e87]:
+                - img [ref=e88]
+              - button "Próxima imagem" [ref=e90]:
+                - img [ref=e91]
+            - generic [ref=e93]:
+              - button "WhatsApp Image 2026-04-20 at 13.22.10.jpeg" [ref=e94]:
+                - img "WhatsApp Image 2026-04-20 at 13.22.10.jpeg" [ref=e95]
+              - button "ChatGPT Image 19 de mar. de 2026, 22_40_02.png" [ref=e96]:
+                - img "ChatGPT Image 19 de mar. de 2026, 22_40_02.png" [ref=e97]
+            - dialog "Visualização ampliada de Imagens complementares" [ref=e176]:
+              - generic [ref=e177]:
+                - button "Fechar visualização ampliada" [ref=e178]
+                - generic [ref=e179]:
+                  - generic [ref=e180]:
+                    - generic [ref=e181]:
+                      - paragraph [ref=e182]: Imagens complementares
+                      - heading "WhatsApp Image 2026-04-20 at 13.22.10.jpeg" [level=3] [ref=e183]
+                      - paragraph [ref=e184]: Use o scroll do mouse para aproximar ou afastar. Pressione Esc para fechar.
+                    - generic [ref=e185]:
+                      - generic [ref=e186]: Zoom 100%
+                      - button "Reduzir zoom" [ref=e187]: "-"
+                      - button "Resetar" [ref=e188]
+                      - button "Aumentar zoom" [ref=e189]: +
+                      - button "Fechar visualização ampliada" [ref=e190]:
+                        - img [ref=e191]
+                  - generic [ref=e194]:
+                    - img "WhatsApp Image 2026-04-20 at 13.22.10.jpeg" [ref=e196]
+                    - button "Imagem anterior" [ref=e197]:
+                      - img [ref=e198]
+                    - button "Próxima imagem" [ref=e200]:
+                      - img [ref=e201]
+                  - generic [ref=e204]:
+                    - button "WhatsApp Image 2026-04-20 at 13.22.10.jpeg" [ref=e205]:
+                      - img "WhatsApp Image 2026-04-20 at 13.22.10.jpeg" [ref=e206]
+                    - button "ChatGPT Image 19 de mar. de 2026, 22_40_02.png" [ref=e207]:
+                      - img "ChatGPT Image 19 de mar. de 2026, 22_40_02.png" [ref=e208]
+          - generic [ref=e98]:
+            - generic [ref=e100]:
+              - heading "Arquivos complementares" [level=2] [ref=e101]
+              - paragraph [ref=e102]: Modelos 3MF, STL, PDFs ou outros arquivos anexados à venda.
+            - generic [ref=e103]: Nenhum arquivo complementar cadastrado.
+        - generic [ref=e104]:
+          - generic [ref=e105]:
+            - heading "Dados da venda" [level=2] [ref=e106]
+            - generic [ref=e107]:
+              - generic [ref=e108]:
+                - generic [ref=e109]: Cliente
+                - generic [ref=e110]: Malter
+              - generic [ref=e111]:
+                - generic [ref=e112]: Filamento
+                - generic [ref=e113]: Creality Ender-pla+ Branco (Branco)
+              - generic [ref=e114]:
+                - generic [ref=e115]: Qualidade
+                - generic [ref=e116]: Normal
+              - generic [ref=e117]:
+                - generic [ref=e118]: Massa
+                - generic [ref=e119]: 85 g
+              - generic [ref=e120]:
+                - generic [ref=e121]: Tempo estimado
+                - generic [ref=e122]: 8H
+              - generic [ref=e123]:
+                - generic [ref=e124]: Início confirmado
+                - generic [ref=e125]: Não informado
+              - generic [ref=e126]:
+                - generic [ref=e127]: Frete
+                - generic [ref=e128]: R$ 31.60
+              - generic [ref=e129]:
+                - generic [ref=e130]: Custo de produção
+                - generic [ref=e131]: R$ 12.61
+          - generic [ref=e132]:
+            - heading "Serviços adicionais" [level=2] [ref=e133]
+            - generic [ref=e134]:
+              - generic [ref=e135]:
+                - generic [ref=e136]: Arte personalizada
+                - generic [ref=e137]: Não
+              - generic [ref=e138]:
+                - generic [ref=e139]: Pintura
+                - generic [ref=e140]: Sim
+              - generic [ref=e141]:
+                - generic [ref=e142]: Verniz
+                - generic [ref=e143]: Sim
+              - generic [ref=e144]:
+                - generic [ref=e145]: Responsável design
+                - generic [ref=e146]: Não informado
+              - generic [ref=e147]:
+                - generic [ref=e148]: Tempo design
+                - generic [ref=e149]: Não informado
+              - generic [ref=e150]:
+                - generic [ref=e151]: Valor design
+                - generic [ref=e152]: Não informado
+              - generic [ref=e153]:
+                - generic [ref=e154]: Responsável pintura
+                - generic [ref=e155]: Lara
+              - generic [ref=e156]:
+                - generic [ref=e157]: Tempo pintura
+                - generic [ref=e158]: 2 h
+          - generic [ref=e159]:
+            - heading "Links e observações" [level=2] [ref=e160]
+            - generic [ref=e163]:
+              - paragraph [ref=e164]: Link do produto
+              - paragraph [ref=e165]: Nenhum link cadastrado.
+  - button "Open Next.js Dev Tools" [ref=e171] [cursor=pointer]:
+    - img [ref=e172]
+  - alert [ref=e175]

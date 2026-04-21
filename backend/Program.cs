@@ -29,6 +29,7 @@ builder.Services.AddSingleton(sp =>
 builder.Services.AddSingleton<IFilamentService, FilamentService>();
 builder.Services.AddSingleton<IClientService, ClientService>();
 builder.Services.AddSingleton<ISaleService, SaleService>();
+builder.Services.AddSingleton<ISaleAttachmentStorageService, SaleAttachmentStorageService>();
 builder.Services.AddSingleton<IBudgetService, BudgetService>();
 builder.Services.AddSingleton<IInvestmentService, InvestmentService>();
 builder.Services.AddSingleton<IPaintService, PaintService>();

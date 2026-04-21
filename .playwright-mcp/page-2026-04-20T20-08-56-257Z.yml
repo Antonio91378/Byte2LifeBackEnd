@@ -1,0 +1,128 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e3]:
+      - link "BYTE2LIFE" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img [ref=e6]
+        - generic [ref=e8]: BYTE2LIFE
+      - button [ref=e10]:
+        - img [ref=e11]
+  - main [ref=e13]:
+    - generic [ref=e341]:
+      - generic [ref=e342]:
+        - generic [ref=e343]:
+          - generic [ref=e344]:
+            - generic [ref=e345]: Pendente
+            - generic [ref=e346]: A enviar
+            - generic [ref=e347]: Não pago
+          - generic [ref=e348]:
+            - paragraph [ref=e349]: Visualização da venda
+            - heading "Estatueta Personalizada Claudinei" [level=1] [ref=e350]
+          - generic [ref=e351]:
+            - generic [ref=e352]:
+              - generic [ref=e353]: "Cliente:"
+              - generic [ref=e354]: Claudinei
+            - generic [ref=e355]:
+              - generic [ref=e356]: "Filamento:"
+              - generic [ref=e357]: PETG premium Voolt3D (Preto)
+            - generic [ref=e358]:
+              - generic [ref=e359]: "Data da venda:"
+              - generic [ref=e360]: 07/01/2026
+            - generic [ref=e361]:
+              - generic [ref=e362]: "Entrega:"
+              - generic [ref=e363]: Não informado
+        - generic [ref=e364]:
+          - button "Voltar" [ref=e365]
+          - link "Editar venda" [ref=e366] [cursor=pointer]:
+            - /url: /sales/695edb652cd7380f2f0cb7bc
+      - generic [ref=e367]:
+        - generic [ref=e368]:
+          - paragraph [ref=e369]: Valor de venda
+          - paragraph [ref=e370]: R$ 60.00
+        - generic [ref=e371]:
+          - paragraph [ref=e372]: Custo total
+          - paragraph [ref=e373]: R$ 4.20
+        - generic [ref=e374]:
+          - paragraph [ref=e375]: Lucro
+          - paragraph [ref=e376]: R$ 55.80
+        - generic [ref=e377]:
+          - paragraph [ref=e378]: Margem
+          - paragraph [ref=e379]: 1041.04%
+      - generic [ref=e380]:
+        - generic [ref=e381]:
+          - generic [ref=e382]:
+            - heading "Imagem do produto" [level=2] [ref=e383]
+            - paragraph [ref=e384]: Imagem principal que identifica a peça vendida.
+            - generic [ref=e385]: Nenhuma imagem cadastrada nesta categoria.
+          - generic [ref=e386]:
+            - heading "Imagens complementares" [level=2] [ref=e387]
+            - paragraph [ref=e388]: Comprovantes, etiquetas ou qualquer material visual de apoio.
+            - generic [ref=e389]: Nenhuma imagem cadastrada nesta categoria.
+          - generic [ref=e390]:
+            - generic [ref=e392]:
+              - heading "Arquivos complementares" [level=2] [ref=e393]
+              - paragraph [ref=e394]: Modelos 3MF, STL, PDFs ou outros arquivos anexados à venda.
+            - generic [ref=e395]: Nenhum arquivo complementar cadastrado.
+        - generic [ref=e396]:
+          - generic [ref=e397]:
+            - heading "Dados da venda" [level=2] [ref=e398]
+            - generic [ref=e399]:
+              - generic [ref=e400]:
+                - generic [ref=e401]: Cliente
+                - generic [ref=e402]: Claudinei
+              - generic [ref=e403]:
+                - generic [ref=e404]: Filamento
+                - generic [ref=e405]: PETG premium Voolt3D (Preto)
+              - generic [ref=e406]:
+                - generic [ref=e407]: Qualidade
+                - generic [ref=e408]: Normal
+              - generic [ref=e409]:
+                - generic [ref=e410]: Massa
+                - generic [ref=e411]: 35 g
+              - generic [ref=e412]:
+                - generic [ref=e413]: Tempo estimado
+                - generic [ref=e414]: 4h
+              - generic [ref=e415]:
+                - generic [ref=e416]: Início confirmado
+                - generic [ref=e417]: 26/01/2026, 21:53:21
+              - generic [ref=e418]:
+                - generic [ref=e419]: Frete
+                - generic [ref=e420]: R$ 0.00
+              - generic [ref=e421]:
+                - generic [ref=e422]: Custo de produção
+                - generic [ref=e423]: R$ 5.36
+          - generic [ref=e424]:
+            - heading "Serviços adicionais" [level=2] [ref=e425]
+            - generic [ref=e426]:
+              - generic [ref=e427]:
+                - generic [ref=e428]: Arte personalizada
+                - generic [ref=e429]: Sim
+              - generic [ref=e430]:
+                - generic [ref=e431]: Pintura
+                - generic [ref=e432]: Não
+              - generic [ref=e433]:
+                - generic [ref=e434]: Verniz
+                - generic [ref=e435]: Não
+              - generic [ref=e436]:
+                - generic [ref=e437]: Responsável design
+                - generic [ref=e438]: Antônio
+              - generic [ref=e439]:
+                - generic [ref=e440]: Tempo design
+                - generic [ref=e441]: 2 h
+              - generic [ref=e442]:
+                - generic [ref=e443]: Valor design
+                - generic [ref=e444]: Não informado
+              - generic [ref=e445]:
+                - generic [ref=e446]: Responsável pintura
+                - generic [ref=e447]: Não informado
+              - generic [ref=e448]:
+                - generic [ref=e449]: Tempo pintura
+                - generic [ref=e450]: Não informado
+          - generic [ref=e451]:
+            - heading "Links e observações" [level=2] [ref=e452]
+            - generic [ref=e455]:
+              - paragraph [ref=e456]: Link do produto
+              - paragraph [ref=e457]: Nenhum link cadastrado.
+  - button "Open Next.js Dev Tools" [ref=e73] [cursor=pointer]:
+    - img [ref=e74]
+  - alert [ref=e77]

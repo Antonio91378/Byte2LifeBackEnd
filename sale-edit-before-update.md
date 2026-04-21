@@ -1,0 +1,232 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e3]:
+      - link "BYTE2LIFE" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img [ref=e6]
+        - generic [ref=e8]: BYTE2LIFE
+      - generic [ref=e9]:
+        - link "Estoque" [ref=e10] [cursor=pointer]:
+          - /url: /stock
+          - img [ref=e11]
+          - text: Estoque
+        - link "Filamentos" [ref=e13] [cursor=pointer]:
+          - /url: /filaments
+          - img [ref=e14]
+          - text: Filamentos
+        - link "Tintas" [ref=e16] [cursor=pointer]:
+          - /url: /paints
+          - img [ref=e17]
+          - text: Tintas
+        - link "Servicos" [ref=e19] [cursor=pointer]:
+          - /url: /services
+          - img [ref=e20]
+          - text: Servicos
+        - link "Clientes" [ref=e22] [cursor=pointer]:
+          - /url: /clients
+          - img [ref=e23]
+          - text: Clientes
+        - link "Vendas" [ref=e25] [cursor=pointer]:
+          - /url: /sales
+          - img [ref=e26]
+          - text: Vendas
+        - link "Importar" [ref=e28] [cursor=pointer]:
+          - /url: /import
+          - img [ref=e29]
+          - text: Importar
+  - main [ref=e31]:
+    - generic [ref=e174]:
+      - heading "Editar Venda" [level=1] [ref=e175]
+      - generic [ref=e176]:
+        - generic [ref=e177]:
+          - generic [ref=e178]:
+            - generic [ref=e179]: Descricao do Produto
+            - textbox [ref=e180]: VENDA QA NAVEGADOR 2026-04-20 20-02
+          - generic [ref=e181]:
+            - generic [ref=e182]: Massa (g)
+            - spinbutton [ref=e183]: "10"
+          - generic [ref=e184]:
+            - generic [ref=e185]: Filamento
+            - button "Selecione um filamento..." [ref=e187]:
+              - generic [ref=e189]: Selecione um filamento...
+              - img [ref=e190]
+          - generic [ref=e192]:
+            - generic [ref=e193]: Cliente
+            - combobox [ref=e194]:
+              - option "Selecione um cliente..." [selected]
+              - option "A"
+              - option "B"
+              - option "C"
+              - option "D"
+              - option "E"
+              - option "F"
+              - option "G"
+              - option "H"
+              - option "J"
+              - option "K"
+              - option "L"
+              - option "M"
+              - option "N"
+              - option "Pablo"
+              - option "Gabriel"
+              - option "GABI"
+              - option "RH brasil insp"
+              - option "colega de trabalho donizeti"
+              - option "Cássio CEFET"
+              - option "Lara"
+              - option "Matheus Santiago Almeida Ferreira"
+              - option "Helton CEFET"
+              - option "Ulisses Carvalho"
+              - option "Jaqueline"
+              - option "Giovana"
+              - option "Mãe do Helton"
+              - option "Lucas Carvalho CEFET"
+              - option "Claudinei"
+              - option "Assis (Gabriel)"
+              - option "Gustavo"
+              - option "Gabriel Vinnis"
+              - option "Michael Lima"
+              - option "Muller Gutierrez"
+              - option "Malter"
+          - generic [ref=e195]:
+            - generic [ref=e196]: Data da Venda
+            - textbox [ref=e197]: 2026-04-20
+          - generic [ref=e198]:
+            - generic [ref=e199]: Data de Entrega
+            - textbox [ref=e200]: 2026-04-25
+          - generic [ref=e201]:
+            - generic [ref=e202]: Tempo de Impressao
+            - 'textbox "ex: 4h 30m" [ref=e203]': 1h 15m
+          - generic [ref=e204]:
+            - generic [ref=e205]: Adicionais
+            - generic [ref=e206]:
+              - generic [ref=e207] [cursor=pointer]:
+                - checkbox "Arte Personalizada" [ref=e208]
+                - generic [ref=e209]: Arte Personalizada
+              - generic [ref=e210] [cursor=pointer]:
+                - checkbox "Pintura" [ref=e211]
+                - generic [ref=e212]: Pintura
+              - generic [ref=e213] [cursor=pointer]:
+                - checkbox "Verniz" [ref=e214]
+                - generic [ref=e215]: Verniz
+          - generic [ref=e217]:
+            - generic [ref=e219]:
+              - heading "Agenda de impressão" [level=2] [ref=e220]
+              - paragraph [ref=e221]: Escolha um horário para impressão e serviços adicionais.
+            - generic [ref=e223]:
+              - generic [ref=e224]:
+                - generic [ref=e225]
+                - generic [ref=e228]: Impressao
+              - generic [ref=e229]:
+                - generic [ref=e230]
+                - generic [ref=e233]
+              - button "Aplicar sugestao" [ref=e237]
+              - generic [ref=e238]:
+                - img [ref=e239]
+                - text: Marque a agenda de impressao clicando no horario desejado.
+              - generic [ref=e242]:
+                - generic [ref=e243]
+                - generic "Apr 19 – 25, 2026" [ref=e257]
+              - generic [ref=e452]: "Regras: inicio entre 08:00-23:00, intervalo de 20 min, entrega ate 18:00."
+          - generic [ref=e454]:
+            - generic [ref=e455]:
+              - generic [ref=e456]: Link do Produto (STL)
+              - textbox [ref=e457]: https://example.com/qa-sale-20260420
+            - generic [ref=e458]:
+              - generic [ref=e459]: Qualidade de Impressao
+              - combobox "Qualidade de Impressao" [ref=e460]:
+                - option "Baixo"
+                - option "Normal" [selected]
+                - option "Alto"
+                - option "Extremo"
+            - generic [ref=e461]:
+              - generic [ref=e462]: Status da Impressao
+              - combobox "Status da Impressao" [ref=e463]:
+                - option "Pendente"
+                - option "Na Fila" [selected]
+                - option "Preparado"
+                - option "Em Andamento"
+                - option "Concluído"
+          - generic [ref=e464]:
+            - heading "Detalhamento de Custos" [level=3] [ref=e466]:
+              - img [ref=e467]
+              - text: Detalhamento de Custos
+            - generic [ref=e469]:
+              - generic [ref=e470]:
+                - generic [ref=e471]: Custo de Produção
+                - generic [ref=e472]: R$ 0.00
+              - generic [ref=e473]:
+                - generic [ref=e474]: Frete
+                - spinbutton "Frete" [ref=e475]: "12.5"
+              - generic [ref=e476]:
+                - generic [ref=e477]: Custo Total
+                - generic [ref=e478]: R$ 12.50
+              - generic [ref=e479]:
+                - generic [ref=e480]: Nozzle
+                - textbox "0.4mm" [ref=e481]
+              - generic [ref=e482]:
+                - generic [ref=e483]: Camada
+                - textbox "0.2mm" [ref=e484]
+            - generic [ref=e485]:
+              - generic [ref=e486]:
+                - generic [ref=e487]: Frete
+                - generic [ref=e488]: R$ 12.50
+              - generic [ref=e489]:
+                - generic [ref=e490]: Custo Total
+                - generic [ref=e491]: R$ 12.50
+          - generic [ref=e492]:
+            - generic [ref=e493]:
+              - generic [ref=e494]: Custo Total (R$)
+              - spinbutton "Custo Total (R$)" [ref=e495]: "12.5"
+            - generic [ref=e496]:
+              - generic [ref=e497]: Valor de Venda (R$)
+              - generic [ref=e498]:
+                - generic [ref=e499]: R$
+                - spinbutton "Valor de Venda (R$)" [ref=e500]: "89.9"
+            - generic [ref=e501]:
+              - paragraph [ref=e502]: Lucro Estimado
+              - generic [ref=e503]:
+                - generic [ref=e504]: R$ 77.40
+                - generic [ref=e505]: 619.20%
+              - paragraph [ref=e506]: Margem calculada sobre o custo de producao. O frete fica fora da base percentual.
+          - generic [ref=e507]:
+            - generic [ref=e508]:
+              - heading "Imagens e arquivos da venda" [level=3] [ref=e509]
+              - paragraph [ref=e510]: Imagens são preparadas no navegador antes do envio para reduzir uso de armazenamento no plano free.
+            - generic [ref=e511]:
+              - generic [ref=e512]:
+                - generic [ref=e513]
+                - generic [ref=e516] [cursor=pointer]: Adicionar arquivos
+              - generic [ref=e518]:
+                - generic [ref=e519]
+                - generic [ref=e524]
+            - generic [ref=e527]:
+              - generic [ref=e528]:
+                - generic [ref=e529]
+                - generic [ref=e532] [cursor=pointer]: Adicionar arquivos
+              - generic [ref=e534]:
+                - generic [ref=e535]
+                - generic [ref=e540]
+            - generic [ref=e543]:
+              - generic [ref=e544]:
+                - generic [ref=e545]
+                - generic [ref=e548] [cursor=pointer]: Adicionar arquivos
+              - generic [ref=e550]:
+                - generic [ref=e551]
+                - generic [ref=e554]
+        - generic [ref=e557]:
+          - generic [ref=e558] [cursor=pointer]:
+            - checkbox "Impressao Concluida" [ref=e559]
+            - generic [ref=e560]: Impressao Concluida
+          - generic [ref=e561] [cursor=pointer]:
+            - checkbox "Entregue" [ref=e562]
+            - generic [ref=e563]: Entregue
+          - generic [ref=e564] [cursor=pointer]:
+            - checkbox "Pago" [ref=e565]
+            - generic [ref=e566]: Pago
+        - generic [ref=e567]:
+          - button "Cancelar" [ref=e568]
+          - button "Salvar Alterações" [ref=e569]
+  - button "Open Next.js Dev Tools" [ref=e38] [cursor=pointer]:
+    - img [ref=e39]
+  - alert [ref=e42]
