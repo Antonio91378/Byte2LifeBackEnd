@@ -144,5 +144,74 @@ namespace Byte2Life.API.Tests.IntegrationTests
             current.Should().NotBeNull();
             current!.Description.Should().Be("Current Job");
         }
+
+        [Fact]
+        public async Task FailedPrintOccurrence_PersistsIncident_KeepsSaleAsCurrentPrint_AndDiscountsWasteFromFilament()
+        {
+            // Arrange
+            var filament = await CreateFilamentAsync();
+            var sale = new Sale
+            {
+                Description = "Job With Failure",
+                FilamentId = filament.Id,
+                PrintStatus = "InProgress",
+                MassGrams = 100,
+                PrintTimeHours = 2
+            };
+
+            var createResponse = await _client.PostAsJsonAsync("/api/sales", sale, _jsonOptions);
+            createResponse.EnsureSuccessStatusCode();
+            var createdSale = await createResponse.Content.ReadFromJsonAsync<Sale>(_jsonOptions);
+
+            createdSale.Should().NotBeNull();
+
+            createdSale!.PrintStatus = "Staged";
+            createdSale.PrintStartedAt = null;
+            createdSale.ErrorReason = "Peça soltou da mesa";
+            createdSale.WastedFilamentGrams = 25;
+            createdSale.Incidents = new List<PrintIncident>
+            {
+                new()
+                {
+                    Timestamp = DateTime.UtcNow,
+                    Reason = "Other",
+                    Comment = "Peça soltou da mesa",
+                    WastedFilamentGrams = 25
+                }
+            };
+
+            // Act
+            var updateResponse = await _client.PutAsJsonAsync($"/api/sales/{createdSale.Id}", createdSale, _jsonOptions);
+
+            // Assert - status/current print/incident persistence
+            updateResponse.StatusCode.Should().Be(HttpStatusCode.NoContent);
+
+            var getSaleResponse = await _client.GetAsync($"/api/sales/{createdSale.Id}");
+            getSaleResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+            var updatedSale = await getSaleResponse.Content.ReadFromJsonAsync<Sale>(_jsonOptions);
+
+            updatedSale.Should().NotBeNull();
+            updatedSale!.PrintStatus.Should().Be("Staged");
+            updatedSale.Incidents.Should().ContainSingle();
+            updatedSale.Incidents![0].Comment.Should().Be("Peça soltou da mesa");
+            updatedSale.Incidents[0].WastedFilamentGrams.Should().Be(25);
+            updatedSale.WastedFilamentGrams.Should().Be(25);
+
+            var currentPrintResponse = await _client.GetAsync("/api/sales/current");
+            currentPrintResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+            var currentPrint = await currentPrintResponse.Content.ReadFromJsonAsync<Sale>(_jsonOptions);
+
+            currentPrint.Should().NotBeNull();
+            currentPrint!.Id.Should().Be(updatedSale.Id);
+            currentPrint.PrintStatus.Should().Be("Staged");
+
+            // Assert - filament mass includes both planned usage and wasted grams
+            var filamentResponse = await _client.GetAsync($"/api/filaments/{filament.Id}");
+            filamentResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+            var updatedFilament = await filamentResponse.Content.ReadFromJsonAsync<Filament>(_jsonOptions);
+
+            updatedFilament.Should().NotBeNull();
+            updatedFilament!.RemainingMassGrams.Should().Be(875);
+        }
     }
 }

@@ -160,6 +160,16 @@ namespace Byte2Life.API.Services
             return derivedBaseCost > 0 ? derivedBaseCost : sale.Cost;
         }
 
+        private static double GetTrackedWasteGrams(Sale sale)
+        {
+            return Math.Max(sale.WastedFilamentGrams ?? 0, 0);
+        }
+
+        private static double GetTrackedFilamentUsageGrams(Sale sale)
+        {
+            return Math.Max(sale.MassGrams, 0) + GetTrackedWasteGrams(sale);
+        }
+
         private static Sale NormalizeFinancialFields(Sale sale)
         {
             if (sale.Cost <= 0 && (sale.ProductionCost.GetValueOrDefault() > 0 || sale.ShippingCost > 0))
@@ -317,7 +327,7 @@ namespace Byte2Life.API.Services
                 var filament = await _filamentService.GetAsync(newSale.FilamentId.Value.ToString());
                 if (filament != null)
                 {
-                    filament.RemainingMassGrams -= newSale.MassGrams;
+                    filament.RemainingMassGrams -= GetTrackedFilamentUsageGrams(newSale);
                     await _filamentService.UpdateAsync(filament.Id!.Value.ToString(), filament);
                 }
             }
@@ -383,8 +393,8 @@ namespace Byte2Life.API.Services
         {
             var oldFilamentId = existingSale.FilamentId?.ToString();
             var newFilamentId = updatedSale.FilamentId?.ToString();
-            var oldMass = existingSale.MassGrams;
-            var newMass = updatedSale.MassGrams;
+            var oldTrackedUsage = GetTrackedFilamentUsageGrams(existingSale);
+            var newTrackedUsage = GetTrackedFilamentUsageGrams(updatedSale);
 
             if (string.IsNullOrWhiteSpace(oldFilamentId) && string.IsNullOrWhiteSpace(newFilamentId))
             {
@@ -396,7 +406,7 @@ namespace Byte2Life.API.Services
                 var oldFilament = await _filamentService.GetAsync(oldFilamentId);
                 if (oldFilament != null)
                 {
-                    oldFilament.RemainingMassGrams += oldMass;
+                    oldFilament.RemainingMassGrams += oldTrackedUsage;
                     await _filamentService.UpdateAsync(oldFilament.Id!.Value.ToString(), oldFilament);
                 }
                 return;
@@ -407,7 +417,7 @@ namespace Byte2Life.API.Services
                 var newFilament = await _filamentService.GetAsync(newFilamentId);
                 if (newFilament != null)
                 {
-                    newFilament.RemainingMassGrams -= newMass;
+                    newFilament.RemainingMassGrams -= newTrackedUsage;
                     await _filamentService.UpdateAsync(newFilament.Id!.Value.ToString(), newFilament);
                 }
                 return;
@@ -415,7 +425,7 @@ namespace Byte2Life.API.Services
 
             if (oldFilamentId == newFilamentId)
             {
-                var delta = newMass - oldMass;
+                var delta = newTrackedUsage - oldTrackedUsage;
                 if (Math.Abs(delta) < 0.0001d)
                 {
                     return;
@@ -433,14 +443,14 @@ namespace Byte2Life.API.Services
             var oldFilamentSwap = await _filamentService.GetAsync(oldFilamentId!);
             if (oldFilamentSwap != null)
             {
-                oldFilamentSwap.RemainingMassGrams += oldMass;
+                oldFilamentSwap.RemainingMassGrams += oldTrackedUsage;
                 await _filamentService.UpdateAsync(oldFilamentSwap.Id!.Value.ToString(), oldFilamentSwap);
             }
 
             var newFilamentSwap = await _filamentService.GetAsync(newFilamentId!);
             if (newFilamentSwap != null)
             {
-                newFilamentSwap.RemainingMassGrams -= newMass;
+                newFilamentSwap.RemainingMassGrams -= newTrackedUsage;
                 await _filamentService.UpdateAsync(newFilamentSwap.Id!.Value.ToString(), newFilamentSwap);
             }
         }
@@ -550,7 +560,7 @@ namespace Byte2Life.API.Services
                 var filament = await _filamentService.GetAsync(sale.FilamentId.Value.ToString());
                 if (filament != null)
                 {
-                    filament.RemainingMassGrams += sale.MassGrams;
+                    filament.RemainingMassGrams += GetTrackedFilamentUsageGrams(sale);
                     await _filamentService.UpdateAsync(filament.Id!.Value.ToString(), filament);
                 }
             }

@@ -5,5 +5,6 @@ namespace Byte2Life.API.Models
         public DateTime Timestamp { get; set; } = DateTime.Now;
         public string Reason { get; set; } = string.Empty; // PowerLoss, FilamentJam, etc.
         public string Comment { get; set; } = string.Empty;
+        public double? WastedFilamentGrams { get; set; }
     }
 }
