@@ -38,6 +38,7 @@ namespace Byte2Life.API.Models
         public bool IsPrintConcluded { get; set; }
         public bool IsDelivered { get; set; }
         public bool IsPaid { get; set; }
+        public bool? IsActive { get; set; }
 
         public ObjectId? FilamentId { get; set; }
         

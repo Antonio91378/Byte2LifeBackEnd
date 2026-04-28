@@ -66,8 +66,8 @@ namespace Byte2Life.API.Services
 
         public Task<List<Sale>> GetQueueAsync()
         {
-            var queue = _salesCollection.AsQueryable()
-                .Where(sale => sale.PrintStatus == "InQueue")
+            var queue = _salesCollection.Find(FilterDefinition<Sale>.Empty).ToList()
+                .Where(sale => IsSaleActive(sale) && sale.PrintStatus == "InQueue")
                 .OrderByDescending(sale => sale.Priority)
                 .ToList();
 
@@ -78,25 +78,27 @@ namespace Byte2Life.API.Services
         {
             var sales = _salesCollection.Find(FilterDefinition<Sale>.Empty).ToList();
             return Task.FromResult(NormalizeFinancialFields(sales.Where(sale =>
-                sale.HasPainting ||
-                sale.PaintStartConfirmedAt != null ||
-                sale.PaintTimeHours > 0 ||
-                !string.IsNullOrWhiteSpace(sale.PaintResponsible)).ToList()));
+                IsSaleActive(sale) && (
+                    sale.HasPainting ||
+                    sale.PaintStartConfirmedAt != null ||
+                    sale.PaintTimeHours > 0 ||
+                    !string.IsNullOrWhiteSpace(sale.PaintResponsible))).ToList()));
         }
 
         public Task<List<Sale>> GetServiceScheduleAsync()
         {
             var sales = _salesCollection.Find(FilterDefinition<Sale>.Empty).ToList();
             return Task.FromResult(NormalizeFinancialFields(sales.Where(sale =>
-                sale.HasPainting ||
-                sale.PaintStartConfirmedAt != null ||
-                sale.PaintTimeHours > 0 ||
-                !string.IsNullOrWhiteSpace(sale.PaintResponsible) ||
-                sale.HasCustomArt ||
-                sale.DesignStartConfirmedAt != null ||
-                sale.DesignTimeHours > 0 ||
-                !string.IsNullOrWhiteSpace(sale.DesignResponsible) ||
-                sale.DesignValue.HasValue).ToList()));
+                IsSaleActive(sale) && (
+                    sale.HasPainting ||
+                    sale.PaintStartConfirmedAt != null ||
+                    sale.PaintTimeHours > 0 ||
+                    !string.IsNullOrWhiteSpace(sale.PaintResponsible) ||
+                    sale.HasCustomArt ||
+                    sale.DesignStartConfirmedAt != null ||
+                    sale.DesignTimeHours > 0 ||
+                    !string.IsNullOrWhiteSpace(sale.DesignResponsible) ||
+                    sale.DesignValue.HasValue)).ToList()));
         }
 
         private static string NormalizeServiceStatus(string? value)
@@ -104,6 +106,13 @@ namespace Byte2Life.API.Services
             return string.Equals(value, "Concluded", StringComparison.OrdinalIgnoreCase)
                 ? "Concluded"
                 : "Active";
+        }
+
+        private static bool IsSaleActive(Sale sale) => sale.IsActive != false;
+
+        private static void NormalizeActivityStatus(Sale sale, bool? fallbackValue = true)
+        {
+            sale.IsActive ??= fallbackValue ?? true;
         }
 
         private static int ResolvePriority(DateTime? deliveryDate, int requestedPriority, int fallbackPriority)
@@ -134,7 +143,11 @@ namespace Byte2Life.API.Services
 
         private Sale? GetNormalizedCurrentPrint()
         {
-            var sale = _salesCollection.AsQueryable().FirstOrDefault(currentSale => currentSale.PrintStatus == "InProgress" || currentSale.PrintStatus == "Staged");
+            var sale = _salesCollection.Find(FilterDefinition<Sale>.Empty).ToList()
+                .FirstOrDefault(currentSale =>
+                    IsSaleActive(currentSale) &&
+                    (currentSale.PrintStatus == "InProgress" || currentSale.PrintStatus == "Staged"));
+
             if (sale is null)
             {
                 return null;
@@ -172,6 +185,8 @@ namespace Byte2Life.API.Services
 
         private static Sale NormalizeFinancialFields(Sale sale)
         {
+            NormalizeActivityStatus(sale);
+
             if (sale.Cost <= 0 && (sale.ProductionCost.GetValueOrDefault() > 0 || sale.ShippingCost > 0))
             {
                 sale.Cost = sale.ProductionCost.GetValueOrDefault() + Math.Max(sale.ShippingCost, 0);
@@ -306,11 +321,17 @@ namespace Byte2Life.API.Services
                 newSale.Id = MongoId.New();
             }
 
+            NormalizeActivityStatus(newSale);
+
             newSale.Priority = ResolvePriority(newSale.DeliveryDate, newSale.Priority, 10);
 
-            if (newSale.PrintStatus == "InProgress" || newSale.PrintStatus == "Staged")
+            if (IsSaleActive(newSale) && (newSale.PrintStatus == "InProgress" || newSale.PrintStatus == "Staged"))
             {
-                var currentPrint = _salesCollection.AsQueryable().FirstOrDefault(sale => sale.PrintStatus == "InProgress" || sale.PrintStatus == "Staged");
+                var currentPrint = _salesCollection.Find(FilterDefinition<Sale>.Empty).ToList()
+                    .FirstOrDefault(sale =>
+                        IsSaleActive(sale) &&
+                        (sale.PrintStatus == "InProgress" || sale.PrintStatus == "Staged"));
+
                 if (currentPrint != null)
                 {
                     throw new InvalidOperationException("Only one sale can be InProgress or Staged");
@@ -351,18 +372,25 @@ namespace Byte2Life.API.Services
             }
 
             updatedSale.Id = existingSale.Id;
+            updatedSale.IsActive ??= existingSale.IsActive ?? true;
+
+            var wasActive = IsSaleActive(existingSale);
 
             updatedSale.Priority = ResolvePriority(updatedSale.DeliveryDate, updatedSale.Priority, existingSale.Priority > 0 ? existingSale.Priority : 10);
 
-            if (updatedSale.PrintStatus == "InProgress" || updatedSale.PrintStatus == "Staged")
+            if (IsSaleActive(updatedSale) && (updatedSale.PrintStatus == "InProgress" || updatedSale.PrintStatus == "Staged"))
             {
-                var currentPrint = _salesCollection.AsQueryable().FirstOrDefault(sale => sale.PrintStatus == "InProgress" || sale.PrintStatus == "Staged");
+                var currentPrint = _salesCollection.Find(FilterDefinition<Sale>.Empty).ToList()
+                    .FirstOrDefault(sale =>
+                        IsSaleActive(sale) &&
+                        (sale.PrintStatus == "InProgress" || sale.PrintStatus == "Staged"));
+
                 if (currentPrint != null && currentPrint.Id?.ToString() != id)
                 {
                     throw new InvalidOperationException("Only one sale can be InProgress or Staged");
                 }
 
-                if (updatedSale.PrintStatus == "InProgress" && existingSale.PrintStatus != "InProgress")
+                if (updatedSale.PrintStatus == "InProgress" && (existingSale.PrintStatus != "InProgress" || !wasActive))
                 {
                     updatedSale.PrintStartedAt = DateTime.Now;
                 }
@@ -691,7 +719,11 @@ namespace Byte2Life.API.Services
 
             var baseTime = DateTime.Now;
             var occupied = new List<(DateTime Start, DateTime End)>();
-            var currentPrint = _salesCollection.AsQueryable().FirstOrDefault(sale => sale.PrintStatus == "InProgress" || sale.PrintStatus == "Staged");
+            var currentPrint = _salesCollection.Find(FilterDefinition<Sale>.Empty).ToList()
+                .FirstOrDefault(sale =>
+                    IsSaleActive(sale) &&
+                    (sale.PrintStatus == "InProgress" || sale.PrintStatus == "Staged"));
+
             if (currentPrint?.PrintStartedAt != null)
             {
                 var currentDuration = Math.Max(GetSaleDurationHours(currentPrint), 0);

@@ -126,6 +126,43 @@ namespace Byte2Life.API.Tests.IntegrationTests
             queue![1].Priority.Should().Be(5);
             queue![2].Priority.Should().Be(1);
         }
+
+        [Fact]
+        public async Task GetQueue_DoesNotReturnInactiveSales()
+        {
+            // Arrange
+            var filament = await CreateFilamentAsync();
+
+            var activeSale = new Sale
+            {
+                Description = "Active Queue",
+                FilamentId = filament.Id,
+                PrintStatus = "InQueue",
+                Priority = 3,
+                IsActive = true
+            };
+            var inactiveSale = new Sale
+            {
+                Description = "Inactive Queue",
+                FilamentId = filament.Id,
+                PrintStatus = "InQueue",
+                Priority = 9,
+                IsActive = false
+            };
+
+            await _client.PostAsJsonAsync("/api/sales", activeSale, _jsonOptions);
+            await _client.PostAsJsonAsync("/api/sales", inactiveSale, _jsonOptions);
+
+            // Act
+            var response = await _client.GetAsync("/api/sales/queue");
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            var queue = await response.Content.ReadFromJsonAsync<List<Sale>>(_jsonOptions);
+
+            queue.Should().HaveCount(1);
+            queue![0].Description.Should().Be("Active Queue");
+        }
         
         [Fact]
         public async Task GetCurrentPrint_ReturnsInProgressSale()
@@ -143,6 +180,69 @@ namespace Byte2Life.API.Tests.IntegrationTests
             var current = await response.Content.ReadFromJsonAsync<Sale>(_jsonOptions);
             current.Should().NotBeNull();
             current!.Description.Should().Be("Current Job");
+        }
+
+        [Fact]
+        public async Task GetCurrentPrint_ReturnsNoContent_WhenOnlyInactiveCurrentSaleExists()
+        {
+            // Arrange
+            var filament = await CreateFilamentAsync();
+            var sale = new Sale
+            {
+                Description = "Dormant Current Job",
+                FilamentId = filament.Id,
+                PrintStatus = "InProgress",
+                IsActive = false
+            };
+            await _client.PostAsJsonAsync("/api/sales", sale, _jsonOptions);
+
+            // Act
+            var response = await _client.GetAsync("/api/sales/current");
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+        }
+
+        [Fact]
+        public async Task SetStatusInProgress_Succeeds_WhenOtherInProgressIsInactive()
+        {
+            // Arrange
+            var filament = await CreateFilamentAsync();
+
+            var inactiveCurrentSale = new Sale
+            {
+                Description = "Dormant Current Job",
+                FilamentId = filament.Id,
+                PrintStatus = "InProgress",
+                IsActive = false
+            };
+            await _client.PostAsJsonAsync("/api/sales", inactiveCurrentSale, _jsonOptions);
+
+            var nextSale = new Sale
+            {
+                Description = "Active Job",
+                FilamentId = filament.Id,
+                PrintStatus = "Pending",
+                IsActive = true
+            };
+            var createResponse = await _client.PostAsJsonAsync("/api/sales", nextSale, _jsonOptions);
+            var createdSale = await createResponse.Content.ReadFromJsonAsync<Sale>(_jsonOptions);
+
+            createdSale.Should().NotBeNull();
+            createdSale!.PrintStatus = "InProgress";
+
+            // Act
+            var updateResponse = await _client.PutAsJsonAsync($"/api/sales/{createdSale.Id}", createdSale, _jsonOptions);
+
+            // Assert
+            updateResponse.StatusCode.Should().Be(HttpStatusCode.NoContent);
+
+            var currentPrintResponse = await _client.GetAsync("/api/sales/current");
+            currentPrintResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+            var currentPrint = await currentPrintResponse.Content.ReadFromJsonAsync<Sale>(_jsonOptions);
+
+            currentPrint.Should().NotBeNull();
+            currentPrint!.Description.Should().Be("Active Job");
         }
 
         [Fact]
