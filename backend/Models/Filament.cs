@@ -19,7 +19,7 @@ namespace Byte2Life.API.Models
         public string? ColorHex { get; set; }
 
         public string Type { get; set; } = string.Empty; // PLA, PETG, ABS, etc.
-        public bool IsNozzle02Compatible { get; set; }
+        public bool? IsNozzle02Compatible { get; set; }
         [JsonPropertyName("warningComment")]
         public string WarningComment { get; set; } = string.Empty;
 
