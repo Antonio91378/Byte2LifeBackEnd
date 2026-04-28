@@ -48,7 +48,10 @@ namespace Byte2Life.API.Services
         public Task RemoveAsync(string id)
         {
             var objectId = MongoId.Parse(id);
-            var hasSales = _salesCollection.AsQueryable().Any(sale => sale.FilamentId == objectId);
+            var hasSales = _salesCollection.Find(FilterDefinition<Sale>.Empty).ToList()
+                .Any(sale =>
+                    sale.FilamentId == objectId ||
+                    (sale.Filaments != null && sale.Filaments.Any(usage => usage.FilamentId == objectId)));
 
             if (hasSales)
             {

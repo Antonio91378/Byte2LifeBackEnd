@@ -3,6 +3,12 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace Byte2Life.API.Models
 {
+    public class SaleFilamentUsage
+    {
+        public ObjectId? FilamentId { get; set; }
+        public double MassGrams { get; set; }
+    }
+
     [BsonIgnoreExtraElements]
     public class Sale
     {
@@ -40,6 +46,7 @@ namespace Byte2Life.API.Models
         public bool IsPaid { get; set; }
         public bool? IsActive { get; set; }
 
+        public List<SaleFilamentUsage> Filaments { get; set; } = new();
         public ObjectId? FilamentId { get; set; }
         
         public ObjectId? ClientId { get; set; }

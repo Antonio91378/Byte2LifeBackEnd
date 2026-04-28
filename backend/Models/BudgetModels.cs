@@ -10,6 +10,7 @@ namespace Byte2Life.API.Models
 
     public class BudgetRequest
     {
+        public List<BudgetFilamentRequestItem> Filaments { get; set; } = new();
         public string FilamentId { get; set; } = string.Empty;
         public DetailLevel DetailLevel { get; set; }
         public double MassGrams { get; set; }
@@ -21,9 +22,26 @@ namespace Byte2Life.API.Models
         public string? LayerHeight { get; set; }
     }
 
+    public class BudgetFilamentRequestItem
+    {
+        public string FilamentId { get; set; } = string.Empty;
+        public double MassGrams { get; set; }
+    }
+
+    public class BudgetMaterialBreakdownItem
+    {
+        public string FilamentId { get; set; } = string.Empty;
+        public string FilamentDescription { get; set; } = string.Empty;
+        public string Color { get; set; } = string.Empty;
+        public double MassGrams { get; set; }
+        public decimal UnitPricePerKg { get; set; }
+        public decimal MaterialCost { get; set; }
+    }
+
     public class BudgetResult
     {
         public decimal MaterialCost { get; set; }
+        public List<BudgetMaterialBreakdownItem> MaterialBreakdown { get; set; } = new();
         public decimal EnergyCost { get; set; }
         public decimal MachineCost { get; set; }
         public decimal TotalProductionCost { get; set; }

@@ -2,6 +2,8 @@ using Byte2Life.API.Models;
 using Byte2Life.API.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using MongoDB.Bson;
+using System.Globalization;
 using System.Text.Json;
 
 namespace Byte2Life.API.Controllers
@@ -70,10 +72,13 @@ namespace Byte2Life.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post(Sale newSale)
+        public async Task<IActionResult> Post([FromBody] JsonElement payload)
         {
+            Sale newSale;
+
             try 
             {
+                newSale = DeserializeSalePayload(payload);
                 await _saleService.CreateAsync(newSale);
                 return CreatedAtAction(nameof(GetById), new { id = newSale.Id }, newSale);
             }
@@ -114,13 +119,24 @@ namespace Byte2Life.API.Controllers
         }
 
         [HttpPut("{id:length(24)}")]
-        public async Task<IActionResult> Update(string id, Sale updatedSale)
+        public async Task<IActionResult> Update(string id, [FromBody] JsonElement payload)
         {
             var sale = await _saleService.GetByIdAsync(id);
 
             if (sale is null)
             {
                 return NotFound();
+            }
+
+            Sale updatedSale;
+
+            try
+            {
+                updatedSale = DeserializeSalePayload(payload);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
             }
 
             updatedSale.Id = sale.Id;
@@ -344,14 +360,125 @@ namespace Byte2Life.API.Controllers
                 throw new ArgumentException("Os dados da venda não foram enviados.");
             }
 
-            var sale = JsonSerializer.Deserialize<Sale>(saleJson, _jsonSerializerOptions);
+            using var payload = JsonDocument.Parse(saleJson);
+            var sale = DeserializeSalePayload(payload.RootElement);
+            return (sale, form);
+        }
+
+        private Sale DeserializeSalePayload(JsonElement payload)
+        {
+            var sale = payload.Deserialize<Sale>(_jsonSerializerOptions);
             if (sale is null)
             {
                 throw new ArgumentException("Não foi possível interpretar os dados da venda.");
             }
 
+            ApplyFilamentUsagesFromPayload(payload, sale);
             sale.Attachments ??= new List<SaleAttachment>();
-            return (sale, form);
+            return sale;
+        }
+
+        private static void ApplyFilamentUsagesFromPayload(JsonElement payload, Sale sale)
+        {
+            if (!TryGetPropertyIgnoreCase(payload, "filaments", out var filamentsElement) ||
+                filamentsElement.ValueKind != JsonValueKind.Array)
+            {
+                return;
+            }
+
+            sale.Filaments = filamentsElement
+                .EnumerateArray()
+                .Select(ParseFilamentUsage)
+                .Where(usage => usage is not null)
+                .Select(usage => usage!)
+                .ToList();
+        }
+
+        private static SaleFilamentUsage? ParseFilamentUsage(JsonElement payload)
+        {
+            if (payload.ValueKind != JsonValueKind.Object)
+            {
+                return null;
+            }
+
+            var filamentId = GetNullableObjectId(payload, "filamentId");
+            var massGrams = GetDouble(payload, "massGrams");
+
+            if (!filamentId.HasValue || massGrams <= 0)
+            {
+                return null;
+            }
+
+            return new SaleFilamentUsage
+            {
+                FilamentId = filamentId,
+                MassGrams = massGrams
+            };
+        }
+
+        private static ObjectId? GetNullableObjectId(JsonElement payload, string propertyName)
+        {
+            if (!TryGetPropertyIgnoreCase(payload, propertyName, out var value) ||
+                value.ValueKind == JsonValueKind.Null)
+            {
+                return null;
+            }
+
+            var raw = value.GetString();
+            return ObjectId.TryParse(raw, out var objectId) ? objectId : null;
+        }
+
+        private static double GetDouble(JsonElement payload, string propertyName, double fallback = 0)
+        {
+            if (!TryGetPropertyIgnoreCase(payload, propertyName, out var value))
+            {
+                return fallback;
+            }
+
+            if (value.ValueKind == JsonValueKind.Number)
+            {
+                return value.TryGetDouble(out var parsed) ? parsed : fallback;
+            }
+
+            if (value.ValueKind == JsonValueKind.String)
+            {
+                var raw = value.GetString();
+                if (string.IsNullOrWhiteSpace(raw))
+                {
+                    return fallback;
+                }
+
+                var normalized = raw.Trim().Replace(" ", "");
+                if (double.TryParse(normalized, NumberStyles.Any, CultureInfo.InvariantCulture, out var parsedInvariant))
+                {
+                    return parsedInvariant;
+                }
+
+                if (double.TryParse(normalized, NumberStyles.Any, new CultureInfo("pt-BR"), out var parsedPt))
+                {
+                    return parsedPt;
+                }
+            }
+
+            return fallback;
+        }
+
+        private static bool TryGetPropertyIgnoreCase(JsonElement payload, string propertyName, out JsonElement value)
+        {
+            if (payload.ValueKind == JsonValueKind.Object)
+            {
+                foreach (var property in payload.EnumerateObject())
+                {
+                    if (string.Equals(property.Name, propertyName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        value = property.Value;
+                        return true;
+                    }
+                }
+            }
+
+            value = default;
+            return false;
         }
 
         private async Task<List<SaleAttachment>> UploadAttachmentsFromFormAsync(IFormCollection form, CancellationToken cancellationToken)

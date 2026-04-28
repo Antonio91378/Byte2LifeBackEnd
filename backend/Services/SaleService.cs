@@ -58,7 +58,11 @@ namespace Byte2Life.API.Services
         public Task<List<Sale>> GetByFilamentIdAsync(string filamentId)
         {
             var objectId = MongoId.Parse(filamentId);
-            return Task.FromResult(NormalizeFinancialFields(_salesCollection.AsQueryable().Where(sale => sale.FilamentId == objectId).ToList()));
+            var sales = _salesCollection.Find(FilterDefinition<Sale>.Empty).ToList()
+                .Where(sale => SaleUsesFilament(sale, objectId))
+                .ToList();
+
+            return Task.FromResult(NormalizeFinancialFields(sales));
         }
 
         public Task<Sale?> GetCurrentPrintAsync() =>
@@ -178,13 +182,117 @@ namespace Byte2Life.API.Services
             return Math.Max(sale.WastedFilamentGrams ?? 0, 0);
         }
 
-        private static double GetTrackedFilamentUsageGrams(Sale sale)
+        private static void NormalizeFilamentAssignments(Sale sale)
         {
-            return Math.Max(sale.MassGrams, 0) + GetTrackedWasteGrams(sale);
+            var normalizedFilaments = new List<SaleFilamentUsage>();
+
+            if (sale.Filaments != null)
+            {
+                foreach (var filamentUsage in sale.Filaments)
+                {
+                    AppendFilamentUsage(normalizedFilaments, filamentUsage.FilamentId, filamentUsage.MassGrams);
+                }
+            }
+
+            if (normalizedFilaments.Count == 0)
+            {
+                AppendFilamentUsage(normalizedFilaments, sale.FilamentId, sale.MassGrams);
+            }
+
+            sale.Filaments = normalizedFilaments;
+
+            if (normalizedFilaments.Count == 0)
+            {
+                sale.FilamentId = null;
+                sale.MassGrams = Math.Max(sale.MassGrams, 0);
+                return;
+            }
+
+            sale.FilamentId = normalizedFilaments[0].FilamentId;
+            sale.MassGrams = normalizedFilaments.Sum(usage => usage.MassGrams);
+        }
+
+        private static void AppendFilamentUsage(List<SaleFilamentUsage> target, ObjectId? filamentId, double massGrams)
+        {
+            if (!filamentId.HasValue || filamentId.Value == ObjectId.Empty)
+            {
+                return;
+            }
+
+            var normalizedMass = Math.Max(massGrams, 0);
+            if (normalizedMass <= 0)
+            {
+                return;
+            }
+
+            var existingUsage = target.FirstOrDefault(usage => usage.FilamentId == filamentId);
+            if (existingUsage == null)
+            {
+                target.Add(new SaleFilamentUsage
+                {
+                    FilamentId = filamentId,
+                    MassGrams = normalizedMass
+                });
+                return;
+            }
+
+            existingUsage.MassGrams += normalizedMass;
+        }
+
+        private static bool SaleUsesFilament(Sale sale, ObjectId filamentId)
+        {
+            NormalizeFilamentAssignments(sale);
+            return sale.Filaments.Any(usage => usage.FilamentId == filamentId);
+        }
+
+        private static Dictionary<string, double> GetTrackedFilamentUsageByFilament(Sale sale)
+        {
+            NormalizeFilamentAssignments(sale);
+
+            var usageByFilament = new Dictionary<string, double>(StringComparer.Ordinal);
+            if (sale.Filaments.Count == 0)
+            {
+                return usageByFilament;
+            }
+
+            var totalMass = sale.Filaments.Sum(usage => usage.MassGrams);
+            if (totalMass <= 0)
+            {
+                return usageByFilament;
+            }
+
+            var trackedWaste = GetTrackedWasteGrams(sale);
+
+            foreach (var filamentUsage in sale.Filaments)
+            {
+                if (!filamentUsage.FilamentId.HasValue || filamentUsage.FilamentId.Value == ObjectId.Empty)
+                {
+                    continue;
+                }
+
+                var usageId = filamentUsage.FilamentId.Value.ToString();
+                var trackedUsage = filamentUsage.MassGrams;
+                if (trackedWaste > 0)
+                {
+                    trackedUsage += trackedWaste * (filamentUsage.MassGrams / totalMass);
+                }
+
+                if (usageByFilament.TryGetValue(usageId, out var currentUsage))
+                {
+                    usageByFilament[usageId] = currentUsage + trackedUsage;
+                }
+                else
+                {
+                    usageByFilament[usageId] = trackedUsage;
+                }
+            }
+
+            return usageByFilament;
         }
 
         private static Sale NormalizeFinancialFields(Sale sale)
         {
+            NormalizeFilamentAssignments(sale);
             NormalizeActivityStatus(sale);
 
             if (sale.Cost <= 0 && (sale.ProductionCost.GetValueOrDefault() > 0 || sale.ShippingCost > 0))
@@ -343,12 +451,12 @@ namespace Byte2Life.API.Services
                 }
             }
 
-            if (newSale.FilamentId.HasValue)
+            foreach (var filamentUsage in GetTrackedFilamentUsageByFilament(newSale))
             {
-                var filament = await _filamentService.GetAsync(newSale.FilamentId.Value.ToString());
+                var filament = await _filamentService.GetAsync(filamentUsage.Key);
                 if (filament != null)
                 {
-                    filament.RemainingMassGrams -= GetTrackedFilamentUsageGrams(newSale);
+                    filament.RemainingMassGrams -= filamentUsage.Value;
                     await _filamentService.UpdateAsync(filament.Id!.Value.ToString(), filament);
                 }
             }
@@ -419,67 +527,34 @@ namespace Byte2Life.API.Services
 
         private async Task AdjustFilamentStockAsync(Sale existingSale, Sale updatedSale)
         {
-            var oldFilamentId = existingSale.FilamentId?.ToString();
-            var newFilamentId = updatedSale.FilamentId?.ToString();
-            var oldTrackedUsage = GetTrackedFilamentUsageGrams(existingSale);
-            var newTrackedUsage = GetTrackedFilamentUsageGrams(updatedSale);
+            var oldUsageByFilament = GetTrackedFilamentUsageByFilament(existingSale);
+            var newUsageByFilament = GetTrackedFilamentUsageByFilament(updatedSale);
+            var allFilamentIds = oldUsageByFilament.Keys
+                .Union(newUsageByFilament.Keys, StringComparer.Ordinal)
+                .ToList();
 
-            if (string.IsNullOrWhiteSpace(oldFilamentId) && string.IsNullOrWhiteSpace(newFilamentId))
+            if (allFilamentIds.Count == 0)
             {
                 return;
             }
 
-            if (!string.IsNullOrWhiteSpace(oldFilamentId) && string.IsNullOrWhiteSpace(newFilamentId))
+            foreach (var filamentId in allFilamentIds)
             {
-                var oldFilament = await _filamentService.GetAsync(oldFilamentId);
-                if (oldFilament != null)
-                {
-                    oldFilament.RemainingMassGrams += oldTrackedUsage;
-                    await _filamentService.UpdateAsync(oldFilament.Id!.Value.ToString(), oldFilament);
-                }
-                return;
-            }
+                oldUsageByFilament.TryGetValue(filamentId, out var oldUsage);
+                newUsageByFilament.TryGetValue(filamentId, out var newUsage);
 
-            if (string.IsNullOrWhiteSpace(oldFilamentId) && !string.IsNullOrWhiteSpace(newFilamentId))
-            {
-                var newFilament = await _filamentService.GetAsync(newFilamentId);
-                if (newFilament != null)
-                {
-                    newFilament.RemainingMassGrams -= newTrackedUsage;
-                    await _filamentService.UpdateAsync(newFilament.Id!.Value.ToString(), newFilament);
-                }
-                return;
-            }
-
-            if (oldFilamentId == newFilamentId)
-            {
-                var delta = newTrackedUsage - oldTrackedUsage;
+                var delta = newUsage - oldUsage;
                 if (Math.Abs(delta) < 0.0001d)
                 {
-                    return;
+                    continue;
                 }
 
-                var filament = await _filamentService.GetAsync(oldFilamentId!);
+                var filament = await _filamentService.GetAsync(filamentId);
                 if (filament != null)
                 {
                     filament.RemainingMassGrams -= delta;
                     await _filamentService.UpdateAsync(filament.Id!.Value.ToString(), filament);
                 }
-                return;
-            }
-
-            var oldFilamentSwap = await _filamentService.GetAsync(oldFilamentId!);
-            if (oldFilamentSwap != null)
-            {
-                oldFilamentSwap.RemainingMassGrams += oldTrackedUsage;
-                await _filamentService.UpdateAsync(oldFilamentSwap.Id!.Value.ToString(), oldFilamentSwap);
-            }
-
-            var newFilamentSwap = await _filamentService.GetAsync(newFilamentId!);
-            if (newFilamentSwap != null)
-            {
-                newFilamentSwap.RemainingMassGrams -= newTrackedUsage;
-                await _filamentService.UpdateAsync(newFilamentSwap.Id!.Value.ToString(), newFilamentSwap);
             }
         }
 
@@ -583,13 +658,16 @@ namespace Byte2Life.API.Services
         public async Task RemoveAsync(string id)
         {
             var sale = await GetByIdAsync(id);
-            if (sale != null && sale.FilamentId.HasValue)
+            if (sale != null)
             {
-                var filament = await _filamentService.GetAsync(sale.FilamentId.Value.ToString());
-                if (filament != null)
+                foreach (var filamentUsage in GetTrackedFilamentUsageByFilament(sale))
                 {
-                    filament.RemainingMassGrams += GetTrackedFilamentUsageGrams(sale);
-                    await _filamentService.UpdateAsync(filament.Id!.Value.ToString(), filament);
+                    var filament = await _filamentService.GetAsync(filamentUsage.Key);
+                    if (filament != null)
+                    {
+                        filament.RemainingMassGrams += filamentUsage.Value;
+                        await _filamentService.UpdateAsync(filament.Id!.Value.ToString(), filament);
+                    }
                 }
             }
 
