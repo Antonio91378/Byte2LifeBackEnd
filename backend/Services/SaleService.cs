@@ -177,9 +177,47 @@ namespace Byte2Life.API.Services
             return derivedBaseCost > 0 ? derivedBaseCost : sale.Cost;
         }
 
+        private static void NormalizeIncidentWasteAssignments(Sale sale)
+        {
+            sale.Incidents ??= new List<PrintIncident>();
+
+            foreach (var incident in sale.Incidents)
+            {
+                incident.WastedFilaments ??= new List<PrintIncidentFilamentWaste>();
+
+                var normalizedWaste = new List<PrintIncidentFilamentWaste>();
+                foreach (var wastedFilament in incident.WastedFilaments)
+                {
+                    AppendIncidentWaste(normalizedWaste, wastedFilament.FilamentId, wastedFilament.MassGrams);
+                }
+
+                incident.WastedFilaments = normalizedWaste;
+
+                var explicitWaste = normalizedWaste.Sum(item => item.MassGrams);
+                if (GetRecordedWasteGrams(incident.WastedFilamentGrams) <= 0 && explicitWaste > 0)
+                {
+                    incident.WastedFilamentGrams = explicitWaste;
+                }
+            }
+        }
+
+        private static double GetRecordedWasteGrams(double? wastedFilamentGrams)
+        {
+            return Math.Max(wastedFilamentGrams ?? 0, 0);
+        }
+
+        private static double GetIncidentTrackedWasteGrams(PrintIncident incident)
+        {
+            var explicitWaste = incident.WastedFilaments?.Sum(item => Math.Max(item.MassGrams, 0)) ?? 0;
+            return Math.Max(GetRecordedWasteGrams(incident.WastedFilamentGrams), explicitWaste);
+        }
+
         private static double GetTrackedWasteGrams(Sale sale)
         {
-            return Math.Max(sale.WastedFilamentGrams ?? 0, 0);
+            NormalizeIncidentWasteAssignments(sale);
+
+            var incidentWaste = sale.Incidents?.Sum(GetIncidentTrackedWasteGrams) ?? 0;
+            return Math.Max(GetRecordedWasteGrams(sale.WastedFilamentGrams), incidentWaste);
         }
 
         private static void NormalizeFilamentAssignments(Sale sale)
@@ -239,6 +277,33 @@ namespace Byte2Life.API.Services
             existingUsage.MassGrams += normalizedMass;
         }
 
+        private static void AppendIncidentWaste(List<PrintIncidentFilamentWaste> target, ObjectId? filamentId, double massGrams)
+        {
+            if (!filamentId.HasValue || filamentId.Value == ObjectId.Empty)
+            {
+                return;
+            }
+
+            var normalizedMass = Math.Max(massGrams, 0);
+            if (normalizedMass <= 0)
+            {
+                return;
+            }
+
+            var existingWaste = target.FirstOrDefault(waste => waste.FilamentId == filamentId);
+            if (existingWaste == null)
+            {
+                target.Add(new PrintIncidentFilamentWaste
+                {
+                    FilamentId = filamentId,
+                    MassGrams = normalizedMass
+                });
+                return;
+            }
+
+            existingWaste.MassGrams += normalizedMass;
+        }
+
         private static bool SaleUsesFilament(Sale sale, ObjectId filamentId)
         {
             NormalizeFilamentAssignments(sale);
@@ -248,6 +313,7 @@ namespace Byte2Life.API.Services
         private static Dictionary<string, double> GetTrackedFilamentUsageByFilament(Sale sale)
         {
             NormalizeFilamentAssignments(sale);
+            NormalizeIncidentWasteAssignments(sale);
 
             var usageByFilament = new Dictionary<string, double>(StringComparer.Ordinal);
             if (sale.Filaments.Count == 0)
@@ -261,7 +327,7 @@ namespace Byte2Life.API.Services
                 return usageByFilament;
             }
 
-            var trackedWaste = GetTrackedWasteGrams(sale);
+            var trackedWasteByFilament = GetTrackedWasteGramsByFilament(sale);
 
             foreach (var filamentUsage in sale.Filaments)
             {
@@ -272,9 +338,9 @@ namespace Byte2Life.API.Services
 
                 var usageId = filamentUsage.FilamentId.Value.ToString();
                 var trackedUsage = filamentUsage.MassGrams;
-                if (trackedWaste > 0)
+                if (trackedWasteByFilament.TryGetValue(usageId, out var trackedWaste) && trackedWaste > 0)
                 {
-                    trackedUsage += trackedWaste * (filamentUsage.MassGrams / totalMass);
+                    trackedUsage += trackedWaste;
                 }
 
                 if (usageByFilament.TryGetValue(usageId, out var currentUsage))
@@ -290,10 +356,109 @@ namespace Byte2Life.API.Services
             return usageByFilament;
         }
 
+        private static Dictionary<string, double> GetTrackedWasteGramsByFilament(Sale sale)
+        {
+            NormalizeFilamentAssignments(sale);
+            NormalizeIncidentWasteAssignments(sale);
+
+            var wasteByFilament = new Dictionary<string, double>(StringComparer.Ordinal);
+            if (sale.Filaments.Count == 0)
+            {
+                return wasteByFilament;
+            }
+
+            var totalMass = sale.Filaments.Sum(usage => usage.MassGrams);
+            if (totalMass <= 0)
+            {
+                return wasteByFilament;
+            }
+
+            void AddWaste(ObjectId filamentId, double wasteGrams)
+            {
+                var normalizedWaste = Math.Max(wasteGrams, 0);
+                if (normalizedWaste <= 0)
+                {
+                    return;
+                }
+
+                var usageId = filamentId.ToString();
+                if (wasteByFilament.TryGetValue(usageId, out var currentWaste))
+                {
+                    wasteByFilament[usageId] = currentWaste + normalizedWaste;
+                }
+                else
+                {
+                    wasteByFilament[usageId] = normalizedWaste;
+                }
+            }
+
+            void DistributeLegacyWaste(double wasteGrams)
+            {
+                var normalizedWaste = Math.Max(wasteGrams, 0);
+                if (normalizedWaste <= 0)
+                {
+                    return;
+                }
+
+                foreach (var filamentUsage in sale.Filaments)
+                {
+                    if (!filamentUsage.FilamentId.HasValue || filamentUsage.FilamentId.Value == ObjectId.Empty)
+                    {
+                        continue;
+                    }
+
+                    AddWaste(filamentUsage.FilamentId.Value, normalizedWaste * (filamentUsage.MassGrams / totalMass));
+                }
+            }
+
+            var incidentWasteTotal = 0d;
+
+            foreach (var incident in sale.Incidents)
+            {
+                var explicitWaste = 0d;
+
+                foreach (var wastedFilament in incident.WastedFilaments)
+                {
+                    if (!wastedFilament.FilamentId.HasValue || wastedFilament.FilamentId.Value == ObjectId.Empty)
+                    {
+                        continue;
+                    }
+
+                    var wasteGrams = Math.Max(wastedFilament.MassGrams, 0);
+                    if (wasteGrams <= 0)
+                    {
+                        continue;
+                    }
+
+                    AddWaste(wastedFilament.FilamentId.Value, wasteGrams);
+                    explicitWaste += wasteGrams;
+                }
+
+                var incidentTotal = GetIncidentTrackedWasteGrams(incident);
+                incidentWasteTotal += incidentTotal;
+
+                var remainingWaste = incidentTotal - explicitWaste;
+                if (remainingWaste > 0.0001d)
+                {
+                    DistributeLegacyWaste(remainingWaste);
+                }
+            }
+
+            var legacySaleWaste = GetRecordedWasteGrams(sale.WastedFilamentGrams) - incidentWasteTotal;
+            if (legacySaleWaste > 0.0001d)
+            {
+                DistributeLegacyWaste(legacySaleWaste);
+            }
+
+            return wasteByFilament;
+        }
+
         private static Sale NormalizeFinancialFields(Sale sale)
         {
             NormalizeFilamentAssignments(sale);
             NormalizeActivityStatus(sale);
+            NormalizeIncidentWasteAssignments(sale);
+            sale.WastedFilamentGrams = GetTrackedWasteGrams(sale);
 
             if (sale.Cost <= 0 && (sale.ProductionCost.GetValueOrDefault() > 0 || sale.ShippingCost > 0))
             {

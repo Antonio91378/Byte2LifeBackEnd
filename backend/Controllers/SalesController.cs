@@ -374,6 +374,7 @@ namespace Byte2Life.API.Controllers
             }
 
             ApplyFilamentUsagesFromPayload(payload, sale);
+            ApplyIncidentWasteFromPayload(payload, sale);
             sale.Attachments ??= new List<SaleAttachment>();
             return sale;
         }
@@ -394,6 +395,46 @@ namespace Byte2Life.API.Controllers
                 .ToList();
         }
 
+        private static void ApplyIncidentWasteFromPayload(JsonElement payload, Sale sale)
+        {
+            if (!TryGetPropertyIgnoreCase(payload, "incidents", out var incidentsElement) ||
+                incidentsElement.ValueKind != JsonValueKind.Array ||
+                sale.Incidents is null ||
+                sale.Incidents.Count == 0)
+            {
+                return;
+            }
+
+            var incidentIndex = 0;
+
+            foreach (var incidentElement in incidentsElement.EnumerateArray())
+            {
+                if (incidentIndex >= sale.Incidents.Count)
+                {
+                    break;
+                }
+
+                ApplyIncidentWasteAssignmentsFromPayload(incidentElement, sale.Incidents[incidentIndex]);
+                incidentIndex++;
+            }
+        }
+
+        private static void ApplyIncidentWasteAssignmentsFromPayload(JsonElement payload, PrintIncident incident)
+        {
+            if (!TryGetPropertyIgnoreCase(payload, "wastedFilaments", out var wastedFilamentsElement) ||
+                wastedFilamentsElement.ValueKind != JsonValueKind.Array)
+            {
+                return;
+            }
+
+            incident.WastedFilaments = wastedFilamentsElement
+                .EnumerateArray()
+                .Select(ParseIncidentFilamentWaste)
+                .Where(waste => waste is not null)
+                .Select(waste => waste!)
+                .ToList();
+        }
+
         private static SaleFilamentUsage? ParseFilamentUsage(JsonElement payload)
         {
             if (payload.ValueKind != JsonValueKind.Object)
@@ -410,6 +451,28 @@ namespace Byte2Life.API.Controllers
             }
 
             return new SaleFilamentUsage
+            {
+                FilamentId = filamentId,
+                MassGrams = massGrams
+            };
+        }
+
+        private static PrintIncidentFilamentWaste? ParseIncidentFilamentWaste(JsonElement payload)
+        {
+            if (payload.ValueKind != JsonValueKind.Object)
+            {
+                return null;
+            }
+
+            var filamentId = GetNullableObjectId(payload, "filamentId");
+            var massGrams = GetDouble(payload, "massGrams");
+
+            if (!filamentId.HasValue || massGrams <= 0)
+            {
+                return null;
+            }
+
+            return new PrintIncidentFilamentWaste
             {
                 FilamentId = filamentId,
                 MassGrams = massGrams

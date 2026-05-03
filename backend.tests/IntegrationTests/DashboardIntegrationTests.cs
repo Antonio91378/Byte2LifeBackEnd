@@ -40,11 +40,11 @@ namespace Byte2Life.API.Tests.IntegrationTests
             _db.GetCollection<Filament>(MongoCollectionNames.Filaments).DeleteMany(Builders<Filament>.Filter.Empty);
         }
 
-        private async Task<Filament> CreateFilamentAsync()
+        private async Task<Filament> CreateFilamentAsync(string description = "Test Filament")
         {
             var filament = new Filament 
             { 
-                Description = "Test Filament", 
+                Description = description, 
                 InitialMassGrams = 1000, 
                 RemainingMassGrams = 1000 
             };
@@ -312,6 +312,84 @@ namespace Byte2Life.API.Tests.IntegrationTests
 
             updatedFilament.Should().NotBeNull();
             updatedFilament!.RemainingMassGrams.Should().Be(875);
+        }
+
+        [Fact]
+        public async Task FailedPrintOccurrence_WithMultipleFilaments_PersistsWasteByFilament_AndDiscountsSpecificFilaments()
+        {
+            // Arrange
+            var primaryFilament = await CreateFilamentAsync("Primary Filament");
+            var secondaryFilament = await CreateFilamentAsync("Secondary Filament");
+
+            var sale = new Sale
+            {
+                Description = "Multi Filament Failure",
+                FilamentId = primaryFilament.Id,
+                Filaments = new List<SaleFilamentUsage>
+                {
+                    new() { FilamentId = primaryFilament.Id, MassGrams = 60 },
+                    new() { FilamentId = secondaryFilament.Id, MassGrams = 40 }
+                },
+                PrintStatus = "InProgress",
+                MassGrams = 100,
+                PrintTimeHours = 2
+            };
+
+            var createResponse = await _client.PostAsJsonAsync("/api/sales", sale, _jsonOptions);
+            createResponse.EnsureSuccessStatusCode();
+            var createdSale = await createResponse.Content.ReadFromJsonAsync<Sale>(_jsonOptions);
+
+            createdSale.Should().NotBeNull();
+
+            createdSale!.PrintStatus = "Staged";
+            createdSale.PrintStartedAt = null;
+            createdSale.ErrorReason = "Troca de material no meio da peça";
+            createdSale.WastedFilamentGrams = 25;
+            createdSale.Incidents = new List<PrintIncident>
+            {
+                new()
+                {
+                    Timestamp = DateTime.UtcNow,
+                    Reason = "Other",
+                    Comment = "Troca de material no meio da peça",
+                    WastedFilamentGrams = 25,
+                    WastedFilaments = new List<PrintIncidentFilamentWaste>
+                    {
+                        new() { FilamentId = primaryFilament.Id, MassGrams = 10 },
+                        new() { FilamentId = secondaryFilament.Id, MassGrams = 15 }
+                    }
+                }
+            };
+
+            // Act
+            var updateResponse = await _client.PutAsJsonAsync($"/api/sales/{createdSale.Id}", createdSale, _jsonOptions);
+
+            // Assert - incident persistence
+            updateResponse.StatusCode.Should().Be(HttpStatusCode.NoContent);
+
+            var getSaleResponse = await _client.GetAsync($"/api/sales/{createdSale.Id}");
+            getSaleResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+            var updatedSale = await getSaleResponse.Content.ReadFromJsonAsync<Sale>(_jsonOptions);
+
+            updatedSale.Should().NotBeNull();
+            updatedSale!.Incidents.Should().ContainSingle();
+            updatedSale.Incidents![0].WastedFilaments.Should().HaveCount(2);
+            updatedSale.Incidents[0].WastedFilaments.Should().ContainSingle(item =>
+                item.FilamentId == primaryFilament.Id && item.MassGrams == 10);
+            updatedSale.Incidents[0].WastedFilaments.Should().ContainSingle(item =>
+                item.FilamentId == secondaryFilament.Id && item.MassGrams == 15);
+            updatedSale.WastedFilamentGrams.Should().Be(25);
+
+            // Assert - filament stock reflects planned usage plus waste per filament
+            var updatedPrimaryFilament = await (await _client.GetAsync($"/api/filaments/{primaryFilament.Id}"))
+                .Content.ReadFromJsonAsync<Filament>(_jsonOptions);
+            var updatedSecondaryFilament = await (await _client.GetAsync($"/api/filaments/{secondaryFilament.Id}"))
+                .Content.ReadFromJsonAsync<Filament>(_jsonOptions);
+
+            updatedPrimaryFilament.Should().NotBeNull();
+            updatedSecondaryFilament.Should().NotBeNull();
+            updatedPrimaryFilament!.RemainingMassGrams.Should().Be(930);
+            updatedSecondaryFilament!.RemainingMassGrams.Should().Be(945);
         }
     }
 }
