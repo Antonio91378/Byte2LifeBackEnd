@@ -1,0 +1,180 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e3]:
+      - link "BYTE2LIFE" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img [ref=e6]
+        - generic [ref=e8]: BYTE2LIFE
+      - generic [ref=e9]:
+        - link "Estoque" [ref=e10] [cursor=pointer]:
+          - /url: /stock
+          - img [ref=e11]
+          - text: Estoque
+        - link "Filamentos" [ref=e13] [cursor=pointer]:
+          - /url: /filaments
+          - img [ref=e14]
+          - text: Filamentos
+        - link "Tintas" [ref=e16] [cursor=pointer]:
+          - /url: /paints
+          - img [ref=e17]
+          - text: Tintas
+        - link "Servicos" [ref=e19] [cursor=pointer]:
+          - /url: /services
+          - img [ref=e20]
+          - text: Servicos
+        - link "Clientes" [ref=e22] [cursor=pointer]:
+          - /url: /clients
+          - img [ref=e23]
+          - text: Clientes
+        - link "Vendas" [ref=e25] [cursor=pointer]:
+          - /url: /sales
+          - img [ref=e26]
+          - text: Vendas
+        - link "Importar" [ref=e28] [cursor=pointer]:
+          - /url: /import
+          - img [ref=e29]
+          - text: Importar
+  - main [ref=e31]:
+    - generic [ref=e32]:
+      - generic [ref=e33]:
+        - generic [ref=e34]:
+          - generic [ref=e35]:
+            - generic [ref=e36]: Pendente
+            - generic [ref=e37]: A enviar
+            - generic [ref=e38]: Não pago
+          - generic [ref=e39]:
+            - paragraph [ref=e40]: Visualização da venda
+            - heading "Teste desperdicio multi-filamento" [level=1] [ref=e41]
+          - generic [ref=e42]:
+            - generic [ref=e43]:
+              - generic [ref=e44]: "Cliente:"
+              - generic [ref=e45]: Não informado
+            - generic [ref=e46]:
+              - generic [ref=e47]: "Filamentos:"
+              - generic [ref=e48]: 2 filamentos usados
+            - generic [ref=e49]:
+              - generic [ref=e50]: "Data da venda:"
+              - generic [ref=e51]: 02/05/2026
+            - generic [ref=e52]:
+              - generic [ref=e53]: "Entrega:"
+              - generic [ref=e54]: Não informado
+        - generic [ref=e55]:
+          - button "Voltar" [ref=e56]
+          - link "Editar venda" [ref=e57] [cursor=pointer]:
+            - /url: /sales/69f6591816530bf44daded0c
+      - generic [ref=e58]:
+        - generic [ref=e59]:
+          - paragraph [ref=e60]: Valor de venda
+          - paragraph [ref=e61]: R$ 120.00
+        - generic [ref=e62]:
+          - paragraph [ref=e63]: Custo total
+          - paragraph [ref=e64]: R$ 40.00
+        - generic [ref=e65]:
+          - paragraph [ref=e66]: Lucro
+          - paragraph [ref=e67]: R$ 80.00
+        - generic [ref=e68]:
+          - paragraph [ref=e69]: Margem
+          - paragraph [ref=e70]: 200.00%
+      - generic [ref=e71]:
+        - generic [ref=e72]:
+          - generic [ref=e73]:
+            - heading "Imagem do produto" [level=2] [ref=e74]
+            - paragraph [ref=e75]: Imagem principal que identifica a peça vendida.
+            - generic [ref=e76]: Nenhuma imagem cadastrada nesta categoria.
+          - generic [ref=e77]:
+            - heading "Imagens complementares" [level=2] [ref=e78]
+            - paragraph [ref=e79]: Comprovantes, etiquetas ou qualquer material visual de apoio.
+            - generic [ref=e80]: Nenhuma imagem cadastrada nesta categoria.
+          - generic [ref=e81]:
+            - generic [ref=e83]:
+              - heading "Arquivos complementares" [level=2] [ref=e84]
+              - paragraph [ref=e85]: Modelos 3MF, STL, PDFs ou outros arquivos anexados à venda.
+            - generic [ref=e86]: Nenhum arquivo complementar cadastrado.
+        - generic [ref=e87]:
+          - generic [ref=e88]:
+            - heading "Dados da venda" [level=2] [ref=e89]
+            - generic [ref=e90]:
+              - generic [ref=e91]:
+                - generic [ref=e92]: Cliente
+                - generic [ref=e93]: Não informado
+              - generic [ref=e94]:
+                - generic [ref=e95]: Qualidade
+                - generic [ref=e96]: Não informado
+              - generic [ref=e97]:
+                - generic [ref=e98]:
+                  - paragraph [ref=e99]: Filamentos
+                  - paragraph [ref=e100]: 100 g no total
+                - generic [ref=e101]:
+                  - generic [ref=e102]:
+                    - generic [ref=e105]: PLA Branco Visual (Branco)
+                    - generic [ref=e106]: 60g
+                  - generic [ref=e107]:
+                    - generic [ref=e110]: PLA Preto Visual (Preto)
+                    - generic [ref=e111]: 40g
+              - generic [ref=e112]:
+                - generic [ref=e113]: Tempo estimado
+                - generic [ref=e114]: Não informado
+              - generic [ref=e115]:
+                - generic [ref=e116]: Início confirmado
+                - generic [ref=e117]: Não informado
+              - generic [ref=e118]:
+                - generic [ref=e119]: Frete
+                - generic [ref=e120]: R$ 0.00
+              - generic [ref=e121]:
+                - generic [ref=e122]: Custo de produção
+                - generic [ref=e123]: R$ 40.00
+          - generic [ref=e124]:
+            - heading "Serviços adicionais" [level=2] [ref=e125]
+            - generic [ref=e126]:
+              - generic [ref=e127]:
+                - generic [ref=e128]: Arte personalizada
+                - generic [ref=e129]: Não
+              - generic [ref=e130]:
+                - generic [ref=e131]: Pintura
+                - generic [ref=e132]: Não
+              - generic [ref=e133]:
+                - generic [ref=e134]: Verniz
+                - generic [ref=e135]: Não
+              - generic [ref=e136]:
+                - generic [ref=e137]: Responsável design
+                - generic [ref=e138]: Não informado
+              - generic [ref=e139]:
+                - generic [ref=e140]: Tempo design
+                - generic [ref=e141]: Não informado
+              - generic [ref=e142]:
+                - generic [ref=e143]: Valor design
+                - generic [ref=e144]: Não informado
+              - generic [ref=e145]:
+                - generic [ref=e146]: Responsável pintura
+                - generic [ref=e147]: Não informado
+              - generic [ref=e148]:
+                - generic [ref=e149]: Tempo pintura
+                - generic [ref=e150]: Não informado
+          - generic [ref=e151]:
+            - heading "Ocorrências da impressão" [level=2] [ref=e152]
+            - generic [ref=e153]:
+              - generic [ref=e154]:
+                - generic [ref=e155]: Status atual
+                - generic [ref=e156]: Staged
+              - generic [ref=e157]:
+                - generic [ref=e158]: Desperdício acumulado
+                - generic [ref=e159]: 20 g
+              - generic [ref=e161]:
+                - generic [ref=e162]:
+                  - generic [ref=e163]:
+                    - paragraph [ref=e164]: Outro
+                    - paragraph [ref=e165]: Falha controlada no teste visual
+                  - paragraph [ref=e166]: 02/05/2026, 17:10:38
+                - paragraph [ref=e167]: "Desperdício registrado: 20 g"
+                - generic [ref=e168]:
+                  - paragraph [ref=e169]: "PLA Branco Visual (Branco): 8 g"
+                  - paragraph [ref=e170]: "PLA Preto Visual (Preto): 12 g"
+              - generic [ref=e171]:
+                - generic [ref=e172]: Último motivo informado
+                - generic [ref=e173]: Falha controlada no teste visual
+          - generic [ref=e174]:
+            - heading "Links e observações" [level=2] [ref=e175]
+            - generic [ref=e178]:
+              - paragraph [ref=e179]: Link do produto
+              - paragraph [ref=e180]: Nenhum link cadastrado.
+  - alert [ref=e181]

@@ -1,0 +1,351 @@
+- generic [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e3]:
+      - link "BYTE2LIFE" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img [ref=e6]
+        - generic [ref=e8]: BYTE2LIFE
+      - button [ref=e447]:
+        - img [ref=e448]
+  - main [ref=e31]:
+    - generic [ref=e32]:
+      - heading "Servicos" [level=1] [ref=e34]
+      - generic [ref=e35]:
+        - generic [ref=e36]:
+          - heading "Relatorio de Servicos" [level=2] [ref=e37]
+          - generic [ref=e38]:
+            - generic [ref=e39]:
+              - generic [ref=e40]:
+                - generic [ref=e41]:
+                  - img [ref=e42]
+                  - text: "Filtrar:"
+                - combobox [ref=e44] [cursor=pointer]:
+                  - option "Dia" [selected]
+                  - option "Mes"
+                - combobox [ref=e46] [cursor=pointer]:
+                  - option "Todos os Responsaveis" [selected]
+              - textbox "Filtrar:" [ref=e49] [cursor=pointer]
+            - button "Filtros" [ref=e51]:
+              - img [ref=e52]
+              - generic [ref=e54]: Filtros
+              - img [ref=e55]
+        - generic [ref=e57]:
+          - generic [ref=e58]:
+            - paragraph [ref=e59]: Lucro total (servicos)
+            - paragraph [ref=e60]: R$ 0,00
+          - generic [ref=e61]:
+            - paragraph [ref=e62]: Lucro design
+            - paragraph [ref=e63]: R$ 0,00
+          - generic [ref=e64]:
+            - paragraph [ref=e65]: Lucro pintura
+            - paragraph [ref=e66]: R$ 0,00
+        - table [ref=e69]:
+          - rowgroup [ref=e70]:
+            - row "Data Descricao Valor Status Acoes" [ref=e450]:
+              - columnheader "Data" [ref=e72]
+              - columnheader "Descricao" [ref=e74]
+              - columnheader "Valor" [ref=e76]
+              - columnheader "Status" [ref=e77]
+              - columnheader "Acoes" [ref=e78]
+          - rowgroup
+        - generic [ref=e79]:
+          - img [ref=e80]
+          - heading "Nenhum servico encontrado" [level=3] [ref=e82]
+          - paragraph [ref=e83]: Ajuste os filtros ou cadastre novos servicos.
+        - generic [ref=e84]: "Servicos ativos: 0"
+      - generic [ref=e85]:
+        - generic [ref=e87]:
+          - generic [ref=e89]:
+            - heading "Prestadores de Servico" [level=2] [ref=e90]
+            - paragraph [ref=e91]: Cadastre designers e pintores.
+          - generic [ref=e92]:
+            - generic [ref=e93]:
+              - generic [ref=e94]: Nome
+              - textbox [ref=e95]
+            - generic [ref=e96]:
+              - generic [ref=e97]: Email
+              - textbox "exemplo@dominio.com" [ref=e98]
+            - generic [ref=e99]:
+              - generic [ref=e100]: Tags
+              - button "Selecione tags..." [ref=e101]:
+                - generic [ref=e103]: Selecione tags...
+                - img [ref=e104]
+            - button "Cadastrar" [ref=e107]
+          - paragraph [ref=e109]: Nenhum prestador cadastrado.
+        - generic [ref=e111]:
+          - generic [ref=e112]:
+            - generic [ref=e113]:
+              - heading "Agendamento de servicos" [level=2] [ref=e114]
+              - paragraph [ref=e115]: Gerencie design e pintura no mesmo fluxo.
+            - generic [ref=e116]:
+              - button "Design" [ref=e117]
+              - button "Pintura" [ref=e118]
+          - generic [ref=e119]:
+            - generic [ref=e120]:
+              - generic [ref=e121]:
+                - generic [ref=e123]:
+                  - generic [ref=e124]:
+                    - generic [ref=e125]: Titulo
+                    - textbox [ref=e126]: Teste mobile hover
+                  - generic [ref=e127]:
+                    - generic [ref=e128]: Responsavel
+                    - combobox [ref=e129]:
+                      - option "Selecione..." [selected]
+                  - generic [ref=e130]:
+                    - generic [ref=e131]: Duracao (h)
+                    - spinbutton [active] [ref=e132]: "1"
+                  - generic [ref=e133]:
+                    - generic [ref=e134]: Status
+                    - combobox [ref=e135]:
+                      - option "Ativo" [selected]
+                      - option "Concluido"
+                  - generic [ref=e136]:
+                    - generic [ref=e137]: Valor (R$)
+                    - spinbutton [ref=e138]: "0"
+                  - generic [ref=e139]:
+                    - generic [ref=e140]: Horario
+                    - textbox [ref=e141]: 2026-05-03T10:00
+                  - button "Agendar" [ref=e143]
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic: Titulo
+                      - textbox
+                    - generic:
+                      - generic: Responsavel
+                      - combobox:
+                        - option "Selecione..." [selected]
+                    - generic:
+                      - generic: Duracao (h)
+                      - spinbutton: "0"
+                    - generic:
+                      - generic: Status
+                      - combobox:
+                        - option "Ativo" [selected]
+                        - option "Concluido"
+                    - generic:
+                      - generic: Valor (R$)
+                      - spinbutton: "0"
+                    - generic:
+                      - generic: Horario
+                      - textbox
+                    - generic:
+                      - button "Agendar"
+              - generic [ref=e144]:
+                - img [ref=e145]
+                - text: Clique na agenda para escolher o horario.
+            - generic [ref=e147]:
+              - generic [ref=e451]:
+                - generic [ref=e452]:
+                  - generic [ref=e454]:
+                    - button "Previous dia" [ref=e455] [cursor=pointer]:
+                      - img [ref=e456]: 
+                    - button "Next dia" [ref=e457] [cursor=pointer]:
+                      - img [ref=e458]: 
+                  - heading "May 3" [level=2] [ref=e460]
+                  - generic [ref=e461]:
+                    - button "hoje" [disabled] [ref=e462]
+                    - generic [ref=e463]:
+                      - button "dia" [pressed] [ref=e464] [cursor=pointer]
+                      - button "sem" [ref=e465] [cursor=pointer]
+                - generic "May 3" [ref=e466]:
+                  - grid [ref=e468]:
+                    - rowgroup [ref=e469]:
+                      - row "3 S" [ref=e474]:
+                        - columnheader "3 S" [ref=e475]:
+                          - generic [ref=e477]: 3 S
+                    - rowgroup [ref=e478]:
+                      - generic [ref=e481]:
+                        - table [ref=e483]:
+                          - rowgroup [ref=e486]:
+                            - row [ref=e487]:
+                              - cell [ref=e488]:
+                                - generic [ref=e490]: 12am
+                              - cell [ref=e491]
+                            - row [ref=e492]:
+                              - cell [ref=e493]
+                              - cell [ref=e494]
+                            - row [ref=e495]:
+                              - cell [ref=e496]:
+                                - generic [ref=e498]: 1am
+                              - cell [ref=e499]
+                            - row [ref=e500]:
+                              - cell [ref=e501]
+                              - cell [ref=e502]
+                            - row [ref=e503]:
+                              - cell [ref=e504]:
+                                - generic [ref=e506]: 2am
+                              - cell [ref=e507]
+                            - row [ref=e508]:
+                              - cell [ref=e509]
+                              - cell [ref=e510]
+                            - row [ref=e511]:
+                              - cell [ref=e512]:
+                                - generic [ref=e514]: 3am
+                              - cell [ref=e515]
+                            - row [ref=e516]:
+                              - cell [ref=e517]
+                              - cell [ref=e518]
+                            - row [ref=e519]:
+                              - cell [ref=e520]:
+                                - generic [ref=e522]: 4am
+                              - cell [ref=e523]
+                            - row [ref=e524]:
+                              - cell [ref=e525]
+                              - cell [ref=e526]
+                            - row [ref=e527]:
+                              - cell [ref=e528]:
+                                - generic [ref=e530]: 5am
+                              - cell [ref=e531]
+                            - row [ref=e532]:
+                              - cell [ref=e533]
+                              - cell [ref=e534]
+                            - row [ref=e535]:
+                              - cell [ref=e536]:
+                                - generic [ref=e538]: 6am
+                              - cell [ref=e539]
+                            - row [ref=e540]:
+                              - cell [ref=e541]
+                              - cell [ref=e542]
+                            - row [ref=e543]:
+                              - cell [ref=e544]:
+                                - generic [ref=e546]: 7am
+                              - cell [ref=e547]
+                            - row [ref=e548]:
+                              - cell [ref=e549]
+                              - cell [ref=e550]
+                            - row [ref=e551]:
+                              - cell [ref=e552]:
+                                - generic [ref=e554]: 8am
+                              - cell [ref=e555]
+                            - row [ref=e556]:
+                              - cell [ref=e557]
+                              - cell [ref=e558]
+                            - row [ref=e559]:
+                              - cell [ref=e560]:
+                                - generic [ref=e562]: 9am
+                              - cell [ref=e563]
+                            - row [ref=e564]:
+                              - cell [ref=e565]
+                              - cell [ref=e566]
+                            - row [ref=e567]:
+                              - cell [ref=e568]:
+                                - generic [ref=e570]: 10am
+                              - cell [ref=e571]
+                            - row [ref=e572]:
+                              - cell [ref=e573]
+                              - cell [ref=e574]
+                            - row [ref=e575]:
+                              - cell [ref=e576]:
+                                - generic [ref=e578]: 11am
+                              - cell [ref=e579]
+                            - row [ref=e580]:
+                              - cell [ref=e581]
+                              - cell [ref=e582]
+                            - row [ref=e583]:
+                              - cell [ref=e584]:
+                                - generic [ref=e586]: 12pm
+                              - cell [ref=e587]
+                            - row [ref=e588]:
+                              - cell [ref=e589]
+                              - cell [ref=e590]
+                            - row [ref=e591]:
+                              - cell [ref=e592]:
+                                - generic [ref=e594]: 1pm
+                              - cell [ref=e595]
+                            - row [ref=e596]:
+                              - cell [ref=e597]
+                              - cell [ref=e598]
+                            - row [ref=e599]:
+                              - cell [ref=e600]:
+                                - generic [ref=e602]: 2pm
+                              - cell [ref=e603]
+                            - row [ref=e604]:
+                              - cell [ref=e605]
+                              - cell [ref=e606]
+                            - row [ref=e607]:
+                              - cell [ref=e608]:
+                                - generic [ref=e610]: 3pm
+                              - cell [ref=e611]
+                            - row [ref=e612]:
+                              - cell [ref=e613]
+                              - cell [ref=e614]
+                            - row [ref=e615]:
+                              - cell [ref=e616]:
+                                - generic [ref=e618]: 4pm
+                              - cell [ref=e619]
+                            - row [ref=e620]:
+                              - cell [ref=e621]
+                              - cell [ref=e622]
+                            - row [ref=e623]:
+                              - cell [ref=e624]:
+                                - generic [ref=e626]: 5pm
+                              - cell [ref=e627]
+                            - row [ref=e628]:
+                              - cell [ref=e629]
+                              - cell [ref=e630]
+                            - row [ref=e631]:
+                              - cell [ref=e632]:
+                                - generic [ref=e634]: 6pm
+                              - cell [ref=e635]
+                            - row [ref=e636]:
+                              - cell [ref=e637]
+                              - cell [ref=e638]
+                            - row [ref=e639]:
+                              - cell [ref=e640]:
+                                - generic [ref=e642]: 7pm
+                              - cell [ref=e643]
+                            - row [ref=e644]:
+                              - cell [ref=e645]
+                              - cell [ref=e646]
+                            - row [ref=e647]:
+                              - cell [ref=e648]:
+                                - generic [ref=e650]: 8pm
+                              - cell [ref=e651]
+                            - row [ref=e652]:
+                              - cell [ref=e653]
+                              - cell [ref=e654]
+                            - row [ref=e655]:
+                              - cell [ref=e656]:
+                                - generic [ref=e658]: 9pm
+                              - cell [ref=e659]
+                            - row [ref=e660]:
+                              - cell [ref=e661]
+                              - cell [ref=e662]
+                            - row [ref=e663]:
+                              - cell [ref=e664]:
+                                - generic [ref=e666]: 10pm
+                              - cell [ref=e667]
+                            - row [ref=e668]:
+                              - cell [ref=e669]
+                              - cell [ref=e670]
+                            - row [ref=e671]:
+                              - cell [ref=e672]:
+                                - generic [ref=e674]: 11pm
+                              - cell [ref=e675]
+                            - row [ref=e676]:
+                              - cell [ref=e677]
+                              - cell [ref=e678]
+                        - row "10:00 - 11:00 Design - Teste mobile hover 10:00 - 10:30 -" [ref=e688]:
+                          - gridcell "10:00 - 11:00 Design - Teste mobile hover 10:00 - 10:30 -" [ref=e689]:
+                            - generic [ref=e686]:
+                              - generic [ref=e695]:
+                                - generic [ref=e696]: 10:00 - 11:00
+                                - generic [ref=e698]: Design - Teste mobile hover
+                              - generic [ref=e703]: 10:00 - 10:30 -
+              - generic [ref=e426]: Agenda geral de servicos (design e pintura).
+          - generic [ref=e427]:
+            - generic [ref=e428]:
+              - heading "Designs agendados" [level=3] [ref=e429]
+              - paragraph [ref=e431]: Nenhum design agendado.
+            - generic [ref=e432]:
+              - heading "Pinturas agendadas" [level=3] [ref=e433]
+              - paragraph [ref=e435]: Nenhuma pintura agendada.
+          - generic [ref=e436]:
+            - generic [ref=e437]:
+              - heading "Designs finalizados" [level=3] [ref=e438]
+              - paragraph [ref=e440]: Nenhum design finalizado.
+            - generic [ref=e441]:
+              - heading "Pinturas finalizadas" [level=3] [ref=e442]
+              - paragraph [ref=e444]: Nenhuma pintura finalizada.
+  - alert [ref=e445]
