@@ -36,6 +36,7 @@ builder.Services.AddSingleton<IPaintService, PaintService>();
 builder.Services.AddSingleton<IReminderService, ReminderService>();
 builder.Services.AddSingleton<IServiceProviderService, ServiceProviderService>();
 builder.Services.AddSingleton<IDesignTaskService, DesignTaskService>();
+builder.Services.AddSingleton<IPrinterMonitorService, PrinterMonitorService>();
 builder.Services.AddSingleton<PaintingTaskService>();
 builder.Services.AddSingleton<IPaintingTaskService>(sp => sp.GetRequiredService<PaintingTaskService>());
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));

@@ -8,6 +8,8 @@ namespace Byte2Life.API.Persistence
         public const string Investments = "Investments";
         public const string Paints = "Paints";
         public const string PaintingTasks = "PaintingTasks";
+        public const string PrinterCommands = "PrinterCommands";
+        public const string PrinterMonitorHistory = "PrinterMonitorHistory";
         public const string Reminders = "Reminders";
         public const string Sales = "Sales";
         public const string ServiceProviders = "ServiceProviders";
