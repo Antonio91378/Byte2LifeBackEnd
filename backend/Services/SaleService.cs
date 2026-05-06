@@ -119,6 +119,78 @@ namespace Byte2Life.API.Services
             sale.IsActive ??= fallbackValue ?? true;
         }
 
+        private static int NormalizeFeedbackStars(int stars) => Math.Clamp(stars, 0, 5);
+
+        private static bool HasFeedbackRating(SalePrintFeedbackRating? rating) =>
+            rating is not null && (NormalizeFeedbackStars(rating.Stars) > 0 || !string.IsNullOrWhiteSpace(rating.Reason));
+
+        private static bool HasFeedbackContent(SalePrintFeedback? feedback) =>
+            feedback is not null &&
+            (HasFeedbackRating(feedback.FileQuality) ||
+             HasFeedbackRating(feedback.PrintQuality) ||
+             !string.IsNullOrWhiteSpace(feedback.GeneralNotes));
+
+        private static void NormalizeFeedbackRating(SalePrintFeedbackRating? rating)
+        {
+            if (rating is null)
+            {
+                return;
+            }
+
+            rating.Stars = NormalizeFeedbackStars(rating.Stars);
+            rating.Reason = string.IsNullOrWhiteSpace(rating.Reason) ? null : rating.Reason.Trim();
+        }
+
+        private static void NormalizePrintFeedback(Sale sale)
+        {
+            sale.PrintFeedbackHistory ??= new List<SalePrintFeedbackHistoryEntry>();
+
+            if (sale.PrintFeedback is not null)
+            {
+                sale.PrintFeedback.FileQuality ??= new SalePrintFeedbackRating();
+                sale.PrintFeedback.PrintQuality ??= new SalePrintFeedbackRating();
+                NormalizeFeedbackRating(sale.PrintFeedback.FileQuality);
+                NormalizeFeedbackRating(sale.PrintFeedback.PrintQuality);
+                sale.PrintFeedback.GeneralNotes = string.IsNullOrWhiteSpace(sale.PrintFeedback.GeneralNotes)
+                    ? null
+                    : sale.PrintFeedback.GeneralNotes.Trim();
+
+                if (HasFeedbackContent(sale.PrintFeedback))
+                {
+                    sale.PrintFeedback.RecordedAt ??= DateTime.Now;
+                    sale.PrintFeedback.UpdatedAt ??= DateTime.Now;
+                }
+                else
+                {
+                    sale.PrintFeedback = null;
+                }
+            }
+
+            foreach (var historyEntry in sale.PrintFeedbackHistory)
+            {
+                historyEntry.SourceSaleId = string.IsNullOrWhiteSpace(historyEntry.SourceSaleId)
+                    ? null
+                    : historyEntry.SourceSaleId.Trim();
+                historyEntry.SourceSaleDescription = string.IsNullOrWhiteSpace(historyEntry.SourceSaleDescription)
+                    ? null
+                    : historyEntry.SourceSaleDescription.Trim();
+                historyEntry.ClonedAt ??= DateTime.Now;
+
+                if (historyEntry.Feedback is null)
+                {
+                    continue;
+                }
+
+                historyEntry.Feedback.FileQuality ??= new SalePrintFeedbackRating();
+                historyEntry.Feedback.PrintQuality ??= new SalePrintFeedbackRating();
+                NormalizeFeedbackRating(historyEntry.Feedback.FileQuality);
+                NormalizeFeedbackRating(historyEntry.Feedback.PrintQuality);
+                historyEntry.Feedback.GeneralNotes = string.IsNullOrWhiteSpace(historyEntry.Feedback.GeneralNotes)
+                    ? null
+                    : historyEntry.Feedback.GeneralNotes.Trim();
+            }
+        }
+
         private static int ResolvePriority(DateTime? deliveryDate, int requestedPriority, int fallbackPriority)
         {
             if (deliveryDate.HasValue)
@@ -458,6 +530,7 @@ namespace Byte2Life.API.Services
             NormalizeFilamentAssignments(sale);
             NormalizeActivityStatus(sale);
             NormalizeIncidentWasteAssignments(sale);
+            NormalizePrintFeedback(sale);
             sale.WastedFilamentGrams = GetTrackedWasteGrams(sale);
 
             if (sale.Cost <= 0 && (sale.ProductionCost.GetValueOrDefault() > 0 || sale.ShippingCost > 0))

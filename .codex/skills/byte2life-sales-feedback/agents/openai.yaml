@@ -1,0 +1,4 @@
+interface:
+  display_name: "Byte2Life Sales Feedback"
+  short_description: "Sales print feedback rules."
+  default_prompt: "Use this skill when changing Byte2Life sales feedback, print completion, report badges, or clone history behavior."

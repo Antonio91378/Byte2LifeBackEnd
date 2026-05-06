@@ -90,6 +90,8 @@ C:\Users\pichau\Documents\Codex\2026-05-04\consegue-abrir-o-aplicativo-bambu-stu
 - `bambu_mqtt_agent.js`: leitura MQTT + execucao de comandos da fila
 - `bambu_camera_frame.js`: captura frames da camera e envia para o backend
 
+O `bambu_camera_frame.js` roda em modo continuo e reconecta automaticamente quando a conexao local da camera entrega um pacote invalido ou encerra. Isso evita que o site online fique preso no ultimo frame antigo depois de uma falha temporaria do stream.
+
 ### Inicializacao automatica no Windows
 
 Foi criado este arquivo na pasta Startup do usuario:
@@ -172,7 +174,15 @@ Antes de subir:
 - validar `GET /api/printer-monitor/camera/status` no Render
 - criar um comando simples de luz e confirmar que ele muda para `succeeded`
 
-Se a camera funciona localmente mas nao online, o mais comum e o `bambu_camera_frame.js` nao estar rodando ou o `BAMBU_FORWARD_TOKEN` local nao bater com `BAMBU_INGEST_TOKEN` no Render.
+Se a camera funciona localmente mas nao online, o mais comum e o `bambu_camera_frame.js` nao estar rodando, ter encerrado por erro de stream, ou o `BAMBU_FORWARD_TOKEN` local nao bater com `BAMBU_INGEST_TOKEN` no Render.
+
+Para checar se o Render esta recebendo frames novos:
+
+```powershell
+Invoke-WebRequest -UseBasicParsing https://byte2lifebackend-3.onrender.com/api/printer-monitor/camera/status | Select-Object -ExpandProperty Content
+```
+
+O campo `receivedAt` precisa avancar a cada poucos segundos enquanto o coletor local esta rodando.
 
 Se comandos ficam em `pending`, o agente local nao esta rodando ou nao esta autenticando no endpoint `/commands/next`.
 

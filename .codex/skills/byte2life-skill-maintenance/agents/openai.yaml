@@ -1,0 +1,4 @@
+interface:
+  display_name: "Byte2Life Skill Maintenance"
+  short_description: "Keep Byte2Life project skills current as requirements evolve."
+  default_prompt: "Use this skill when changing Byte2Life behavior to decide whether existing project skills need to be updated."

@@ -10,6 +10,32 @@ namespace Byte2Life.API.Models
     }
 
     [BsonIgnoreExtraElements]
+    public class SalePrintFeedbackRating
+    {
+        public int Stars { get; set; }
+        public string? Reason { get; set; }
+    }
+
+    [BsonIgnoreExtraElements]
+    public class SalePrintFeedback
+    {
+        public SalePrintFeedbackRating FileQuality { get; set; } = new();
+        public SalePrintFeedbackRating PrintQuality { get; set; } = new();
+        public string? GeneralNotes { get; set; }
+        public DateTime? RecordedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
+    }
+
+    [BsonIgnoreExtraElements]
+    public class SalePrintFeedbackHistoryEntry
+    {
+        public string? SourceSaleId { get; set; }
+        public string? SourceSaleDescription { get; set; }
+        public DateTime? ClonedAt { get; set; }
+        public SalePrintFeedback? Feedback { get; set; }
+    }
+
+    [BsonIgnoreExtraElements]
     public class Sale
     {
         [BsonId]
@@ -40,6 +66,8 @@ namespace Byte2Life.API.Models
         
         public string? ErrorReason { get; set; }
         public double? WastedFilamentGrams { get; set; }
+        public SalePrintFeedback? PrintFeedback { get; set; }
+        public List<SalePrintFeedbackHistoryEntry> PrintFeedbackHistory { get; set; } = new();
 
         public bool IsPrintConcluded { get; set; }
         public bool IsDelivered { get; set; }

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Byte2Life Feature Validation"
+  short_description: "Online fictitious validation workflow"
+  default_prompt: "Use this skill after implementing complex Byte2Life features to prepare an online fictitious validation environment with seeded sales and supplies for user testing."

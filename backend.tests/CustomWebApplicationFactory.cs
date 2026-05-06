@@ -27,11 +27,19 @@ namespace Byte2Life.API.Tests
                 var projectDir = Directory.GetCurrentDirectory();
                 var configPath = Path.Combine(projectDir, "appsettings.Test.json");
 
-                config.AddJsonFile(configPath, optional: true);
-                config.AddInMemoryCollection(new Dictionary<string, string?>
+                var connectionString = Environment.GetEnvironmentVariable("MongoDBSettings__ConnectionString");
+                var overrides = new Dictionary<string, string?>
                 {
                     ["MongoDBSettings:DatabaseName"] = _databaseName
-                });
+                };
+
+                if (!string.IsNullOrWhiteSpace(connectionString))
+                {
+                    overrides["MongoDBSettings:ConnectionString"] = connectionString;
+                }
+
+                config.AddJsonFile(configPath, optional: true);
+                config.AddInMemoryCollection(overrides);
             });
         }
 
