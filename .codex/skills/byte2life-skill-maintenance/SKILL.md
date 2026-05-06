@@ -43,5 +43,6 @@ python "$env:USERPROFILE\.codex\skills\.system\skill-creator\scripts\quick_valid
 ## Existing Byte2Life Skills
 
 - `byte2life-complex-feature-validation`: validation environments, fictitious data, and user acceptance workflow for complex features.
+- `byte2life-date-handling`: date-only fields, timezone drift, date inputs, date displays, and timestamp/date separation.
 - `byte2life-sales-feedback`: sales print feedback, clone history, report indicators, and current-print review behavior.
 - `byte2life-skill-maintenance`: this checkpoint for keeping project skills fresh.

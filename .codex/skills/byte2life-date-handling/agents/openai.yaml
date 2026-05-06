@@ -1,0 +1,4 @@
+interface:
+  display_name: "Byte2Life Date Handling"
+  short_description: "Handle Byte2Life calendar dates without timezone drift."
+  default_prompt: "Use this skill when changing Byte2Life date fields, sale dates, delivery dates, filters, displays, imports, or scheduling."
